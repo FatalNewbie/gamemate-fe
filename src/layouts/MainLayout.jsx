@@ -1,5 +1,4 @@
-// src/layouts/MainLayout.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -16,38 +15,83 @@ const MainLayout = ({ children, headerTitle, showSearchIcon = true }) => {
         setIsSearchOpen(false);
     };
 
+    useEffect(() => {
+        function setVh() {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+
+        window.addEventListener('resize', setVh);
+        window.addEventListener('load', setVh);
+
+        setVh();
+
+        return () => {
+            window.removeEventListener('resize', setVh);
+            window.removeEventListener('load', setVh);
+        };
+    }, []);
+
     return (
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" bgcolor="#f0f0f0">
+        <Box
+            sx={{
+                width: '100%',
+                maxWidth: '390px',
+                margin: '0 auto',
+                height: 'calc(var(--vh, 1vh) * 100)',
+                display: 'flex',
+                flexDirection: 'column',
+                bgcolor: isSearchOpen ? 'rgba(0, 0, 0, 0.5)' : '#f0f0f0',
+                position: 'relative',
+                paddingTop: '65px', // Header 높이만큼 여백 추가
+                paddingBottom: '70px', // Footer 높이만큼 여백 추가
+                boxSizing: 'border-box', // 패딩이 레이아웃에 포함되도록 설정
+            }}
+        >
             <Box
-                display="flex"
-                flexDirection="column"
-                width="100%"
-                maxWidth="390px"
-                height="844px" // 세로 길이를 844px로 복원
-                bgcolor="#fff"
-                boxShadow={3}
+                sx={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    maxWidth: '390px',
+                    width: '100%',
+                    zIndex: 1000,
+                    bgcolor: isSearchOpen ? 'rgba(0, 0, 0, 0.5)' : '#fff',
+                    margin: '0 auto',
+                    transition: 'background-color 0.3s ease',
+                }}
             >
                 <Header title={headerTitle} showSearchIcon={showSearchIcon} onSearchClick={handleSearchOpen} />
-                <Box component="main" flexGrow={1} overflow="auto" p={2}>
-                    {children}
-                </Box>
-                <Footer />
-                {isSearchOpen && (
-                    <Box
-                        position="absolute"
-                        top={0}
-                        left={0}
-                        right={0}
-                        bottom={0}
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        bgcolor="rgba(0, 0, 0, 0.5)"
-                    >
-                        <SearchBar onClose={handleSearchClose} />
-                    </Box>
-                )}
             </Box>
+            <Box
+                component="main"
+                flexGrow={1}
+                overflow="auto"
+                p={2}
+                sx={{
+                    backgroundColor: isSearchOpen ? 'rgba(0, 0, 0, 0.5)' : 'inherit',
+                }}
+            >
+                {children}
+            </Box>
+            <Footer />
+            {isSearchOpen && (
+                <Box
+                    position="fixed"
+                    top={65}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    bgcolor="rgba(0, 0, 0, 0.5)"
+                    zIndex={1300}
+                >
+                    <SearchBar onClose={handleSearchClose} />
+                </Box>
+            )}
         </Box>
     );
 };
