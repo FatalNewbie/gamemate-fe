@@ -21,10 +21,9 @@ const MainLayout = ({ children, headerTitle, showSearchIcon = true }) => {
             document.documentElement.style.setProperty('--vh', `${vh}px`);
         }
 
+        setVh();
         window.addEventListener('resize', setVh);
         window.addEventListener('load', setVh);
-
-        setVh();
 
         return () => {
             window.removeEventListener('resize', setVh);
@@ -43,9 +42,12 @@ const MainLayout = ({ children, headerTitle, showSearchIcon = true }) => {
                 flexDirection: 'column',
                 bgcolor: isSearchOpen ? 'rgba(0, 0, 0, 0.5)' : '#f0f0f0',
                 position: 'relative',
-                paddingTop: '65px', // Header 높이만큼 여백 추가
-                paddingBottom: '70px', // Footer 높이만큼 여백 추가
-                boxSizing: 'border-box', // 패딩이 레이아웃에 포함되도록 설정
+                paddingTop: '65px',
+                paddingBottom: '70px',
+                '@media (min-width: 769px)': {
+                    paddingTop: '65px',
+                    paddingBottom: '70px',
+                },
             }}
         >
             <Box

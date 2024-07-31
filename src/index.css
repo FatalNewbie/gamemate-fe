@@ -4,6 +4,21 @@ body {
         'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    padding-top: calc(65px + env(safe-area-inset-top)); /* 헤더 높이와 안전 영역 고려 */
+    padding-bottom: calc(70px + env(safe-area-inset-bottom)); /* 푸터 높이와 안전 영역 고려 */
+    min-height: 100vh;
+    height: 100%;
+    overflow: auto;
+    box-sizing: border-box;
+}
+
+html {
+    padding-top: calc(65px + env(safe-area-inset-top)); /* 헤더 높이와 안전 영역 고려 */
+    padding-bottom: calc(70px + env(safe-area-inset-bottom)); /* 푸터 높이와 안전 영역 고려 */
+    min-height: 100vh;
+    height: 100%;
+    overflow: auto;
+    box-sizing: border-box;
 }
 
 code {
@@ -51,7 +66,5 @@ html {
 }
 
 main {
-    padding-top: 65px; /* 상단 여백 */
-    padding-bottom: 70px; /* 하단 여백 */
     box-sizing: border-box;
 }
