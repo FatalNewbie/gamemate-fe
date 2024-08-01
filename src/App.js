@@ -7,12 +7,21 @@ import GameList from './pages/GameList/GameList';
 import GameMate from './pages/GameMate/GameMate';
 import Chat from './pages/Chat/Chat';
 import MyPage from './pages/MyPage/MyPage';
+import Join from './pages/Join/Join';
 
 const App = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Navigate to="/home" replace />} />
+                <Route path="/" element={<Navigate to="/join" replace />} />
+                <Route
+                    path="/join"
+                    element={
+                        <MainLayout headerTitle="게임메이트">
+                            <Join />
+                        </MainLayout>
+                    }
+                />
                 <Route
                     path="/home"
                     element={
