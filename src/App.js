@@ -7,7 +7,7 @@ import GameList from './pages/GameList/GameList';
 import GameMate from './pages/GameMate/GameMate';
 import Chat from './pages/Chat/Chat';
 import MyPage from './pages/MyPage/MyPage';
-import Join from './pages/Join/Join';
+import Join from './pages/Auth/Join';
 
 const App = () => {
     return (
