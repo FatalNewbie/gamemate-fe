@@ -84,7 +84,6 @@ const MainLayout = ({ children, headerTitle, showSearchIcon = true }) => {
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
-                    bgcolor="rgba(0, 0, 0, 0.5)"
                     zIndex={1300}
                 >
                     <SearchBar onClose={handleSearchClose} />

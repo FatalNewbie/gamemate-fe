@@ -39,7 +39,6 @@ const SearchBar = ({ onClose }) => {
             justifyContent="center"
             alignItems="flex-start"
             minHeight="100vh"
-            bgcolor="rgba(0, 0, 0, 0.5)"
             p={2}
             position="fixed"
             top={0}
