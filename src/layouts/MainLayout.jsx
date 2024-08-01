@@ -23,12 +23,12 @@ const MainLayout = ({ children, headerTitle, showSearchIcon = true }) => {
                 flexDirection="column"
                 width="100%"
                 maxWidth="390px"
-                height="844px" // 세로 길이를 844px로 복원
+                height="100vh"
                 bgcolor="#fff"
                 boxShadow={3}
             >
                 <Header title={headerTitle} showSearchIcon={showSearchIcon} onSearchClick={handleSearchOpen} />
-                <Box component="main" flexGrow={1} overflow="auto" p={2}>
+                <Box component="main" flexGrow={1} overflow="auto" p={2} paddingBottom="70px">
                     {children}
                 </Box>
                 <Footer />
