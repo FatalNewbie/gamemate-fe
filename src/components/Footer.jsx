@@ -53,6 +53,9 @@ const Footer = ({ activePage, setActivePage }) => {
                     '&:hover': {
                         backgroundColor: 'transparent',
                     },
+                    '&.Mui-selected .MuiSvgIcon-root': {
+                        fontSize: '1.8rem', // 선택된 상태에서도 동일한 크기로 유지
+                    },
                     '&:focus': {
                         backgroundColor: 'transparent',
                     },
@@ -76,6 +79,9 @@ const Footer = ({ activePage, setActivePage }) => {
                     '&:hover': {
                         backgroundColor: 'transparent',
                     },
+                    '&.Mui-selected .MuiSvgIcon-root': {
+                        fontSize: '1.8rem', // 선택된 상태에서도 동일한 크기로 유지
+                    },
                     '&:focus': {
                         backgroundColor: 'transparent',
                     },
@@ -95,6 +101,9 @@ const Footer = ({ activePage, setActivePage }) => {
                     '& .MuiSvgIcon-root': {
                         fontSize: '1.8rem',
                         color: activePage === '/gamemate' ? '#0A088A' : '#21272A',
+                    },
+                    '&.Mui-selected .MuiSvgIcon-root': {
+                        fontSize: '1.8rem', // 선택된 상태에서도 동일한 크기로 유지
                     },
                     '&:hover': {
                         backgroundColor: 'transparent',
@@ -141,6 +150,9 @@ const Footer = ({ activePage, setActivePage }) => {
                     '& .MuiSvgIcon-root': {
                         fontSize: '1.8rem',
                         color: activePage === '/mypage' ? '#0A088A' : '#21272A',
+                    },
+                    '&.Mui-selected .MuiSvgIcon-root': {
+                        fontSize: '1.8rem', // 선택된 상태에서도 동일한 크기로 유지
                     },
                     '&:hover': {
                         backgroundColor: 'transparent',
