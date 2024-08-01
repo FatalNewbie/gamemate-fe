@@ -8,6 +8,10 @@ html,
     max-width: 390px;
     margin: 0 auto;
     height: 100%;
+    background-image: url('assets/background7.png');
+    background-size: 2300px auto;
+    background-position: center;
+    background-repeat: no-repeat;
     background-color: #f0f0f0;
     box-sizing: border-box;
 }
@@ -35,10 +39,6 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
-}
-
-header.search-active {
-    background-color: rgba(0, 0, 0, 0.5) !important; /* 검색 활성화 시 배경색 */
 }
 
 footer {

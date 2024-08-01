@@ -19,7 +19,7 @@ const MainLayout = ({ children, headerTitle, showSearchIcon = true }) => {
     useEffect(() => {
         function setVh() {
             const vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
+            document.documentElement.style.setProperty('--vh', `${vh}px`); // 수정된 부분
         }
 
         setVh();

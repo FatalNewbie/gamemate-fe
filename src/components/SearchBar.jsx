@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, TextField, IconButton, Chip, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
@@ -6,10 +6,16 @@ import CloseIcon from '@mui/icons-material/Close';
 const SearchBar = ({ onClose }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [recentSearches, setRecentSearches] = useState([]);
+    const searchInputRef = useRef(null); // 검색창에 포커스를 맞추기 위한 useRef
 
     useEffect(() => {
         const storedSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
         setRecentSearches(storedSearches);
+
+        // 컴포넌트가 마운트되면 검색창에 자동으로 포커스를 맞춥니다.
+        if (searchInputRef.current) {
+            searchInputRef.current.focus();
+        }
     }, []);
 
     const handleSearch = () => {
@@ -39,6 +45,7 @@ const SearchBar = ({ onClose }) => {
             justifyContent="center"
             alignItems="flex-start"
             minHeight="100vh"
+            bgcolor="rgba(0, 0, 0, 0.5)"
             p={2}
             position="fixed"
             top={0}
@@ -55,6 +62,7 @@ const SearchBar = ({ onClose }) => {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onKeyDown={handleKeyDown}
+                        inputRef={searchInputRef} // 검색창에 포커스를 맞추기 위한 ref 연결
                         InputProps={{
                             endAdornment: (
                                 <IconButton size="small" onClick={handleSearch}>
