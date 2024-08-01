@@ -4,8 +4,11 @@ import { Box, Typography } from '@mui/material';
 const GameMate = () => {
     return (
         <Box>
-            <Typography variant="h4">게임 메이트</Typography>
-            {/* 게임 메이트 페이지의 나머지 내용 */}
+            {Array.from({ length: 50 }).map((_, index) => (
+                <Typography variant="h4" key={index}>
+                    게임메이트
+                </Typography>
+            ))}
         </Box>
     );
 };

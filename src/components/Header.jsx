@@ -1,4 +1,3 @@
-// src/components/Header.js
 import React from 'react';
 import { AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -6,14 +5,14 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
-const Header = ({ title, showSearchIcon = true, onSearchClick, onAccountClick }) => {
+const Header = ({ title, showSearchIcon = true, onSearchClick, onAccountClick, activePage, setActivePage }) => {
     const navigate = useNavigate();
 
     const handleAccountClick = () => {
+        setActivePage('/mypage'); // 전역 상태 업데이트
+        navigate('/mypage');
         if (onAccountClick) {
             onAccountClick();
-        } else {
-            navigate('/mypage');
         }
     };
 

@@ -1,103 +1,66 @@
-/* src/App.css */
 body,
 html,
 #root {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
+    max-width: 390px;
+    margin: 0 auto;
     height: 100%;
-    margin: 0;
     background-color: #f0f0f0;
+    box-sizing: border-box;
 }
 
 #root > div {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 390px;
+    height: 100vh;
+    background-color: #fff;
+    box-sizing: border-box;
 }
 
+main {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+header {
+    height: 65px;
+    min-height: 65px;
+    max-height: 65px;
+    background-color: #fff; /* 헤더의 기본 배경색을 지정 */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+header.search-active {
+    background-color: rgba(0, 0, 0, 0.5) !important; /* 검색 활성화 시 배경색 */
+}
+
+footer {
+    height: 70px;
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 390px;
+    box-sizing: border-box;
+}
+
+/* 추가적인 스타일 수정 */
+.MuiBottomNavigation-root,
 .MuiBottomNavigationAction-root {
-    min-width: 60px;
-}
-
-.MuiBottomNavigationAction-label {
-    font-size: 0.75rem;
-}
-
-.Mui-selected {
-    color: #0a088a !important;
+    width: 100%;
+    max-width: 390px;
+    box-sizing: border-box;
 }
 
 body {
     font-family: 'Roboto', sans-serif;
 }
 
-.roboto-thin {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 100;
-    font-style: normal;
-}
-
-.roboto-light {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 300;
-    font-style: normal;
-}
-
-.roboto-regular {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-    font-style: normal;
-}
-
-.roboto-medium {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 500;
-    font-style: normal;
-}
-
-.roboto-bold {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 700;
-    font-style: normal;
-}
-
-.roboto-black {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 900;
-    font-style: normal;
-}
-
-.roboto-thin-italic {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 100;
-    font-style: italic;
-}
-
-.roboto-light-italic {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 300;
-    font-style: italic;
-}
-
-.roboto-regular-italic {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-    font-style: italic;
-}
-
-.roboto-medium-italic {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 500;
-    font-style: italic;
-}
-
-.roboto-bold-italic {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 700;
-    font-style: italic;
-}
-
-.roboto-black-italic {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 900;
-    font-style: italic;
+::-webkit-scrollbar {
+    display: none;
 }
