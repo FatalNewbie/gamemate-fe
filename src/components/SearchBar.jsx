@@ -46,7 +46,6 @@ const SearchBar = ({ onClose }) => {
             left={0}
             right={0}
             zIndex={1300}
-            mt="65px" // 헤더 아래로 65px 이동
         >
             <Box width="100%" maxWidth="360px" p={2} bgcolor="white" boxShadow={1} borderRadius={1} position="relative">
                 <Box display="flex" alignItems="center">

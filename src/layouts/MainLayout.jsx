@@ -6,6 +6,7 @@ import SearchBar from '../components/SearchBar';
 
 const MainLayout = ({ children, headerTitle, showSearchIcon = true }) => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [activePage, setActivePage] = useState('home'); // 전역 상태 추가
 
     const handleSearchOpen = () => {
         setIsSearchOpen(true);
@@ -40,7 +41,6 @@ const MainLayout = ({ children, headerTitle, showSearchIcon = true }) => {
                 height: 'calc(var(--vh, 1vh) * 100)',
                 display: 'flex',
                 flexDirection: 'column',
-                bgcolor: isSearchOpen ? 'rgba(0, 0, 0, 0.5)' : '#f0f0f0',
                 position: 'relative',
                 paddingTop: '65px',
                 paddingBottom: '70px',
@@ -59,29 +59,25 @@ const MainLayout = ({ children, headerTitle, showSearchIcon = true }) => {
                     maxWidth: '390px',
                     width: '100%',
                     zIndex: 1000,
-                    bgcolor: isSearchOpen ? 'rgba(0, 0, 0, 0.5)' : '#fff',
                     margin: '0 auto',
-                    transition: 'background-color 0.3s ease',
                 }}
             >
-                <Header title={headerTitle} showSearchIcon={showSearchIcon} onSearchClick={handleSearchOpen} />
+                <Header
+                    title={headerTitle}
+                    showSearchIcon={showSearchIcon}
+                    onSearchClick={handleSearchOpen}
+                    activePage={activePage}
+                    setActivePage={setActivePage} // 전역 상태 전달
+                />
             </Box>
-            <Box
-                component="main"
-                flexGrow={1}
-                overflow="auto"
-                p={2}
-                sx={{
-                    backgroundColor: isSearchOpen ? 'rgba(0, 0, 0, 0.5)' : 'inherit',
-                }}
-            >
+            <Box component="main" flexGrow={1} overflow="auto" p={2}>
                 {children}
             </Box>
-            <Footer />
+            <Footer activePage={activePage} setActivePage={setActivePage} /> {/* 전역 상태 전달 */}
             {isSearchOpen && (
                 <Box
                     position="fixed"
-                    top={65}
+                    top={0}
                     left={0}
                     right={0}
                     bottom={0}

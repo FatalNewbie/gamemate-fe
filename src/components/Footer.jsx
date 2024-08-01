@@ -4,18 +4,17 @@ import { Home, SportsEsports, Group, QuestionAnswer, Person } from '@mui/icons-m
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
 
-const Footer = () => {
-    const [value, setValue] = React.useState('home');
+const Footer = ({ activePage, setActivePage }) => {
     const navigate = useNavigate();
 
     const handleChange = (event, newValue) => {
-        setValue(newValue);
+        setActivePage(newValue); // 전역 상태 업데이트
         navigate(newValue);
     };
 
     return (
         <BottomNavigation
-            value={value}
+            value={activePage} // 전역 상태로부터 활성화된 페이지를 설정
             onChange={handleChange}
             sx={{
                 height: '70px',
@@ -49,7 +48,7 @@ const Footer = () => {
                     },
                     '& .MuiSvgIcon-root': {
                         fontSize: '1.8rem',
-                        color: value === '/home' ? '#0A088A' : '#21272A',
+                        color: activePage === '/home' ? '#0A088A' : '#21272A',
                     },
                     '&:hover': {
                         backgroundColor: 'transparent',
@@ -72,7 +71,7 @@ const Footer = () => {
                     },
                     '& .MuiSvgIcon-root': {
                         fontSize: '1.8rem',
-                        color: value === '/gamelist' ? '#0A088A' : '#21272A',
+                        color: activePage === '/gamelist' ? '#0A088A' : '#21272A',
                     },
                     '&:hover': {
                         backgroundColor: 'transparent',
@@ -95,7 +94,7 @@ const Footer = () => {
                     },
                     '& .MuiSvgIcon-root': {
                         fontSize: '1.8rem',
-                        color: value === '/gamemate' ? '#0A088A' : '#21272A',
+                        color: activePage === '/gamemate' ? '#0A088A' : '#21272A',
                     },
                     '&:hover': {
                         backgroundColor: 'transparent',
@@ -118,7 +117,7 @@ const Footer = () => {
                     },
                     '& .MuiSvgIcon-root': {
                         fontSize: '1.5rem',
-                        color: value === '/chat' ? '#0A088A' : '#21272A',
+                        color: activePage === '/chat' ? '#0A088A' : '#21272A',
                     },
                     '&:hover': {
                         backgroundColor: 'transparent',
@@ -141,7 +140,7 @@ const Footer = () => {
                     },
                     '& .MuiSvgIcon-root': {
                         fontSize: '1.8rem',
-                        color: value === '/mypage' ? '#0A088A' : '#21272A',
+                        color: activePage === '/mypage' ? '#0A088A' : '#21272A',
                     },
                     '&:hover': {
                         backgroundColor: 'transparent',
