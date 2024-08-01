@@ -8,6 +8,10 @@ html,
     max-width: 390px;
     margin: 0 auto;
     height: 100%;
+    background-image: url('assets/background6.jpeg');
+    background-size: 2300px auto;
+    background-position: center;
+    background-repeat: no-repeat;
     background-color: #f0f0f0;
     box-sizing: border-box;
 }

@@ -1,11 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import { Home, SportsEsports, Group, QuestionAnswer, Person } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../App.css';
 
 const Footer = ({ activePage, setActivePage }) => {
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // useEffect를 사용하여 컴포넌트가 처음 렌더링될 때 activePage를 설정
+    useEffect(() => {
+        if (location.pathname === '/') {
+            setActivePage('/home');
+            navigate('/home'); // 기본적으로 /home으로 리다이렉트
+        } else {
+            setActivePage(location.pathname); // 현재 경로에 따라 activePage 설정
+        }
+    }, [location.pathname, setActivePage, navigate]);
 
     const handleChange = (event, newValue) => {
         setActivePage(newValue); // 전역 상태 업데이트
