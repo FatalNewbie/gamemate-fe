@@ -11,14 +11,22 @@ const Login = ({ login }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const formData = {
-      username,
-      password,
-    };
-
     try {
-      const response = await axios.post('http://localhost:8080/login', formData, {
-        headers: {
+
+//       const response = await axios.post('http://localhost:8080/login', {
+//           username: 'admin@test.com',
+//           password: '1234',
+//       }, {
+//           headers: {
+//               'Content-Type': 'application/json', // JSON 타입의 헤더 추가
+//           },
+//       });
+
+      const response = await axios.post('http://localhost:8080/login', {
+        username,
+        password,
+      }, {
+          headers: {
           'Content-Type': 'application/json',
         },
       });
@@ -31,7 +39,7 @@ const Login = ({ login }) => {
       const token = response.headers['authorization'];
 
       // AuthContext의 login 함수 호출
-      login(token);
+//       login(token);
 
       if (localStorage.getItem('role') === 'ROLE_ADMIN') {
         navigate('/admin');
