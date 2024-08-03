@@ -7,6 +7,7 @@ import GameList from './pages/GameList/GameList';
 import GameMate from './pages/GameMate/GameMate';
 import Chat from './pages/Chat/Chat';
 import MyPage from './pages/MyPage/MyPage';
+import Recommend from './pages/Recommend/Recommend';
 
 const App = () => {
     return (
@@ -18,6 +19,14 @@ const App = () => {
                     element={
                         <MainLayout headerTitle="게임메이트">
                             <Home />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/recommend"
+                    element={
+                        <MainLayout headerTitle="추천 유저">
+                            <Recommend />
                         </MainLayout>
                     }
                 />
