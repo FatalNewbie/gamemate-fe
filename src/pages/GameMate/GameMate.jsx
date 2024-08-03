@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import '../GameMate/css/GameMate.css';
+import '../GameMate/GameMate.css';
 import KakaoMap from './KakaoMap';
 import { api } from '../../apis/customAxios';
 import axios from 'axios';
@@ -9,16 +9,21 @@ const { kakao } = window;
 
 const GameMate = () => {
     const [post, setPost] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [comment, setComment] = useState('');
+    const [recomment, setRecomment] = useState('');
+    const [replyToCommentId, setReplyToCommentId] = useState(null); // 대댓글을 달 댓글 ID
+
+    const handleReplyClick = (commentId) => {
+        // 클릭한 댓글 ID로 상태 업데이트
+        setReplyToCommentId(commentId === replyToCommentId ? null : commentId);
+    };
 
     useEffect(() => {
         showPost();
     }, []);
 
     const showPost = async () => {
-        const response = await api.get('/api/posts/post/1');
+        const response = await api.get('/api/posts/post/2');
         console.log(response);
         setPost(response);
     };
@@ -27,14 +32,30 @@ const GameMate = () => {
         setComment(e.target.value);
     };
 
+    const handleRecommentChange = (e) => {
+        setRecomment(e.target.value);
+    };
+
     const handleCommentSubmit = async () => {
         // 댓글 전송 로직 (API 호출 등)
-        const response = await api.post('/api/post/1/comment', {
+        const response = await api.post('/api/post/2/comment', {
             nickname: 'userNickname',
             content: comment,
         });
         setComment(''); // 댓글 입력 초기화
         window.location.reload();
+    };
+
+    const handleRecommentSubmit = async (commentId) => {
+        // 댓글 전송 로직 (API 호출 등)
+        const response = await api.post('/api/post/2/comment', {
+            pCommentId: commentId,
+            nickname: 'userNickname',
+            content: recomment,
+        });
+        setRecomment(''); // 댓글 입력 초기화
+        setReplyToCommentId(null); // 대댓글 ID 초기화
+        window.location.reload(); // 페이지 새로고침
     };
 
     if (!post) {
@@ -71,15 +92,36 @@ const GameMate = () => {
                 </div>
 
                 <h3 className="comment-cnt">댓글 {post.postComments.length}</h3>
-                {post.postComments.map((comment) => (
+                {post.postComments.map((comment, index) => (
                     <div key={comment.id} className="comment-box">
-                        <div class="comment-header">
-                            <i class="fas fa-user"></i>
-                            <span class="nickname">
-                                <strong>{comment.nickname}</strong>
-                            </span>
+                        <div className="comment-mid-box">
+                            <div>
+                                <div class="comment-header">
+                                    <i class="fas fa-user"></i>
+                                    <span class="nickname">
+                                        <strong>{comment.nickname}</strong>
+                                    </span>
+                                </div>
+                                <div class="comment-content">{comment.content}</div>
+                            </div>
+                            <div className="recomment-button" onClick={() => handleReplyClick(comment.id)}>
+                                답글
+                            </div>
                         </div>
-                        <div class="comment-content">{comment.content}</div>
+                        {replyToCommentId === comment.id && (
+                            <div className="recomment-input-header">
+                                <input
+                                    type="text"
+                                    placeholder="댓글을 작성하세요."
+                                    value={recomment}
+                                    onChange={handleRecommentChange}
+                                    className="comment-input"
+                                />
+                                <button onClick={() => handleRecommentSubmit(comment.id)} className="submit-button">
+                                    <strong>등록</strong>
+                                </button>
+                            </div>
+                        )}
 
                         {comment.recomments.length > 0 && (
                             <div className="recomment-box">

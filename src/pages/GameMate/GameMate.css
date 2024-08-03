@@ -80,8 +80,22 @@
     padding: 5px;
 }
 
+.comment-mid-box {
+    display: flex; /* Flexbox 사용 */
+    justify-content: space-between; /* 하위 요소 간의 간격을 동일하게 유지 */
+    align-items: center; /* 세로 방향 중앙 정렬 */
+}
+
+.recomment-button {
+    font-size: 15px;
+}
+
 .comment-content {
     padding-left: 15px;
+}
+
+.recomment-input-header {
+    padding-left: 30px;
 }
 
 .recomment-box {
