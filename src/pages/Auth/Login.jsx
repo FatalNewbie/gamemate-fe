@@ -12,16 +12,6 @@ const Login = ({ login }) => {
     e.preventDefault();
 
     try {
-
-//       const response = await axios.post('http://localhost:8080/login', {
-//           username: 'admin@test.com',
-//           password: '1234',
-//       }, {
-//           headers: {
-//               'Content-Type': 'application/json', // JSON 타입의 헤더 추가
-//           },
-//       });
-
       const response = await axios.post('http://localhost:8080/login', {
         username,
         password,
