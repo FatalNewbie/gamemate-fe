@@ -5,6 +5,8 @@ import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home/Home';
 import GameList from './pages/GameList/GameList';
 import GameMate from './pages/GameMate/GameMate';
+import GameMatePost from './pages/GameMate/GameMatePost';
+import GameMateNew from './pages/GameMate/GameMateNew';
 import Chat from './pages/Chat/Chat';
 import MyPage from './pages/MyPage/MyPage';
 import Join from './pages/Auth/Join';
@@ -52,6 +54,22 @@ const App = () => {
                     element={
                         <MainLayout headerTitle="게임메이트">
                             <GameMate />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/gamemate/posts/:id"
+                    element={
+                        <MainLayout headerTitle="게임메이트">
+                            <GameMatePost />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/gamemate/posts/new"
+                    element={
+                        <MainLayout headerTitle="모집하기">
+                            <GameMateNew />
                         </MainLayout>
                     }
                 />
