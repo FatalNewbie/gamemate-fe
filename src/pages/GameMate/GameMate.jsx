@@ -23,7 +23,7 @@ const GameMate = () => {
     }, []);
 
     const showPost = async () => {
-        const response = await api.get('/api/posts/post/2');
+        const response = await api.get('/api/posts/post/2', { withCredentials: true });
         console.log(response);
         setPost(response);
     };

@@ -9,6 +9,7 @@ import Chat from './pages/Chat/Chat';
 import MyPage from './pages/MyPage/MyPage';
 import Join from './pages/Auth/Join';
 import Login from './pages/Auth/Login';
+import ChatRoomTest from './pages/Chat/ChatRoomTest';
 
 const App = () => {
     return (
@@ -60,6 +61,14 @@ const App = () => {
                     element={
                         <MainLayout headerTitle="채팅" showSearchIcon={false}>
                             <Chat />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/chattest"
+                    element={
+                        <MainLayout headerTitle="채팅테스트" showSearchIcon={false}>
+                            <ChatRoomTest />
                         </MainLayout>
                     }
                 />

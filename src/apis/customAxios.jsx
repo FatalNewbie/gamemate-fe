@@ -10,7 +10,7 @@ axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.defaults.timeout = 5000; //백엔트 서버에 요청하고 응답을 기다리는 시간 5초
 
 // 2) axios instance
-export const api = axios.create();
+export const api = axios.create({ withCredentials: true });
 export const api2 = axios.create({ baseURL: 'http://localhost:8081' });
 
 // 3) interceptor
