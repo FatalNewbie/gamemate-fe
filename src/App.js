@@ -7,12 +7,31 @@ import GameList from './pages/GameList/GameList';
 import GameMate from './pages/GameMate/GameMate';
 import Chat from './pages/Chat/Chat';
 import MyPage from './pages/MyPage/MyPage';
+import Join from './pages/Auth/Join';
+import Login from './pages/Auth/Login';
+import ChatRoomTest from './pages/Chat/ChatRoomTest';
 
 const App = () => {
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<Navigate to="/home" replace />} />
+                <Route
+                    path="/join"
+                    element={
+                        <MainLayout headerTitle="게임메이트">
+                            <Join />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/login"
+                    element={
+                        <MainLayout headerTitle="게임메이트">
+                            <Login />
+                        </MainLayout>
+                    }
+                />
                 <Route
                     path="/home"
                     element={
@@ -42,6 +61,14 @@ const App = () => {
                     element={
                         <MainLayout headerTitle="채팅" showSearchIcon={false}>
                             <Chat />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/chattest"
+                    element={
+                        <MainLayout headerTitle="채팅테스트" showSearchIcon={false}>
+                            <ChatRoomTest />
                         </MainLayout>
                     }
                 />

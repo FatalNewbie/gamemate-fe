@@ -1,0 +1,135 @@
+.user-card-transition-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .user-card-enter {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  
+  .user-card-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 500ms, transform 500ms;
+  }
+  
+  .user-card-exit {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .user-card-exit-active {
+    opacity: 0;
+    transform: translateX(-100%);
+    transition: opacity 500ms, transform 500ms;
+  }
+  
+  .user-card {
+    cursor: pointer;
+    text-align: center;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .user-card img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+  }
+  
+  .username {
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  .more-link {
+    text-decoration: none;
+    color: #007bff;
+  }
+  
+  .ad-banner-img {
+    width: 100%;
+    height: auto;
+  }
+  
+  .carousel-button {
+    background: none;
+    border: none;
+    font-size: 2em;
+    cursor: pointer;
+  }
+  
+  .modal-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 24px;
+    border-radius: 8px;
+    text-align: center;
+    border: none; /* Remove border */
+  }
+  
+  .modal-profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+  }
+  
+  .modal-tags {
+    margin: 10px 0;
+  }
+  
+  .tag1 {
+    display: inline-block;
+    background-color: #2196f3;
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 20px;
+    color: white;
+    font-weight: 200;
+    font-size: 11px;
+  }
+  
+  .tag2 {
+    display: inline-block;
+    background-color: #4dabf5;
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 20px;
+    color: white;
+    font-weight: 200;
+    font-size: 11px;
+  }
+  
+  .tag3 {
+    display: inline-block;
+    background-color: #2196f3;
+    padding: 5px 10px;
+    margin: 2px;
+    border-radius: 20px;
+    color: white;
+    font-weight: 200;
+    font-size: 9px;
+  }
+  
+  .tag4 {
+    display: inline-block;
+    background-color: #4dabf5;
+    padding: 5px 10px;
+    margin: 2px;
+    border-radius: 20px;
+    color: white;
+    font-weight: 200;
+    font-size: 9px;
+  }
+  
