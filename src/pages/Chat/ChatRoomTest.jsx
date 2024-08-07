@@ -14,7 +14,7 @@ const ChatRoomTest = () => {
     // 채팅방번호 인풋
     const [inputRoomId, setInputRoomId] = useState('');
     // 초대인원 인풋
-    const [inputMemberNickname, setinputMemberNickname] = useState('');
+    const [inputMemberUsername, setInputMemberUsername] = useState('');
 
     const inputTitleHandler = (event) => {
         setInputTitle(event.target.value);
@@ -28,8 +28,8 @@ const ChatRoomTest = () => {
         setInputRoomId(event.target.value);
     };
 
-    const inputMemberNicknameHandler = (event) => {
-        setinputMemberNickname(event.target.value);
+    const inputMemberUsernameHandler = (event) => {
+        setInputMemberUsername(event.target.value);
     };
 
     const CreateRoomBtnHandler = async () => {
@@ -57,7 +57,7 @@ const ChatRoomTest = () => {
                 '/chat/addmember',
                 {
                     chatRoomId: inputRoomId,
-                    addMemberNickname: inputMemberNickname,
+                    addMemberUsername: inputMemberUsername,
                 },
                 {
                     withCredentials: true, // 쿠키 포함 설정
@@ -117,8 +117,8 @@ const ChatRoomTest = () => {
                             id="outlined-basic"
                             label="추가멤버 아이디"
                             variant="outlined"
-                            value={inputMemberNickname}
-                            onChange={inputMemberNicknameHandler}
+                            value={inputMemberUsername}
+                            onChange={inputMemberUsernameHandler}
                         />
                     </Box>
                 </Grid>

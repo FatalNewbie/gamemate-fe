@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Container, Typography, Button, TextField, Box, Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 import axios from 'axios';
 
 const Login = ({ login }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const [cookies, setCookie] = useCookies(['token']);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -30,28 +32,14 @@ const Login = ({ login }) => {
             // 응답 헤더를 확인
             console.log('Response headers:', response.headers);
 
-            // 쿠키에 JWT가 담겨 있는지 확인
-            const cookies = document.cookie;
-            console.log('Cookies:', cookies);
-
-            // 쿠키에서 특정 이름의 JWT를 찾기
-            const jwtCookie = cookies.split('; ').find((row) => row.startsWith('jwt='));
-            if (jwtCookie) {
-                const jwt = jwtCookie.split('=')[1];
-                console.log('JWT:', jwt);
-            } else {
-                console.log('JWT 쿠키가 존재하지 않습니다.');
-            }
-
-            if (response.status !== 200) {
-                throw new Error(`${response.data.errorCode}: ${response.data.errorMessage}`);
-            }
-
             // 토큰을 응답 헤더에서 가져오기
             const token = response.headers['authorization'];
 
             // AuthContext의 login 함수 호출
             //       login(token);
+
+            // 쿠키에 토큰 저장
+            setCookie('token', token);
 
             if (localStorage.getItem('role') === 'ROLE_ADMIN') {
                 navigate('/admin');
