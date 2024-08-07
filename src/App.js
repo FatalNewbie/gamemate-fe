@@ -5,6 +5,9 @@ import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home/Home';
 import GameList from './pages/GameList/GameList';
 import GameMate from './pages/GameMate/GameMate';
+import GameMatePost from './pages/GameMate/GameMatePost';
+import GameMateNew from './pages/GameMate/GameMateNew';
+import InfiniteScroll from './pages/GameMate/InfiniteScroll';
 import Chat from './pages/Chat/Chat';
 import MyPage from './pages/MyPage/MyPage';
 import Recommend from './pages/Recommend/Recommend';
@@ -63,6 +66,30 @@ const App = () => {
                     element={
                         <MainLayout headerTitle="게임메이트">
                             <GameMate />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/gamemate/posts/:id"
+                    element={
+                        <MainLayout headerTitle="게임메이트">
+                            <GameMatePost />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/gamemate/posts/new"
+                    element={
+                        <MainLayout headerTitle="모집하기">
+                            <GameMateNew />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/gamemate/test"
+                    element={
+                        <MainLayout headerTitle="무한스크롤 테스트">
+                            <InfiniteScroll />
                         </MainLayout>
                     }
                 />
