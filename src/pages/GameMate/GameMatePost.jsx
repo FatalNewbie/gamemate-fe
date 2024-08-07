@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom'; // useNavigate 추가
 import '../GameMate/GameMatePost.css';
 import KakaoMap from './KakaoMap';
 import { api } from '../../apis/customAxios';
-import axios from 'axios';
-import userEvent from '@testing-library/user-event';
+import { token } from './TempToken';
 
 const { kakao } = window;
 
 const GameMate = () => {
+    const { id } = useParams();
     const [post, setPost] = useState(null);
     const [comment, setComment] = useState('');
     const [recomment, setRecomment] = useState('');
@@ -23,9 +24,13 @@ const GameMate = () => {
     }, []);
 
     const showPost = async () => {
-        const response = await api.get('/api/posts/post/2');
+        const response = await api.get(`/posts/${id}`, {
+            headers: {
+                Authorization: `${token}`,
+            },
+        });
         console.log(response);
-        setPost(response);
+        setPost(response.data);
     };
 
     const handleCommentChange = (e) => {
@@ -38,28 +43,42 @@ const GameMate = () => {
 
     const handleCommentSubmit = async () => {
         // 댓글 전송 로직 (API 호출 등)
-        const response = await api.post('/api/post/2/comment', {
-            nickname: 'userNickname',
-            content: comment,
-        });
+        const response = await api.post(
+            `/post/${id}/comment`,
+            {
+                content: comment, // 요청 본문에 content를 포함
+            },
+            {
+                headers: {
+                    Authorization: `${token}`,
+                },
+            }
+        );
         setComment(''); // 댓글 입력 초기화
         window.location.reload();
     };
 
     const handleRecommentSubmit = async (commentId) => {
         // 댓글 전송 로직 (API 호출 등)
-        const response = await api.post('/api/post/2/comment', {
-            pCommentId: commentId,
-            nickname: 'userNickname',
-            content: recomment,
-        });
+        const response = await api.post(
+            `/post/${id}/comment`,
+            {
+                pCommentId: commentId,
+                content: recomment,
+            },
+            {
+                headers: {
+                    Authorization: `${token}`,
+                },
+            }
+        );
         setRecomment(''); // 댓글 입력 초기화
         setReplyToCommentId(null); // 대댓글 ID 초기화
         window.location.reload(); // 페이지 새로고침
     };
 
     if (!post) {
-        return null; // 포스트가 없으면 null 반환
+        return <div>로딩 중...</div>; // post가 없을 때 로딩 메시지 출력
     }
 
     return (
@@ -85,24 +104,24 @@ const GameMate = () => {
                         <span className="status-icon">{post.mateRegionGu || '미정'}</span>
                     </div>
                 </div>
-                <p className="post-content">내용 {post.mateContent}</p>
+                <p className="post-content">{post.mateContent}</p>
                 <h3>위치</h3>
                 <div className="map-placeholder">
                     <KakaoMap post={post} /> {/* KakaoMap 컴포넌트 사용 */}
                 </div>
 
-                <h3 className="comment-cnt">댓글 {post.postComments.length}</h3>
+                <h3 className="comment-cnt">댓글 {post.commentCnt}</h3>
                 {post.postComments.map((comment, index) => (
                     <div key={comment.id} className="comment-box">
                         <div className="comment-mid-box">
                             <div>
-                                <div class="comment-header">
-                                    <i class="fas fa-user"></i>
-                                    <span class="nickname">
+                                <div className="comment-header">
+                                    <i className="fas fa-user"></i>
+                                    <span className="nickname">
                                         <strong>{comment.nickname}</strong>
                                     </span>
                                 </div>
-                                <div class="comment-content">{comment.content}</div>
+                                <div className="comment-content">{comment.content}</div>
                             </div>
                             <div className="recomment-button" onClick={() => handleReplyClick(comment.id)}>
                                 답글
@@ -117,7 +136,10 @@ const GameMate = () => {
                                     onChange={handleRecommentChange}
                                     className="comment-input"
                                 />
-                                <button onClick={() => handleRecommentSubmit(comment.id)} className="submit-button">
+                                <button
+                                    onClick={() => handleRecommentSubmit(comment.id)}
+                                    className="comment-submit-button"
+                                >
                                     <strong>등록</strong>
                                 </button>
                             </div>
@@ -149,7 +171,7 @@ const GameMate = () => {
                         onChange={handleCommentChange}
                         className="comment-input"
                     />
-                    <button onClick={handleCommentSubmit} className="submit-button">
+                    <button onClick={handleCommentSubmit} className="comment-submit-button">
                         <strong>등록</strong>
                     </button>
                 </div>
