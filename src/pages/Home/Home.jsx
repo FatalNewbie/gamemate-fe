@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useCookies } from 'react-cookie';
 import {
     Box,
     Modal,
@@ -28,17 +29,55 @@ const Home = () => {
     const [gameNews, setGameNews] = useState([]);
     const [popularGames, setPopularGames] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [cookies] = useCookies(['token']);
+
+    const genresList = ['FPS', 'RPG', '전략', '액션', '시뮬레이션'];
+    const timesList = ['AM 9:00 ~ AM 11:00', 'AM 11:00 ~ PM 2:00', 'PM 2:00 ~ PM 5:00', 'PM 5:00 ~ PM 8:00',
+                      'PM 8:00 ~ PM 11:00', 'PM 11:00 ~ AM 3:00', 'AM 3:00 ~ AM 9:00'];
+
+    const convertToFeatureArray = (data, referenceList) => {
+        const featureArray = new Array(referenceList.length).fill(0);
+        data.forEach(id => {
+            featureArray[id - 1] = 1;
+        });
+        return featureArray;
+    };
 
     useEffect(() => {
-        const fetchUsers = async () => {
-            const response = await axios.post('http://127.0.0.1:8000/recommendation', {
-                preferred_genres: [1, 1, 1, 1, 1],
-                play_times: [1, 0, 0, 1, 0, 1, 1],
-            });
-            setUsers(response.data.similar_users);
+        const fetchUserInfo = async () => {
+            try {
+                const token = cookies.token;
+
+                if (!token) {
+                    throw new Error('No token found');
+                }
+
+                const response = await axios.get('http://localhost:8080/info', {
+                    headers: {
+                        Authorization: `${token}`,
+                    },
+                });
+
+                const user = response.data;
+                const userFeatures = {
+                    preferred_genres: convertToFeatureArray(user.preferredGenres, genresList),
+                    play_times: convertToFeatureArray(user.playTimes, timesList),
+                };
+
+                const response2 = await axios.post(
+                    'http://127.0.0.1:8000/recommendation',
+                    userFeatures
+                );
+
+                setUsers(response2.data.similar_users);
+            } catch (error) {
+                console.error('Error fetching user info or recommendations:', error);
+                setUsers([]);
+            }
         };
-        fetchUsers();
-    }, []);
+
+        fetchUserInfo();
+    }, [cookies.token]);
 
     useEffect(() => {
         const fetchGameNews = async () => {
@@ -61,6 +100,7 @@ const Home = () => {
                 );
             } catch (error) {
                 console.error('Error fetching game news:', error);
+                setGameNews([]);
             }
         };
 
@@ -82,6 +122,7 @@ const Home = () => {
                 );
             } catch (error) {
                 console.error('Error fetching popular games:', error);
+                setPopularGames([]);
             }
         };
 
