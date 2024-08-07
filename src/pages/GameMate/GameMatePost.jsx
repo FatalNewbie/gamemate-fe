@@ -3,11 +3,13 @@ import { useParams } from 'react-router-dom'; // useNavigate 추가
 import '../GameMate/GameMatePost.css';
 import KakaoMap from './KakaoMap';
 import { api } from '../../apis/customAxios';
-import { token } from './TempToken';
+import { useCookies } from 'react-cookie';
 
 const { kakao } = window;
 
 const GameMate = () => {
+    const [cookies] = useCookies(['token']);
+
     const { id } = useParams();
     const [post, setPost] = useState(null);
     const [comment, setComment] = useState('');
@@ -26,7 +28,7 @@ const GameMate = () => {
     const showPost = async () => {
         const response = await api.get(`/posts/${id}`, {
             headers: {
-                Authorization: `${token}`,
+                Authorization: cookies.token,
             },
         });
         console.log(response);
@@ -50,7 +52,7 @@ const GameMate = () => {
             },
             {
                 headers: {
-                    Authorization: `${token}`,
+                    Authorization: cookies.token,
                 },
             }
         );
@@ -68,7 +70,7 @@ const GameMate = () => {
             },
             {
                 headers: {
-                    Authorization: `${token}`,
+                    Authorization: cookies.token,
                 },
             }
         );

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Typography, Button, TextField, Box, Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { useCookies } from 'react-cookie'; // 쿠키 훅 추가
 
