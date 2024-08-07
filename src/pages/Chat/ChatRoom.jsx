@@ -9,19 +9,20 @@ import { useCookies } from 'react-cookie';
 
 const ChatRoom = ({ roomId, title, leaderNickname, memberCnt }) => {
     const [nowMemberCnt, setNowMemberCnt] = useState('');
+    // 쿠키
+    const [cookies] = useCookies(['token']);
 
     const getNowMemberCnt = async () => {
-        // try {
-        //     const data = await api.get(`/chat/${roomId}`, {
-        //         headers: {
-        //             Authorization: cookies.token,
-        //         },
-        //     });
-        //     console.log(data);
-        //     setChatRooms(data);
-        // } catch (error) {
-        //     console.error('Error fetching chat rooms:', error);
-        // }
+        try {
+            const data = await api.get(`/chat/${roomId}`, {
+                headers: {
+                    Authorization: cookies.token,
+                },
+            });
+            setNowMemberCnt(data);
+        } catch (error) {
+            console.error('Error fetching chat rooms:', error);
+        }
     };
 
     useEffect(() => {
@@ -49,7 +50,7 @@ const ChatRoom = ({ roomId, title, leaderNickname, memberCnt }) => {
                                 </Grid>
                                 <Grid xs={6}>
                                     <Typography sx={{ fontSize: 20, color: 'black', textAlign: 'right', mr: 2 }}>
-                                        {memberCnt}
+                                        {nowMemberCnt} / {memberCnt}
                                     </Typography>
                                 </Grid>
                             </Grid>
