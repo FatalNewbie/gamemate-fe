@@ -7,9 +7,11 @@ import GameList from './pages/GameList/GameList';
 import GameMate from './pages/GameMate/GameMate';
 import Chat from './pages/Chat/Chat';
 import MyPage from './pages/MyPage/MyPage';
+import Recommend from './pages/Recommend/Recommend';
+import FriendRequests from './pages/Friend/FriendRequests';
+import FriendsList from './pages/Friend/FriendList';
 import Join from './pages/Auth/Join';
 import Login from './pages/Auth/Login';
-import Recommend from './pages/Recommend/Recommend';
 
 const App = () => {
     return (
@@ -77,6 +79,22 @@ const App = () => {
                     element={
                         <MainLayout headerTitle="마이페이지" showSearchIcon={false}>
                             <MyPage />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/friend-req"
+                    element={
+                        <MainLayout headerTitle="친구 요청" showSearchIcon={false}>
+                            <FriendRequests />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/friends"
+                    element={
+                        <MainLayout headerTitle="친구 목록" showSearchIcon={false}>
+                            <FriendsList />
                         </MainLayout>
                     }
                 />

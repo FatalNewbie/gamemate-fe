@@ -11,7 +11,7 @@ axios.defaults.timeout = 5000; //백엔트 서버에 요청하고 응답을 기�
 
 // 2) axios instance
 export const api = axios.create();
-export const api2 = axios.create({ baseURL: 'http://localhost:8081' });
+export const api2 = axios.create({ baseURL: 'http://localhost:8000' });
 
 // 3) interceptor
 // Client ------[Interceptor]------> Server
