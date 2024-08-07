@@ -18,8 +18,8 @@ const Header = ({ title, showSearchIcon = true, onSearchClick, setActivePage }) 
 
     const handleMyPageClick = () => {
         setActivePage('/mypage'); // 푸터의 activePage 상태 업데이트
-        handleMenuClose();
         navigate('/mypage');
+        handleMenuClose();
     };
 
     return (

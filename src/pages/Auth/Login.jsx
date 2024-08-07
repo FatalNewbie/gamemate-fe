@@ -34,9 +34,6 @@ const Login = ({ login }) => {
             // 토큰을 응답 헤더에서 가져오기
             const token = response.headers['authorization'];
 
-//             // AuthContext의 login 함수 호출
-//             login(token); // 여기를 활성화하여 로그인 상태 관리
-
             // 쿠키에 토큰 저장
             setCookie('token', token);
 
