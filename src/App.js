@@ -7,6 +7,8 @@ import GameList from './pages/GameList/GameList';
 import GameMate from './pages/GameMate/GameMate';
 import Chat from './pages/Chat/Chat';
 import MyPage from './pages/MyPage/MyPage';
+import Join from './pages/Auth/Join';
+import Login from './pages/Auth/Login';
 import Recommend from './pages/Recommend/Recommend';
 
 const App = () => {
@@ -14,6 +16,22 @@ const App = () => {
         <Router>
             <Routes>
                 <Route path="/" element={<Navigate to="/home" replace />} />
+                <Route
+                    path="/join"
+                    element={
+                        <MainLayout headerTitle="게임메이트">
+                            <Join />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/login"
+                    element={
+                        <MainLayout headerTitle="게임메이트">
+                            <Login />
+                        </MainLayout>
+                    }
+                />
                 <Route
                     path="/home"
                     element={
