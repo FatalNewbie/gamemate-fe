@@ -1,32 +1,27 @@
 import '../GameMate/GameMate.css';
 import React, { useEffect, useState } from 'react';
-import PostListCard from '../../components/GameMate/PostListCard';
-import '../../components/GameMate/PostListCard.css';
+import InfiniteScroll from './InfiniteScroll';
 
 const GameMate = () => {
-    // 더미 데이터
-    const [genres, setGenres] = useState(['즐겜러', '사교형', '보드게임']); // 초기 장르 데이터
+    const [status, setStatus] = useState('on'); // 기본 상태는 'on'
 
     return (
         <div className="container">
             <div className="onoff-choice">
-                <button class="online">온라인</button>
-                <button class="offline">오프라인</button>
+                <button
+                    onClick={() => setStatus('on')}
+                    className={`online-posts ${status === 'on' ? 'active' : ''}`} // 활성화된 상태에 따라 클래스 추가
+                >
+                    온라인
+                </button>
+                <button
+                    onClick={() => setStatus('off')}
+                    className={`offline-posts ${status === 'off' ? 'active' : ''}`} // 활성화된 상태에 따라 클래스 추가
+                >
+                    오프라인
+                </button>
             </div>
-            <PostListCard
-                title="제로월드 방탈출: 콜러"
-                location="서울 강남구"
-                genres={genres}
-                icon="😎즐겜유저"
-                participants="2 / 4"
-            />
-            <PostListCard
-                title="제로월드 방탈출: 콜러"
-                location="서울 강남구"
-                genres={genres}
-                icon="😎즐겜유저"
-                participants="2 / 4"
-            />
+            <InfiniteScroll status={status} />
         </div>
     );
 };

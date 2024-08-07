@@ -46,9 +46,12 @@
 }
 
 .icon {
-    font-size: 15px;
     margin-right: 5px;
     margin-left: 10px;
+}
+
+.nickname {
+    padding-right: 200px;
 }
 
 .participants {
