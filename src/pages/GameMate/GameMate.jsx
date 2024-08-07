@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import InfiniteScroll from './InfiniteScroll';
 
 const GameMate = () => {
-    const [status, setStatus] = useState('on'); // 기본 상태는 'on'
+    const [status, setStatus] = useState('on'); // 기본 상태를 'on'으로 설정
+    const apiUrl = status === 'on' ? '/posts' : '/posts';
 
     return (
         <div className="container">
@@ -21,7 +22,7 @@ const GameMate = () => {
                     오프라인
                 </button>
             </div>
-            <InfiniteScroll status={status} />
+            <InfiniteScroll status={status} apiUrl={apiUrl} />
         </div>
     );
 };

@@ -3,19 +3,20 @@ import axios from 'axios';
 import PostListCard from '../../components/GameMate/PostListCard';
 import '../../components/GameMate/PostListCard.css';
 import { useNavigate } from 'react-router-dom';
+import userEvent from '@testing-library/user-event';
 
-const InfiniteScroll = ({ status }) => {
+const InfiniteScroll = ({ status, apiUrl }) => {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0); // 총 페이지 수 상태 추가
-    const size = 6; // 한 번에 가져올 데이터의 수
+    const size = 7; // 한 번에 가져올 데이터의 수
     const navigate = useNavigate();
     const observer = useRef();
 
     const loadMorePosts = async () => {
         if (loading || page > totalPages) {
-            // 상태가 변경될 때 posts와 페이지를 초기화
+            console.log(totalPages);
             return;
         }
 
@@ -33,24 +34,22 @@ const InfiniteScroll = ({ status }) => {
         }
     };
 
-    useEffect(() => {
-        // 상태가 변경될 때 posts와 페이지를 초기화
-        setPosts([]);
-        setPage(0);
-        setTotalPages(0);
-        loadMorePosts();
-        console.log('status ' + status);
-    }, [status]); // status가 변경될 때마다 데이터를 다시 로드
-
     const handlePostClick = (id) => {
         navigate(`/gamemate/posts/${id}`);
     };
 
     useEffect(() => {
+        loadMorePosts();
+        setPosts([]);
+        setPage(0);
+        setTotalPages(0);
+    }, [status]);
+
+    useEffect(() => {
         const options = {
             root: null,
             rootMargin: '0px',
-            threshold: 1,
+            threshold: 0.5,
         };
 
         const callback = (entries) => {
@@ -59,6 +58,7 @@ const InfiniteScroll = ({ status }) => {
             }
         };
 
+        // 새로운 옵저버 생성
         observer.current = new IntersectionObserver(callback, options);
         const currentObserver = observer.current;
 
@@ -75,12 +75,12 @@ const InfiniteScroll = ({ status }) => {
                 currentObserver.unobserve(target);
             }
         };
-    }, [loading]);
+    }, [loading, page, totalPages]);
 
     return (
         <div>
             {posts.map((post, index) => (
-                <div key={post.id} onClick={() => handlePostClick(post.id)}>
+                <div key={index} onClick={() => handlePostClick(post.id)}>
                     <PostListCard {...post} />
                 </div>
             ))}

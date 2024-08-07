@@ -9,11 +9,9 @@ import { CookiesProvider } from 'react-cookie';
 // ReactDOM.createRoot 사용
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-	<React.StrictMode>
-		<CookiesProvider> {/* 쿠키 provider */}
-			<App />
-		</CookiesProvider> {/* 쿠키 provider */}
-	</React.StrictMode>
+    <CookiesProvider>
+        <App />
+    </CookiesProvider>
 );
 
 // JavaScript로 실제 vh를 계산하여 CSS 변수에 설정
