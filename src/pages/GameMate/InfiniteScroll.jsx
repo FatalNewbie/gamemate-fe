@@ -30,11 +30,11 @@ const InfiniteScroll = ({ status, apiUrl }) => {
         }
     };
 
+    //status에 따라서 post, page hasmore 초기화
     useEffect(() => {
-        // status가 변경될 때 posts와 page 초기화
         setPosts([]);
         setPage(0);
-        setHasMore(true); // hasMore 초기화
+        setHasMore(true);
 
         // 새로운 status에 따라 첫 페이지 데이터 가져오기
         fetchGames(0);

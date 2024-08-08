@@ -7,6 +7,7 @@ import GameList from './pages/GameList/GameList';
 import GameMate from './pages/GameMate/GameMate';
 import GameMatePost from './pages/GameMate/GameMatePost';
 import GameMateNew from './pages/GameMate/GameMateNew';
+import KakaoSearch from './pages/GameMate/KakaoSearch';
 import InfiniteScroll from './pages/GameMate/InfiniteScroll';
 import Chat from './pages/Chat/Chat';
 import MyPage from './pages/MyPage/MyPage';
@@ -89,8 +90,8 @@ const App = () => {
                 <Route
                     path="/gamemate/test"
                     element={
-                        <MainLayout headerTitle="무한스크롤 테스트">
-                            <InfiniteScroll />
+                        <MainLayout headerTitle="카카오 검색 테스트">
+                            <KakaoSearch />
                         </MainLayout>
                     }
                 />
