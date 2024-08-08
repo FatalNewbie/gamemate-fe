@@ -106,6 +106,10 @@
     padding-left: 15px;
 }
 
+.recomment-nickname {
+    padding-top: 10px;
+}
+
 .comment-input-header {
     display: flex;
     width: 100%;

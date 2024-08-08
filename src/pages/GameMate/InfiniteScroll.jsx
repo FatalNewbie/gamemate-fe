@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import axios from 'axios';
 import PostListCard from '../../components/GameMate/PostListCard';
 import '../../components/GameMate/PostListCard.css';
 import { useNavigate } from 'react-router-dom';
-import userEvent from '@testing-library/user-event';
+import { api } from '../../apis/customAxios';
 
 const InfiniteScroll = ({ status, apiUrl }) => {
     const [posts, setPosts] = useState([]);
@@ -19,10 +18,10 @@ const InfiniteScroll = ({ status, apiUrl }) => {
     const fetchGames = async (pageNumber) => {
         try {
             setLoading(true);
-            const response = await axios.get(`${apiUrl}?page=${pageNumber}&size=${size}&status=${status}`);
-            const newPosts = response.data.data.content; // "content" 배열을 가져옵니다.
+            const response = await api.get(`${apiUrl}?page=${pageNumber}&size=${size}&status=${status}`);
+            const newPosts = response.data.content; // "content" 배열을 가져옵니다.
             setPosts((prev) => [...prev, ...newPosts]);
-            setHasMore(!response.data.data.last);
+            setHasMore(!response.data.last);
         } catch (error) {
             console.error('Error fetching posts:', error);
             setError(error);
