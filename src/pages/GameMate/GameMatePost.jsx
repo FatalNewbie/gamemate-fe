@@ -4,11 +4,14 @@ import '../GameMate/GameMatePost.css';
 import KakaoMap from './KakaoMap';
 import { api } from '../../apis/customAxios';
 import { useCookies } from 'react-cookie';
+import { jwtDecode } from 'jwt-decode';
 
 const { kakao } = window;
 
 const GameMate = () => {
     const [cookies] = useCookies(['token']);
+
+    const { username } = jwtDecode(cookies.token);
 
     const { id } = useParams();
     const [post, setPost] = useState(null);
@@ -97,7 +100,7 @@ const GameMate = () => {
     }
 
     return (
-        <div className="container">
+        <div className="gamemate-post-container">
             <div className="post-card">
                 <h2 className="game-title">{post.gameTitle}</h2>
                 {/* 2행 2열로 배치할 부분 */}
@@ -125,9 +128,12 @@ const GameMate = () => {
                     <KakaoMap post={post} /> {/* KakaoMap 컴포넌트 사용 */}
                 </div>
 
+                <div className="apply-button-box">
+                    <button className="apply-button">메이트 신청하기</button>
+                </div>
                 <h3 className="comment-cnt">댓글 {post.commentCnt}</h3>
 
-                {comments.content.length === 0 ? (
+                {comments && comments.content.length === 0 ? (
                     <div className="no-comments-message">댓글이 없습니다.</div>
                 ) : (
                     comments.content.map((comment, index) => (
@@ -144,6 +150,24 @@ const GameMate = () => {
                                 </div>
                                 <div className="recomment-button" onClick={() => handleReplyClick(comment.id)}>
                                     답글
+                                </div>
+                                <div className="options">
+                                    <button className="dots-icon" aria-haspopup="true" aria-expanded="false">
+                                        <span className="dot"></span>
+                                        <span className="dot"></span>
+                                        <span className="dot"></span>
+                                    </button>
+
+                                    <div className="options-menu">
+                                        {username === comment.username ? (
+                                            <>
+                                                <button className="edit-button">수정</button>
+                                                <button className="delete-button">삭제</button>
+                                            </>
+                                        ) : (
+                                            <button className="report-button">신고</button>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                             {replyToCommentId === comment.id && (
@@ -182,22 +206,18 @@ const GameMate = () => {
                         </div>
                     ))
                 )}
-
-                <div className="comment-input-header">
-                    <input
-                        type="text"
-                        placeholder="댓글을 작성하세요."
-                        value={comment}
-                        onChange={handleCommentChange}
-                        className="comment-input"
-                    />
-                    <button onClick={handleCommentSubmit} className="comment-submit-button">
-                        <strong>등록</strong>
-                    </button>
-                </div>
-                <div className="apply-button-box">
-                    <button className="apply-button">메이트 신청하기</button>
-                </div>
+            </div>
+            <div className="comment-input-header">
+                <input
+                    type="text"
+                    placeholder="댓글을 작성하세요."
+                    value={comment}
+                    onChange={handleCommentChange}
+                    className="comment-input"
+                />
+                <button onClick={handleCommentSubmit} className="comment-submit-button">
+                    <strong>등록</strong>
+                </button>
             </div>
         </div>
     );
