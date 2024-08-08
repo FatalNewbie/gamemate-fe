@@ -14,6 +14,7 @@ import {
     ListItemText,
     ListItemAvatar,
     Avatar,
+    CircularProgress,
 } from '@mui/material';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 import profilePlaceholder from '../../assets/profile_placeholder.png';
@@ -28,6 +29,8 @@ const Home = () => {
     const [open, setOpen] = useState(false);
     const [gameNews, setGameNews] = useState([]);
     const [popularGames, setPopularGames] = useState([]);
+    const [loadingNews, setLoadingNews] = useState(false);
+    const [loadingGames, setLoadingGames] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const [cookies] = useCookies(['token']);
 
@@ -41,6 +44,56 @@ const Home = () => {
             featureArray[id - 1] = 1;
         });
         return featureArray;
+    };
+
+    const fetchGameNews = async () => {
+        setLoadingNews(true);
+        try {
+            const response = await axios.get('https://api.rawg.io/api/games', {
+                params: {
+                    key: '8b526997b9d046b6b4fd9fe6d865dd06',
+                    dates: '2021-01-01,2021-12-31',
+                    ordering: '-added',
+                    page_size: 5,
+                },
+            });
+            setGameNews(
+                response.data.results.map((game) => ({
+                    title: game.name,
+                    content: game.released,
+                    image: game.background_image,
+                    description: game.description_raw,
+                }))
+            );
+        } catch (error) {
+            console.error('Error fetching game news:', error);
+        } finally {
+            setLoadingNews(false);
+        }
+    };
+
+    const fetchPopularGames = async () => {
+        setLoadingGames(true);
+        try {
+            const response = await axios.get('https://api.rawg.io/api/games', {
+                params: {
+                    key: '8b526997b9d046b6b4fd9fe6d865dd06',
+                    ordering: '-rating',
+                    page_size: 5,
+                },
+            });
+            setPopularGames(
+                response.data.results.map((game, index) => ({
+                    title: game.name,
+                    image: game.background_image,
+                    rank: index + 1,
+                }))
+            );
+        } catch (error) {
+            console.error('Error fetching popular games:', error);
+        } finally {
+            setLoadingGames(false);
+        }
     };
 
     useEffect(() => {
@@ -58,7 +111,7 @@ const Home = () => {
                     },
                 });
 
-                const user = response.data;
+                const user = response.data.data;
                 const userFeatures = {
                     preferred_genres: convertToFeatureArray(user.preferredGenres, genresList),
                     play_times: convertToFeatureArray(user.playTimes, timesList),
@@ -66,7 +119,12 @@ const Home = () => {
 
                 const response2 = await axios.post(
                     'http://127.0.0.1:8000/recommendation',
-                    userFeatures
+                    userFeatures,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
                 );
 
                 setUsers(response2.data.similar_users);
@@ -80,52 +138,6 @@ const Home = () => {
     }, [cookies.token]);
 
     useEffect(() => {
-        const fetchGameNews = async () => {
-            try {
-                const response = await axios.get('https://api.rawg.io/api/games', {
-                    params: {
-                        key: '8b526997b9d046b6b4fd9fe6d865dd06',
-                        dates: '2021-01-01,2021-12-31',
-                        ordering: '-added',
-                        page_size: 5,
-                    },
-                });
-                setGameNews(
-                    response.data.results.map((game) => ({
-                        title: game.name,
-                        content: game.released,
-                        image: game.background_image,
-                        description: game.description_raw,
-                    }))
-                );
-            } catch (error) {
-                console.error('Error fetching game news:', error);
-                setGameNews([]);
-            }
-        };
-
-        const fetchPopularGames = async () => {
-            try {
-                const response = await axios.get('https://api.rawg.io/api/games', {
-                    params: {
-                        key: '8b526997b9d046b6b4fd9fe6d865dd06',
-                        ordering: '-rating',
-                        page_size: 5,
-                    },
-                });
-                setPopularGames(
-                    response.data.results.map((game, index) => ({
-                        title: game.name,
-                        image: game.background_image,
-                        rank: index + 1,
-                    }))
-                );
-            } catch (error) {
-                console.error('Error fetching popular games:', error);
-                setPopularGames([]);
-            }
-        };
-
         fetchGameNews();
         fetchPopularGames();
     }, []);
@@ -340,22 +352,26 @@ const Home = () => {
                 >
                     🔥 스팀 인기 게임
                 </Typography>
-                <List>
-                    {popularGames.map((game, index) => (
-                        <ListItem key={index} component={Paper} sx={{ mb: 2 }}>
-                            <ListItemAvatar>
-                                <Avatar src={game.image} />
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary={
-                                    <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
-                                        {`${game.rank}. ${game.title}`}
-                                    </Typography>
-                                }
-                            />
-                        </ListItem>
-                    ))}
-                </List>
+                {loadingGames ? (
+                    <CircularProgress />
+                ) : (
+                    <List>
+                        {popularGames.map((game, index) => (
+                            <ListItem key={index} component={Paper} sx={{ mb: 2 }}>
+                                <ListItemAvatar>
+                                    <Avatar src={game.image} />
+                                </ListItemAvatar>
+                                <ListItemText
+                                    primary={
+                                        <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
+                                            {`${game.rank}. ${game.title}`}
+                                        </Typography>
+                                    }
+                                />
+                            </ListItem>
+                        ))}
+                    </List>
+                )}
             </Box>
 
             <Divider sx={{ backgroundColor: 'rgba(128, 128, 128, 0.3)', width: '100%', mb: 2 }} />
@@ -374,27 +390,31 @@ const Home = () => {
                 >
                     📰 업데이트된 스팀 게임
                 </Typography>
-                <List>
-                    {gameNews.map((news, index) => (
-                        <ListItem key={index} component={Paper} sx={{ mb: 2 }}>
-                            <ListItemAvatar>
-                                <Avatar src={news.image} />
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary={
-                                    <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
-                                        {news.title}
-                                    </Typography>
-                                }
-                                secondary={
-                                    <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.75rem' }}>
-                                        {news.content}
-                                    </Typography>
-                                }
-                            />
-                        </ListItem>
-                    ))}
-                </List>
+                {loadingNews ? (
+                    <CircularProgress />
+                ) : (
+                    <List>
+                        {gameNews.map((news, index) => (
+                            <ListItem key={index} component={Paper} sx={{ mb: 2 }}>
+                                <ListItemAvatar>
+                                    <Avatar src={news.image} />
+                                </ListItemAvatar>
+                                <ListItemText
+                                    primary={
+                                        <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
+                                            {news.title}
+                                        </Typography>
+                                    }
+                                    secondary={
+                                        <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.75rem' }}>
+                                            {news.content}
+                                        </Typography>
+                                    }
+                                />
+                            </ListItem>
+                        ))}
+                    </List>
+                )}
             </Box>
 
             <Modal

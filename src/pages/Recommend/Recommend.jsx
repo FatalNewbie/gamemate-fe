@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Box, Typography, Paper, Chip, Divider, Grid, IconButton, Button, Modal } from '@mui/material';
-import { ChatBubbleOutline, PersonAdd, ArrowBack } from '@mui/icons-material';
+import { ChatBubbleOutline, PersonAdd, PersonAddDisabled, ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import profilePlaceholder from '../../assets/profile_placeholder.png';
 import './Recommend.css';
@@ -11,55 +11,55 @@ const Recommend = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [friendModalOpen, setFriendModalOpen] = useState(false);
-  const navigate = useNavigate();
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [cookies] = useCookies(['token']);
+  const navigate = useNavigate();
 
   const genresList = ['FPS', 'RPG', '전략', '액션', '시뮬레이션'];
-  const timesList = ['AM 9:00 ~ AM 11:00', 'AM 11:00 ~ PM 2:00', 'PM 2:00 ~ PM 5:00', 'PM 5:00 ~ PM 8:00',
-                    'PM 8:00 ~ PM 11:00', 'PM 11:00 ~ AM 3:00', 'AM 3:00 ~ AM 9:00'];
+  const timesList = ['AM 9:00 ~ AM 11:00', 'AM 11:00 ~ PM 2:00', 'PM 2:00 ~ PM 5:00', 'PM 5:00 ~ PM 8:00', 'PM 8:00 ~ PM 11:00', 'PM 11:00 ~ AM 3:00', 'AM 3:00 ~ AM 9:00'];
 
   const convertToFeatureArray = (data, referenceList) => {
-      const featureArray = new Array(referenceList.length).fill(0);
-      data.forEach(id => {
-          featureArray[id - 1] = 1;
-      });
-      return featureArray;
+    const featureArray = new Array(referenceList.length).fill(0);
+    data.forEach(id => {
+      featureArray[id - 1] = 1;
+    });
+    return featureArray;
   };
 
   useEffect(() => {
-      const fetchUserInfo = async () => {
-          try {
-              const token = cookies.token;
+    const fetchUserInfo = async () => {
+      try {
+        const token = cookies.token;
 
-              if (!token) {
-                  throw new Error('No token found');
-              }
+        if (!token) {
+          throw new Error('No token found');
+        }
 
-              const response = await axios.get('http://localhost:8080/info', {
-                  headers: {
-                      Authorization: `${token}`,
-                  },
-              });
+        const response = await axios.get('http://localhost:8080/info', {
+          headers: {
+            Authorization: `${token}`,
+          },
+        });
 
-              const user = response.data;
-              const userFeatures = {
-                  preferred_genres: convertToFeatureArray(user.preferredGenres, genresList),
-                  play_times: convertToFeatureArray(user.playTimes, timesList),
-              };
+        const user = response.data.data;
+        const userFeatures = {
+          preferred_genres: convertToFeatureArray(user.preferredGenres, genresList),
+          play_times: convertToFeatureArray(user.playTimes, timesList),
+        };
 
-              const response2 = await axios.post(
-                  'http://127.0.0.1:8000/recommendation',
-                  userFeatures
-              );
+        const response2 = await axios.post(
+          'http://127.0.0.1:8000/recommendation',
+          userFeatures
+        );
 
-              setUsers(response2.data.similar_users);
-          } catch (error) {
-              console.error('Error fetching user info or recommendations:', error);
-              setUsers([]);
-          }
-      };
+        setUsers(response2.data.similar_users);
+      } catch (error) {
+        console.error('Error fetching user info or recommendations:', error);
+        setUsers([]);
+      }
+    };
 
-      fetchUserInfo();
+    fetchUserInfo();
   }, [cookies.token]);
 
   const handleFriendModalOpen = (user) => {
@@ -71,21 +71,57 @@ const Recommend = () => {
     setFriendModalOpen(false);
   };
 
-  const handleFriendRequest = async () => {
-    // 친구 요청을 보내는 로직
-    try {
-      const requesterId = 1; // 현재 로그인된 유저 ID를 설정해야 합니다.
-      const receiverId = selectedUser.id; // 선택된 유저의 ID를 설정해야 합니다.
+  const handleCancelModalOpen = (user) => {
+    setSelectedUser(user);
+    setCancelModalOpen(true);
+  };
 
+  const handleCancelModalClose = () => {
+    setCancelModalOpen(false);
+  };
+
+  const handleFriendRequest = async () => {
+    try {
+      const token = cookies.token;
       await axios.post('http://localhost:8080/friend/', {
-        requesterId: requesterId,
-        receiverId: receiverId
+        receiverId: selectedUser.id,
+      }, {
+        headers: {
+          Authorization: `${token}`,
+        },
       });
 
-      console.log(`Sending friend request to ${selectedUser.recommend_user}`);
+      const updatedUsers = users.map(user =>
+        user.id === selectedUser.id ? { ...user, requested: true } : user
+      );
+
+      setUsers(updatedUsers);
       setFriendModalOpen(false);
     } catch (error) {
       console.error('Error sending friend request:', error);
+    }
+  };
+
+  const handleFriendRequestCancel = async () => {
+    try {
+      const token = cookies.token;
+      await axios.put('http://localhost:8080/friend/', {
+        receiverId: selectedUser.id,
+        status: 'DECLINED',
+      }, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+
+      const updatedUsers = users.map(user =>
+        user.id === selectedUser.id ? { ...user, requested: false } : user
+      );
+
+      setUsers(updatedUsers);
+      setCancelModalOpen(false);
+    } catch (error) {
+      console.error('Error cancelling friend request:', error);
     }
   };
 
@@ -109,7 +145,7 @@ const Recommend = () => {
           letterSpacing: '-0.5px',
           marginBottom: '20px',
         }}>
-         🕹️ 오늘의 추천 게임메이트
+        🕹️ 오늘의 추천 게임메이트
       </Typography>
       
       {users.map((user, index) => (
@@ -122,11 +158,11 @@ const Recommend = () => {
               <Box display={"flex"} justifyContent={"space-between"} alignContent={"center"} marginBottom={"7px"}>
                 <Typography variant="h6"
                   sx={{
-                  fontFamily: 'Roboto, sans-serif',
-                  fontWeight: 800,
-                  fontSize: '12pt',
-                  letterSpacing: '-0.5px',
-                  marginTop: '5px'
+                    fontFamily: 'Roboto, sans-serif',
+                    fontWeight: 800,
+                    fontSize: '12pt',
+                    letterSpacing: '-0.5px',
+                    marginTop: '5px'
                   }} className="username">
                   {user.recommend_user}
                 </Typography>
@@ -134,8 +170,11 @@ const Recommend = () => {
                   <IconButton className="icon-button">
                     <ChatBubbleOutline sx={{ fontSize: 15 }} />
                   </IconButton>
-                  <IconButton className="icon-button" onClick={() => handleFriendModalOpen(user)}>
-                    <PersonAdd sx={{ fontSize: 15 }} />
+                  <IconButton
+                    className="icon-button"
+                    onClick={() => user.requested ? handleCancelModalOpen(user) : handleFriendModalOpen(user)}
+                  >
+                    {user.requested ? <PersonAddDisabled sx={{ fontSize: 15 }} /> : <PersonAdd sx={{ fontSize: 15 }} />}
                   </IconButton>
                 </Box>
               </Box>
@@ -172,13 +211,44 @@ const Recommend = () => {
               mb: 2,
             }}
           >
-            친구 요청을 보내시겠습니까?
+            {selectedUser?.recommend_user}님께 친구 요청을 보내시겠습니까?
           </Typography>
           <Box display="flex" justifyContent="space-around">
             <Button variant="contained" color="primary" onClick={handleFriendRequest}>
               예
             </Button>
             <Button variant="outlined" color="secondary" onClick={handleFriendModalClose}>
+              아니오
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+
+      <Modal
+        open={cancelModalOpen}
+        onClose={handleCancelModalClose}
+        aria-labelledby="cancel-request-modal"
+        aria-describedby="cancel-request-modal-description"
+      >
+        <Box className="modal-box">
+          <Typography
+            id="cancel-request-modal"
+            variant="h6"
+            sx={{
+              fontFamily: 'Roboto, sans-serif',
+              fontWeight: 700,
+              fontSize: '16pt',
+              letterSpacing: '-0.5px',
+              mb: 2,
+            }}
+          >
+            {selectedUser?.recommend_user}님께 보낸 친구 요청을 취소하시겠습니까?
+          </Typography>
+          <Box display="flex" justifyContent="space-around">
+            <Button variant="contained" color="primary" onClick={handleFriendRequestCancel}>
+              예
+            </Button>
+            <Button variant="outlined" color="secondary" onClick={handleCancelModalClose}>
               아니오
             </Button>
           </Box>
