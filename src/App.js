@@ -16,6 +16,7 @@ import FriendRequests from './pages/Friend/FriendRequests';
 import FriendsList from './pages/Friend/FriendList';
 import Join from './pages/Auth/Join';
 import Login from './pages/Auth/Login';
+import ProfileImageEdit from './pages/MyPage/ProfileImageEdit';
 import ChatRoomTest from './pages/Chat/ChatRoomTest';
 
 const App = () => {
@@ -124,6 +125,14 @@ const App = () => {
                     element={
                         <MainLayout headerTitle="마이페이지" showSearchIcon={false}>
                             <MyPage />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/edit-profile"
+                    element={
+                        <MainLayout headerTitle="프로필 이미지 수정" showSearchIcon={false}>
+                            <ProfileImageEdit />
                         </MainLayout>
                     }
                 />
