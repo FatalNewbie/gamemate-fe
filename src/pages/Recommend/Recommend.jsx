@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Typography, Paper, Chip, Divider, Grid, IconButton, Button, Modal } from '@mui/material';
+import { Box, Typography, Paper, Chip, Divider, Grid, IconButton, Button, Modal, Snackbar, Alert, } from '@mui/material';
 import { ChatBubbleOutline, PersonAdd, PersonAddDisabled, ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import profilePlaceholder from '../../assets/profile_placeholder.png';
@@ -12,6 +12,8 @@ const Recommend = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [friendModalOpen, setFriendModalOpen] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const [cookies] = useCookies(['token']);
   const navigate = useNavigate();
 
@@ -83,7 +85,7 @@ const Recommend = () => {
   const handleFriendRequest = async () => {
     try {
       const token = cookies.token;
-      await axios.post('http://localhost:8080/friend/', {
+      await axios.post('/friend/', {
         receiverId: selectedUser.id,
       }, {
         headers: {
@@ -97,6 +99,8 @@ const Recommend = () => {
 
       setUsers(updatedUsers);
       setFriendModalOpen(false);
+      setSnackbarMessage('친구 요청이 완료되었습니다.');
+      setIsSnackbarOpen(true);
     } catch (error) {
       console.error('Error sending friend request:', error);
     }
@@ -105,7 +109,7 @@ const Recommend = () => {
   const handleFriendRequestCancel = async () => {
     try {
       const token = cookies.token;
-      await axios.put('http://localhost:8080/friend/cancel', {
+      await axios.put('/friend/cancel', {
         receiverId: selectedUser.id,
         status: 'REJECTED',
       }, {
@@ -120,10 +124,16 @@ const Recommend = () => {
 
       setUsers(updatedUsers);
       setCancelModalOpen(false);
+      setSnackbarMessage('친구 요청이 취소되었습니다.');
+      setIsSnackbarOpen(true);
     } catch (error) {
       console.error('Error cancelling friend request:', error);
     }
   };
+
+  const handleSnackbarClose = () => {
+    setIsSnackbarOpen(false);
+  };  
 
   return (
     <Box className="recommend-container">
@@ -254,6 +264,29 @@ const Recommend = () => {
           </Box>
         </Box>
       </Modal>
+
+      {/* 친구 요청 완료 및 취소 알림 */}
+      <Snackbar
+          open={isSnackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+          }}
+          sx={{
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: '80%', 
+              maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+          }}
+      >
+          <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+              {snackbarMessage}
+          </Alert>
+      </Snackbar>
     </Box>
   );
 };

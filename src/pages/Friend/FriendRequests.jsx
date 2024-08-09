@@ -1,7 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
-import { Box, Typography, List, ListItem, Avatar, Button, Modal } from '@mui/material';
+import {
+    Box,
+    Typography,
+    List,
+    ListItem,
+    Avatar,
+    Button,
+    Modal,
+    Snackbar,
+    Alert,
+    Paper,
+    Chip,
+} from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,6 +23,8 @@ const FriendRequests = () => {
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
     const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
+    const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -62,6 +76,8 @@ const FriendRequests = () => {
 
             setFriendRequests(prevRequests => prevRequests.filter(request => request.requester.id !== selectedRequest.requester.id));
             setIsAcceptModalOpen(false);
+            setSnackbarMessage('친구 요청이 수락되었습니다.');
+            setIsSnackbarOpen(true);
         } catch (error) {
             console.error('친구 요청 수락 중 오류 발생:', error);
         }
@@ -81,9 +97,15 @@ const FriendRequests = () => {
 
             setFriendRequests(prevRequests => prevRequests.filter(request => request.requester.id !== selectedRequest.requester.id));
             setIsDeclineModalOpen(false);
+            setSnackbarMessage('친구 요청이 거절되었습니다.');
+            setIsSnackbarOpen(true);
         } catch (error) {
             console.error('친구 요청 거절 중 오류 발생:', error);
         }
+    };
+
+    const handleSnackbarClose = () => {
+        setIsSnackbarOpen(false);
     };
 
     return (
@@ -92,12 +114,12 @@ const FriendRequests = () => {
                 variant="contained"
                 color="primary"
                 startIcon={<ArrowBackIcon />}
-                onClick={() => navigate(-1)} // 뒤로 가기 기능
+                onClick={() => navigate(-1)}
                 sx={{
                     marginBottom: 2,
-                    backgroundColor: '#1976d2', // 원하는 색상으로 변경 가능
+                    backgroundColor: '#1976d2',
                     '&:hover': {
-                        backgroundColor: '#1565c0', // 호버 시 색상 변경
+                        backgroundColor: '#1565c0',
                     },
                     borderRadius: 2,
                     textTransform: 'none',
@@ -110,32 +132,64 @@ const FriendRequests = () => {
             </Typography>
             <List>
                 {friendRequests.map((request, index) => (
-                    <ListItem key={index} sx={{ display: 'flex', alignItems: 'center' }}>
+                    <ListItem key={index} sx={{ display: 'flex', alignItems: 'center', padding: 2, marginBottom: '10px', borderRadius: '5                                                               %'}} component={Paper} elevation={3}>
                         <Avatar sx={{ width: 50, height: 50, marginRight: 2 }}>
                             {request.requester.nickname.charAt(0).toUpperCase()}
                         </Avatar>
                         <Box sx={{ flexGrow: 1 }}>
-                            <Typography variant="h6">{request.requester.nickname}</Typography>
-                            <Typography variant="body2">{request.requester.username}</Typography>
-                            <Typography variant="body2">
-                                장르: {request.requester.preferredGenres.join(', ')}
+                            <Typography variant="h6" fontWeight={700}>
+                                {request.requester.nickname}
                             </Typography>
-                            <Typography variant="body2">
-                                플레이 시간: {request.requester.playTimes.join(', ')}
+                            <Typography variant="body2" color="textSecondary">
+                                {request.requester.username}
                             </Typography>
+                            <Box mt={1}>
+                                <Typography variant="subtitle2" fontWeight={700}>
+                                    선호 장르
+                                </Typography>
+                                <Box>
+                                    {request.requester.preferredGenres.map((genre, idx) => (
+                                        <Chip
+                                            key={idx}
+                                            label={genre}
+                                            size="small"
+                                            color="primary"
+                                            sx={{ marginRight: 0.5, marginBottom: 0.5 }}
+                                        />
+                                    ))}
+                                </Box>
+                            </Box>
+                            <Box mt={1}>
+                                <Typography variant="subtitle2" fontWeight={700}>
+                                    플레이 시간대
+                                </Typography>
+                                <Box>
+                                    {request.requester.playTimes.map((time, idx) => (
+                                        <Chip
+                                            key={idx}
+                                            label={time}
+                                            size="small"
+                                            color="primary"
+                                            sx={{ marginRight: 0.5, marginBottom: 0.5 }}
+                                        />
+                                    ))}
+                                </Box>
+                            </Box>
                         </Box>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Box display="flex" flexDirection="column" alignItems="center" gap={1}>
                             <Button
                                 variant="contained"
                                 color="primary"
                                 onClick={() => handleAcceptModalOpen(request)}
+                                sx={{ textTransform: 'none' }}
                             >
                                 수락
                             </Button>
                             <Button
                                 variant="outlined"
-                                color="secondary"
+                                color="primary"
                                 onClick={() => handleDeclineModalOpen(request)}
+                                sx={{ textTransform: 'none' }}
                             >
                                 거절
                             </Button>
@@ -167,7 +221,7 @@ const FriendRequests = () => {
                         <Button variant="contained" color="primary" onClick={handleFriendRequestAccept}>
                             예
                         </Button>
-                        <Button variant="outlined" color="secondary" onClick={handleAcceptModalClose}>
+                        <Button variant="outlined" color="primary" onClick={handleAcceptModalClose}>
                             아니오
                         </Button>
                     </Box>
@@ -203,6 +257,29 @@ const FriendRequests = () => {
                     </Box>
                 </Box>
             </Modal>
+
+            {/* 친구 요청 수락 및 거절 완료 알림 */}
+            <Snackbar
+                open={isSnackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                sx={{
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    width: '80%', 
+                    maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                }}
+            >
+                <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 };

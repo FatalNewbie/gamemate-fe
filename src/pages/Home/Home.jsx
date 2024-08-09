@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-// import { api, api2 } from '../../apis/customAxios';
+import { api2 } from '../../apis/customAxios';
 import { useCookies } from 'react-cookie';
 import {
     Box,
@@ -16,6 +16,8 @@ import {
     ListItemAvatar,
     Avatar,
     CircularProgress,
+    Snackbar,
+    Alert,
 } from '@mui/material';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 import profilePlaceholder from '../../assets/profile_placeholder.png';
@@ -34,6 +36,8 @@ const Home = () => {
     const [loadingNews, setLoadingNews] = useState(false);
     const [loadingGames, setLoadingGames] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
     const [cookies] = useCookies(['token']);
 
     
@@ -110,7 +114,7 @@ const Home = () => {
                     throw new Error('No token found');
                 }
 
-                const response = await axios.get('http://localhost:8080/info', {
+                const response = await axios.get('/info', {
                     headers: {
                         Authorization: `${token}`,
                     },
@@ -123,8 +127,8 @@ const Home = () => {
                     play_times: convertToFeatureArray(user.playTimes, timesList),
                 };
 
-                const response2 = await axios.post(
-                    'http://localhost:8000/recommendation',
+                const response2 = await api2.post(
+                    '/recommendation',
                     userFeatures,
                     {
                         headers: {
@@ -134,6 +138,7 @@ const Home = () => {
                 );
 
                 setUsers(response2.data.similar_users);
+                
             } catch (error) {
                 console.error('Error fetching user info or recommendations:', error);
                 setUsers([]);
@@ -147,6 +152,30 @@ const Home = () => {
         fetchGameNews();
         fetchPopularGames();
     }, []);
+
+    const handleFriendRequest = async () => {
+        try {
+          const token = cookies.token;
+          await axios.post('/friend/', {
+            receiverId: selectedUser.id,
+          }, {
+            headers: {
+              Authorization: `${token}`,
+            },
+          });
+    
+          const updatedUsers = users.map(user =>
+            user.id === selectedUser.id ? { ...user, requested: true } : user
+          );
+    
+          setUsers(updatedUsers);
+          setOpen(false);
+          setSnackbarMessage('친구 요청이 완료되었습니다.');
+          setIsSnackbarOpen(true);
+        } catch (error) {
+          console.error('Error sending friend request:', error);
+        }
+      };
 
     const handlePrev = () => {
         setCurrentIndex((prevIndex) => (prevIndex === 0 ? users.length - 1 : prevIndex - 1));
@@ -182,6 +211,10 @@ const Home = () => {
         slidesToScroll: 1,
         autoplay: true,
         autoplaySpeed: 3000,
+    };
+
+    const handleSnackbarClose = () => {
+        setIsSnackbarOpen(false);
     };
 
     return (
@@ -526,8 +559,8 @@ const Home = () => {
                                 ))}
                             </Box>
                             <Box mt={2}>
-                                <Button variant="outlined" onClick={() => alert('프로필 보기')}>
-                                    프로필 보기
+                                <Button variant="outlined" onClick={handleFriendRequest}>
+                                    친구 요청
                                 </Button>
                                 <Button variant="contained" onClick={handleClose} style={{ marginLeft: '8px' }}>
                                     닫기
@@ -537,6 +570,29 @@ const Home = () => {
                     )}
                 </Box>
             </Modal>
+
+            {/* 친구 요청 완료 알림 */}
+            <Snackbar
+                open={isSnackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                sx={{
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    width: '80%', 
+                    maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                }}
+            >
+                <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 };
