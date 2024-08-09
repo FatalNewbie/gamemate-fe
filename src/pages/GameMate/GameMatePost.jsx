@@ -4,14 +4,19 @@ import '../GameMate/GameMatePost.css';
 import KakaoMap from './KakaoMap';
 import { api } from '../../apis/customAxios';
 import { useCookies } from 'react-cookie';
+import { jwtDecode } from 'jwt-decode';
 
 const { kakao } = window;
 
 const GameMate = () => {
     const [cookies] = useCookies(['token']);
 
+    const { username } = jwtDecode(cookies.token);
+
     const { id } = useParams();
     const [post, setPost] = useState(null);
+    const [comments, setComments] = useState(null);
+
     const [comment, setComment] = useState('');
     const [recomment, setRecomment] = useState('');
     const [replyToCommentId, setReplyToCommentId] = useState(null); // 대댓글을 달 댓글 ID
@@ -23,6 +28,7 @@ const GameMate = () => {
 
     useEffect(() => {
         showPost();
+        showComments();
     }, []);
 
     const showPost = async () => {
@@ -33,6 +39,16 @@ const GameMate = () => {
         });
         console.log(response);
         setPost(response.data);
+    };
+
+    const showComments = async () => {
+        const response = await api.get(`/post/${id}/comment?page=0&size=10`, {
+            headers: {
+                Authorization: cookies.token,
+            },
+        });
+        console.log(response.data);
+        setComments(response.data);
     };
 
     const handleCommentChange = (e) => {
@@ -79,12 +95,12 @@ const GameMate = () => {
         window.location.reload(); // 페이지 새로고침
     };
 
-    if (!post) {
+    if (!post || !comments) {
         return <div>로딩 중...</div>; // post가 없을 때 로딩 메시지 출력
     }
 
     return (
-        <div className="container">
+        <div className="gamemate-post-container">
             <div className="post-card">
                 <h2 className="game-title">{post.gameTitle}</h2>
                 {/* 2행 2열로 배치할 부분 */}
@@ -112,74 +128,96 @@ const GameMate = () => {
                     <KakaoMap post={post} /> {/* KakaoMap 컴포넌트 사용 */}
                 </div>
 
-                <h3 className="comment-cnt">댓글 {post.commentCnt}</h3>
-                {post.postComments.map((comment, index) => (
-                    <div key={comment.id} className="comment-box">
-                        <div className="comment-mid-box">
-                            <div>
-                                <div className="comment-header">
-                                    <i className="fas fa-user"></i>
-                                    <span className="nickname">
-                                        <strong>{comment.nickname}</strong>
-                                    </span>
-                                </div>
-                                <div className="comment-content">{comment.content}</div>
-                            </div>
-                            <div className="recomment-button" onClick={() => handleReplyClick(comment.id)}>
-                                답글
-                            </div>
-                        </div>
-                        {replyToCommentId === comment.id && (
-                            <div className="recomment-input-header">
-                                <input
-                                    type="text"
-                                    placeholder="댓글을 작성하세요."
-                                    value={recomment}
-                                    onChange={handleRecommentChange}
-                                    className="comment-input"
-                                />
-                                <button
-                                    onClick={() => handleRecommentSubmit(comment.id)}
-                                    className="comment-submit-button"
-                                >
-                                    <strong>등록</strong>
-                                </button>
-                            </div>
-                        )}
-
-                        {comment.recomments.length > 0 && (
-                            <div className="recomment-box">
-                                {comment.recomments.map((recomment) => (
-                                    <p key={recomment.id}>
-                                        <div class="recomment-header">
-                                            <i class="fas fa-user"></i>
-                                            <span class="nickname">
-                                                <strong>{recomment.nickname}</strong>
-                                            </span>
-                                        </div>
-                                        <div class="recomment-content">{recomment.content}</div>
-                                    </p>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                ))}
-
-                <div className="comment-input-header">
-                    <input
-                        type="text"
-                        placeholder="댓글을 작성하세요."
-                        value={comment}
-                        onChange={handleCommentChange}
-                        className="comment-input"
-                    />
-                    <button onClick={handleCommentSubmit} className="comment-submit-button">
-                        <strong>등록</strong>
-                    </button>
-                </div>
                 <div className="apply-button-box">
                     <button className="apply-button">메이트 신청하기</button>
                 </div>
+                <h3 className="comment-cnt">댓글 {post.commentCnt}</h3>
+
+                {comments && comments.content.length === 0 ? (
+                    <div className="no-comments-message">댓글이 없습니다.</div>
+                ) : (
+                    comments.content.map((comment, index) => (
+                        <div key={comment.id} className="comment-box">
+                            <div className="comment-mid-box">
+                                <div>
+                                    <div className="comment-header">
+                                        <i className="fas fa-user"></i>
+                                        <span className="nickname">
+                                            <strong>{comment.nickname}</strong>
+                                        </span>
+                                    </div>
+                                    <div className="comment-content">{comment.content}</div>
+                                </div>
+                                <div className="recomment-button" onClick={() => handleReplyClick(comment.id)}>
+                                    답글
+                                </div>
+                                <div className="options">
+                                    <button className="dots-icon" aria-haspopup="true" aria-expanded="false">
+                                        <span className="dot"></span>
+                                        <span className="dot"></span>
+                                        <span className="dot"></span>
+                                    </button>
+
+                                    <div className="options-menu">
+                                        {username === comment.username ? (
+                                            <>
+                                                <button className="edit-button">수정</button>
+                                                <button className="delete-button">삭제</button>
+                                            </>
+                                        ) : (
+                                            <button className="report-button">신고</button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                            {replyToCommentId === comment.id && (
+                                <div className="recomment-input-header">
+                                    <input
+                                        type="text"
+                                        placeholder="댓글을 작성하세요."
+                                        value={recomment}
+                                        onChange={handleRecommentChange}
+                                        className="comment-input"
+                                    />
+                                    <button
+                                        onClick={() => handleRecommentSubmit(comment.id)}
+                                        className="comment-submit-button"
+                                    >
+                                        <strong>등록</strong>
+                                    </button>
+                                </div>
+                            )}
+
+                            {comment.recomments.length > 0 && (
+                                <div className="recomment-box">
+                                    {comment.recomments.map((recomment) => (
+                                        <div className="recomment-nickname" key={recomment.id}>
+                                            <div className="recomment-header">
+                                                <i className="fas fa-user"></i>
+                                                <span className="nickname">
+                                                    <strong>{recomment.nickname}</strong>
+                                                </span>
+                                            </div>
+                                            <div className="recomment-content">{recomment.content}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ))
+                )}
+            </div>
+            <div className="comment-input-header">
+                <input
+                    type="text"
+                    placeholder="댓글을 작성하세요."
+                    value={comment}
+                    onChange={handleCommentChange}
+                    className="comment-input"
+                />
+                <button onClick={handleCommentSubmit} className="comment-submit-button">
+                    <strong>등록</strong>
+                </button>
             </div>
         </div>
     );

@@ -2,7 +2,7 @@
     margin: auto;
 }
 
-.post-card {
+.post-new-car {
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px;
@@ -16,16 +16,28 @@
     margin-bottom: 20px;
 }
 
-.online,
-.offline {
+.online-new,
+.offline-new {
     height: 35px;
     width: 80px;
-    background-color: #3d3da3;
+    background-color: #5a6268;
     color: white;
     border: none;
     border-radius: 30px;
     cursor: pointer;
     font-size: 15px;
+}
+
+.offline-new {
+    margin-left: 10px;
+}
+
+.online-new.active {
+    background-color: #3d3da3; /* 온라인 버튼이 활성화된 색 */
+}
+
+.offline-new.active {
+    background-color: #3d3da3; /* 오프라인 버튼이 활성화된 색 */
 }
 
 h2,
