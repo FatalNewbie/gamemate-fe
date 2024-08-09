@@ -119,18 +119,18 @@ const App = () => {
                     }
                 />
                 <Route
-                    path="/friend-req"
-                    element={
-                        <MainLayout headerTitle="친구 요청" showSearchIcon={false}>
-                            <FriendRequests />
-                        </MainLayout>
-                    }
-                />
-                <Route
                     path="/friends"
                     element={
                         <MainLayout headerTitle="친구 목록" showSearchIcon={false}>
                             <FriendsList />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/friendrequests"
+                    element={
+                        <MainLayout headerTitle="친구 요청" showSearchIcon={false}>
+                            <FriendRequests />
                         </MainLayout>
                     }
                 />

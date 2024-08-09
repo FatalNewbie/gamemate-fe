@@ -1,93 +1,210 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, Typography, List, ListItem, ListItemText, ListItemAvatar, Avatar, Paper, Button, Grid } from '@mui/material';
-import profilePlaceholder from '../../assets/profile_placeholder.png';
+import { useCookies } from 'react-cookie';
+import { Box, Typography, List, ListItem, Avatar, Button, Modal } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate } from 'react-router-dom';
 
 const FriendRequests = () => {
-  const [friendRequests, setFriendRequests] = useState([]);
+    const [cookies] = useCookies(['token']);
+    const [friendRequests, setFriendRequests] = useState([]);
+    const [selectedRequest, setSelectedRequest] = useState(null);
+    const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
+    const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchFriendRequests = async () => {
-      try {
-        const receiverId = 1; // 현재 로그인된 유저 ID를 설정해야 합니다.
-        const response = await axios.get(`http://localhost:8080/friend/requests/${receiverId}`);
-        setFriendRequests(response.data);
-      } catch (error) {
-        console.error('Error fetching friend requests:', error);
-      }
+    useEffect(() => {
+        const fetchFriendRequests = async () => {
+            try {
+                const response = await axios.get('/friend/requests', {
+                    headers: {
+                        Authorization: cookies.token,
+                    },
+                });
+                setFriendRequests(response.data.data);
+            } catch (error) {
+                console.error('친구 요청 목록을 가져오는 데 실패했습니다:', error);
+            }
+        };
+
+        fetchFriendRequests();
+    }, [cookies.token]);
+
+    const handleAcceptModalOpen = (request) => {
+        setSelectedRequest(request);
+        setIsAcceptModalOpen(true);
     };
 
-    fetchFriendRequests();
-  }, []);
+    const handleAcceptModalClose = () => {
+        setIsAcceptModalOpen(false);
+    };
 
-  const handleAccept = async (requestId) => {
-    // 친구 요청 수락 로직
-    try {
-      await axios.put('http://localhost:8080/friend/', {
-        requesterId: requestId,
-        receiverId: 1, // 현재 로그인된 유저 ID를 설정해야 합니다.
-        status: 'ACCEPTED'
-      });
+    const handleDeclineModalOpen = (request) => {
+        setSelectedRequest(request);
+        setIsDeclineModalOpen(true);
+    };
 
-      console.log(`Accepting friend request ${requestId}`);
-      setFriendRequests(prevRequests => prevRequests.filter(request => request.id !== requestId));
-    } catch (error) {
-      console.error('Error accepting friend request:', error);
-    }
-  };
+    const handleDeclineModalClose = () => {
+        setIsDeclineModalOpen(false);
+    };
 
-  const handleReject = async (requestId) => {
-    // 친구 요청 거절 로직
-    try {
-      await axios.put('http://localhost:8080/friend/', {
-        requesterId: requestId,
-        receiverId: 1, // 현재 로그인된 유저 ID를 설정해야 합니다.
-        status: 'REJECTED'
-      });
+    const handleFriendRequestAccept = async () => {
+        try {
+            const token = cookies.token;
+            await axios.put('/friend/respond', {
+                requesterId: selectedRequest.requester.id,
+                status: 'ACCEPTED',
+            }, {
+                headers: {
+                    Authorization: `${token}`,
+                },
+            });
 
-      console.log(`Rejecting friend request ${requestId}`);
-      setFriendRequests(prevRequests => prevRequests.filter(request => request.id !== requestId));
-    } catch (error) {
-      console.error('Error rejecting friend request:', error);
-    }
-  };
+            setFriendRequests(prevRequests => prevRequests.filter(request => request.requester.id !== selectedRequest.requester.id));
+            setIsAcceptModalOpen(false);
+        } catch (error) {
+            console.error('친구 요청 수락 중 오류 발생:', error);
+        }
+    };
 
-  return (
-    <Box mt={4} p={2}>
-      <Typography variant="h6" sx={{ mb: 2 }}>📨 친구 요청 목록</Typography>
-      {friendRequests.length > 0 ? (
-        <List>
-          {friendRequests.map((request, index) => (
-            <ListItem key={index} component={Paper} sx={{ mb: 2 }}>
-              <Grid container alignItems="center">
-                <Grid item>
-                  <ListItemAvatar>
-                    <Avatar src={profilePlaceholder} />
-                  </ListItemAvatar>
-                </Grid>
-                <Grid item xs>
-                  <ListItemText
-                    primary={request.requester.username}
-                    secondary={`요청 날짜: ${request.createdDate}`}
-                  />
-                </Grid>
-                <Grid item>
-                  <Button variant="contained" color="primary" onClick={() => handleAccept(request.requester.id)} sx={{ marginRight: '10px' }}>
-                    수락
-                  </Button>
-                  <Button variant="outlined" color="secondary" onClick={() => handleReject(request.requester.id)}>
-                    거절
-                  </Button>
-                </Grid>
-              </Grid>
-            </ListItem>
-          ))}
-        </List>
-      ) : (
-        <Typography variant="body1" sx={{ mt: 2 }}>새로운 친구 요청이 없습니다.</Typography>
-      )}
-    </Box>
-  );
+    const handleFriendRequestDecline = async () => {
+        try {
+            const token = cookies.token;
+            await axios.put('/friend/respond', {
+                requesterId: selectedRequest.requester.id,
+                status: 'REJECTED',
+            }, {
+                headers: {
+                    Authorization: `${token}`,
+                },
+            });
+
+            setFriendRequests(prevRequests => prevRequests.filter(request => request.requester.id !== selectedRequest.requester.id));
+            setIsDeclineModalOpen(false);
+        } catch (error) {
+            console.error('친구 요청 거절 중 오류 발생:', error);
+        }
+    };
+
+    return (
+        <Box sx={{ padding: 2 }}>
+            <Button
+                variant="contained"
+                color="primary"
+                startIcon={<ArrowBackIcon />}
+                onClick={() => navigate(-1)} // 뒤로 가기 기능
+                sx={{
+                    marginBottom: 2,
+                    backgroundColor: '#1976d2', // 원하는 색상으로 변경 가능
+                    '&:hover': {
+                        backgroundColor: '#1565c0', // 호버 시 색상 변경
+                    },
+                    borderRadius: 2,
+                    textTransform: 'none',
+                }}
+            >
+                뒤로 가기
+            </Button>
+            <Typography variant="h5" gutterBottom>
+                친구 요청 목록
+            </Typography>
+            <List>
+                {friendRequests.map((request, index) => (
+                    <ListItem key={index} sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Avatar sx={{ width: 50, height: 50, marginRight: 2 }}>
+                            {request.requester.nickname.charAt(0).toUpperCase()}
+                        </Avatar>
+                        <Box sx={{ flexGrow: 1 }}>
+                            <Typography variant="h6">{request.requester.nickname}</Typography>
+                            <Typography variant="body2">{request.requester.username}</Typography>
+                            <Typography variant="body2">
+                                장르: {request.requester.preferredGenres.join(', ')}
+                            </Typography>
+                            <Typography variant="body2">
+                                플레이 시간: {request.requester.playTimes.join(', ')}
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', gap: 1 }}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleAcceptModalOpen(request)}
+                            >
+                                수락
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                onClick={() => handleDeclineModalOpen(request)}
+                            >
+                                거절
+                            </Button>
+                        </Box>
+                    </ListItem>
+                ))}
+            </List>
+
+            {/* 수락 확인 모달 */}
+            <Modal
+                open={isAcceptModalOpen}
+                onClose={handleAcceptModalClose}
+            >
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 300,
+                    bgcolor: 'background.paper',
+                    boxShadow: 24,
+                    p: 4,
+                    borderRadius: 1,
+                }}>
+                    <Typography variant="h6" sx={{ mb: 2 }}>
+                        {selectedRequest?.requester.nickname}님을 친구로 수락하시겠습니까?
+                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+                        <Button variant="contained" color="primary" onClick={handleFriendRequestAccept}>
+                            예
+                        </Button>
+                        <Button variant="outlined" color="secondary" onClick={handleAcceptModalClose}>
+                            아니오
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
+
+            {/* 거절 확인 모달 */}
+            <Modal
+                open={isDeclineModalOpen}
+                onClose={handleDeclineModalClose}
+            >
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 300,
+                    bgcolor: 'background.paper',
+                    boxShadow: 24,
+                    p: 4,
+                    borderRadius: 1,
+                }}>
+                    <Typography variant="h6" sx={{ mb: 2 }}>
+                        {selectedRequest?.requester.nickname}님의 친구 요청을 거절하시겠습니까?
+                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+                        <Button variant="contained" color="primary" onClick={handleFriendRequestDecline}>
+                            예
+                        </Button>
+                        <Button variant="outlined" color="secondary" onClick={handleDeclineModalClose}>
+                            아니오
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
+        </Box>
+    );
 };
 
 export default FriendRequests;

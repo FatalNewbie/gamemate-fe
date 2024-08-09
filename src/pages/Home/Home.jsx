@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+// import { api, api2 } from '../../apis/customAxios';
 import { useCookies } from 'react-cookie';
 import {
     Box,
@@ -28,15 +29,14 @@ const Home = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [open, setOpen] = useState(false);
     const [gameNews, setGameNews] = useState([]);
+    const [apiError, setApiError] = useState(false);
     const [popularGames, setPopularGames] = useState([]);
     const [loadingNews, setLoadingNews] = useState(false);
     const [loadingGames, setLoadingGames] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const [cookies] = useCookies(['token']);
 
-    const genresList = ['FPS', 'RPG', '전략', '액션', '시뮬레이션'];
-    const timesList = ['AM 9:00 ~ AM 11:00', 'AM 11:00 ~ PM 2:00', 'PM 2:00 ~ PM 5:00', 'PM 5:00 ~ PM 8:00',
-                      'PM 8:00 ~ PM 11:00', 'PM 11:00 ~ AM 3:00', 'AM 3:00 ~ AM 9:00'];
+    
 
     const convertToFeatureArray = (data, referenceList) => {
         const featureArray = new Array(referenceList.length).fill(0);
@@ -67,6 +67,7 @@ const Home = () => {
             );
         } catch (error) {
             console.error('Error fetching game news:', error);
+            setApiError(true); 
         } finally {
             setLoadingNews(false);
         }
@@ -91,6 +92,7 @@ const Home = () => {
             );
         } catch (error) {
             console.error('Error fetching popular games:', error);
+            setApiError(true); 
         } finally {
             setLoadingGames(false);
         }
@@ -100,6 +102,9 @@ const Home = () => {
         const fetchUserInfo = async () => {
             try {
                 const token = cookies.token;
+                const genresList = ['FPS', 'RPG', '전략', '액션', '시뮬레이션'];
+                const timesList = ['AM 9:00 ~ AM 11:00', 'AM 11:00 ~ PM 2:00', 'PM 2:00 ~ PM 5:00', 'PM 5:00 ~ PM 8:00',
+                      'PM 8:00 ~ PM 11:00', 'PM 11:00 ~ AM 3:00', 'AM 3:00 ~ AM 9:00'];
 
                 if (!token) {
                     throw new Error('No token found');
@@ -111,6 +116,7 @@ const Home = () => {
                     },
                 });
 
+
                 const user = response.data.data;
                 const userFeatures = {
                     preferred_genres: convertToFeatureArray(user.preferredGenres, genresList),
@@ -118,7 +124,7 @@ const Home = () => {
                 };
 
                 const response2 = await axios.post(
-                    'http://127.0.0.1:8000/recommendation',
+                    'http://localhost:8000/recommendation',
                     userFeatures,
                     {
                         headers: {
@@ -353,7 +359,29 @@ const Home = () => {
                     🔥 스팀 인기 게임
                 </Typography>
                 {loadingGames ? (
-                    <CircularProgress />
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexDirection: 'column',
+                        }}
+                    >
+                        <CircularProgress />
+                        {apiError && (
+                            <Typography
+                                variant="body1"
+                                color="error"
+                                sx={{
+                                    marginTop: '20px',
+                                    fontFamily: 'Roboto, sans-serif',
+                                    fontWeight: 500,
+                                }}
+                            >
+                                잠시 후 다시 시도해주세요.
+                            </Typography>
+                        )}
+                    </Box>
                 ) : (
                     <List>
                         {popularGames.map((game, index) => (
@@ -391,7 +419,29 @@ const Home = () => {
                     📰 업데이트된 스팀 게임
                 </Typography>
                 {loadingNews ? (
-                    <CircularProgress />
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexDirection: 'column',
+                        }}
+                    >
+                        <CircularProgress />
+                        {apiError && (
+                            <Typography
+                                variant="body1"
+                                color="error"
+                                sx={{
+                                    marginTop: '20px',
+                                    fontFamily: 'Roboto, sans-serif',
+                                    fontWeight: 500,
+                                }}
+                            >
+                                잠시 후 다시 시도해주세요.
+                            </Typography>
+                        )}
+                    </Box>
                 ) : (
                     <List>
                         {gameNews.map((news, index) => (

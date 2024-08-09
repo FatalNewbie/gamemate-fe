@@ -15,8 +15,6 @@ const Recommend = () => {
   const [cookies] = useCookies(['token']);
   const navigate = useNavigate();
 
-  const genresList = ['FPS', 'RPG', '전략', '액션', '시뮬레이션'];
-  const timesList = ['AM 9:00 ~ AM 11:00', 'AM 11:00 ~ PM 2:00', 'PM 2:00 ~ PM 5:00', 'PM 5:00 ~ PM 8:00', 'PM 8:00 ~ PM 11:00', 'PM 11:00 ~ AM 3:00', 'AM 3:00 ~ AM 9:00'];
 
   const convertToFeatureArray = (data, referenceList) => {
     const featureArray = new Array(referenceList.length).fill(0);
@@ -30,6 +28,8 @@ const Recommend = () => {
     const fetchUserInfo = async () => {
       try {
         const token = cookies.token;
+        const genresList = ['FPS', 'RPG', '전략', '액션', '시뮬레이션'];
+        const timesList = ['AM 9:00 ~ AM 11:00', 'AM 11:00 ~ PM 2:00', 'PM 2:00 ~ PM 5:00', 'PM 5:00 ~ PM 8:00', 'PM 8:00 ~ PM 11:00', 'PM 11:00 ~ AM 3:00', 'AM 3:00 ~ AM 9:00'];
 
         if (!token) {
           throw new Error('No token found');
@@ -105,9 +105,9 @@ const Recommend = () => {
   const handleFriendRequestCancel = async () => {
     try {
       const token = cookies.token;
-      await axios.put('http://localhost:8080/friend/', {
+      await axios.put('http://localhost:8080/friend/cancel', {
         receiverId: selectedUser.id,
-        status: 'DECLINED',
+        status: 'REJECTED',
       }, {
         headers: {
           Authorization: `${token}`,
@@ -160,7 +160,7 @@ const Recommend = () => {
                   sx={{
                     fontFamily: 'Roboto, sans-serif',
                     fontWeight: 800,
-                    fontSize: '12pt',
+                    fontSize: '13pt',
                     letterSpacing: '-0.5px',
                     marginTop: '5px'
                   }} className="username">
@@ -185,7 +185,7 @@ const Recommend = () => {
               </Box>
               <Box className="tags">
                 {user.common_play_time.map((time, index) => (
-                  <Chip key={index} label={time} className="tag" size="small" color="primary" variant="outlined" sx={{ fontSize: '10px', fontWeight: 200 }} />
+                  <Chip key={index} label={time} className="tag" size="small" color="primary" sx={{ fontSize: '10px', fontWeight: 200 }} />
                 ))}
               </Box>
             </Grid>
