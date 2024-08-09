@@ -9,6 +9,7 @@ import Chat from './pages/Chat/Chat';
 import MyPage from './pages/MyPage/MyPage';
 import Join from './pages/Auth/Join';
 import Login from './pages/Auth/Login';
+import ProfileImageEdit from './pages/MyPage/ProfileImageEdit';
 
 const App = () => {
     return (
@@ -68,6 +69,14 @@ const App = () => {
                     element={
                         <MainLayout headerTitle="마이페이지" showSearchIcon={false}>
                             <MyPage />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/edit-profile"
+                    element={
+                        <MainLayout headerTitle="프로필 이미지 수정" showSearchIcon={false}>
+                            <ProfileImageEdit />
                         </MainLayout>
                     }
                 />
