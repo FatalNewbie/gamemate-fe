@@ -9,7 +9,7 @@ const Login = ({ login }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    const [cookies, setCookie] = useCookies(['token']);
+    const [setCookie] = useCookies(['token']);
     const [open, setOpen] = useState(false); // 다이얼로그 열기 상태
 
     useEffect(() => {
@@ -19,6 +19,13 @@ const Login = ({ login }) => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+
+        // 이메일 형식 검사
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(username)) {
+            alert('유효한 이메일 주소를 입력해 주세요.');
+            return;
+        }
 
         try {
             const response = await axios.post(
@@ -53,6 +60,11 @@ const Login = ({ login }) => {
         }
     };
 
+    const handleClose = () => {
+        setOpen(false); // 모달 닫기
+        navigate('/join'); // /join으로 이동
+    };
+
     return (
         <Container maxWidth="xs" style={{ marginTop: '50px' }}>
             <Box display="flex" alignItems="center" mt={15} mb={15}>
@@ -60,7 +72,7 @@ const Login = ({ login }) => {
                 <Typography variant="h3">게임메이트</Typography>
             </Box>
             <Dialog open={open}
-                    onClose={() => setOpen(false)}
+                    onClose={handleClose}
                     fullWidth
                     PaperProps={{ style: { maxWidth: '370px' } }}>
                 <DialogTitle>
