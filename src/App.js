@@ -1,9 +1,9 @@
-// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home/Home';
 import GameList from './pages/GameList/GameList';
+import GameDetails from './pages/GameList/GameDetails'; // Correct import path
 import GameMate from './pages/GameMate/GameMate';
 import GameMatePost from './pages/GameMate/GameMatePost';
 import GameMateNew from './pages/GameMate/GameMateNew';
@@ -25,7 +25,7 @@ const App = () => {
                 <Route
                     path="/join"
                     element={
-                        <MainLayout headerTitle="게임메이트">
+                        <MainLayout headerTitle="게임메이트" showHeader={false} showFooter={false}>
                             <Join />
                         </MainLayout>
                     }
@@ -33,7 +33,7 @@ const App = () => {
                 <Route
                     path="/login"
                     element={
-                        <MainLayout headerTitle="게임메이트">
+                        <MainLayout headerTitle="게임메이트" showHeader={false} showFooter={false}>
                             <Login />
                         </MainLayout>
                     }
@@ -59,6 +59,14 @@ const App = () => {
                     element={
                         <MainLayout headerTitle="게임리스트">
                             <GameList />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/game/:id" // Define the dynamic route for GameDetails
+                    element={
+                        <MainLayout headerTitle="게임상세">
+                            <GameDetails />
                         </MainLayout>
                     }
                 />

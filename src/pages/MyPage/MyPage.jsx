@@ -15,6 +15,10 @@ const MyPage = () => {
     const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 사용
 
     useEffect(() => {
+        // 쿠키에 토큰이 없으면 로그인 페이지로 이동
+        if(!cookies.token) {
+            navigate('/login');
+        }
         const fetchUserData = async () => {
             try {
                 const response = await axios.get('/mypage', {
@@ -78,7 +82,6 @@ const MyPage = () => {
                 <Avatar sx={{ width: 70, height: 70 }}>N</Avatar>
                 <Box sx={{ marginLeft: 2 }}>
                     <Typography variant="h5">{user.nickname}</Typography>
-                    <Typography variant="body2">@{user.username}</Typography>
                     <Typography variant="body2">@type</Typography>
                 </Box>
             </Box>

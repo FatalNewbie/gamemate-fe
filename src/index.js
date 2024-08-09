@@ -3,17 +3,14 @@ import ReactDOM from 'react-dom/client'; // createRoot 메서드를 사용하기
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
 
 // ReactDOM.createRoot 사용
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-	// <React.StrictMode>
 		<CookiesProvider>
 			<App />
 		</CookiesProvider>
-	// </React.StrictMode>
 );
 
 // JavaScript로 실제 vh를 계산하여 CSS 변수에 설정
