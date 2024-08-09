@@ -6,11 +6,13 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { api } from '../../apis/customAxios';
 import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
-const ChatRoom = ({ roomId, title, leaderNickname, memberCnt }) => {
+const ChatRoom = ({ roomId, title, leaderNickName, memberCnt }) => {
     const [nowMemberCnt, setNowMemberCnt] = useState('');
     // 쿠키
     const [cookies] = useCookies(['token']);
+    const navigate = useNavigate();
 
     const getNowMemberCnt = async () => {
         try {
@@ -25,6 +27,12 @@ const ChatRoom = ({ roomId, title, leaderNickname, memberCnt }) => {
         }
     };
 
+    const chatRoomBtnHandler = () => {
+        navigate('/ChatWindow', {
+            state: { roomId: roomId, title: title, leaderNickName: leaderNickName, memberCnt: memberCnt },
+        });
+    };
+
     useEffect(() => {
         // 서버에서 채팅방 가져옴
         getNowMemberCnt();
@@ -35,7 +43,11 @@ const ChatRoom = ({ roomId, title, leaderNickname, memberCnt }) => {
             <Grid container sx={{ padding: 0, margin: 0 }}>
                 <Grid xs={12} sx={{ padding: 0, margin: 0 }} display="flex" justifyContent="center">
                     <Box sx={{ padding: 0, margin: 0 }}>
-                        <Button sx={{ width: 350, height: 150, padding: 0 }} variant="outlined">
+                        <Button
+                            sx={{ width: 350, height: 150, padding: 0, mb: 3 }}
+                            variant="outlined"
+                            onClick={chatRoomBtnHandler}
+                        >
                             <Grid container sx={{ pt: 2, margin: 0, width: '100%', height: '100%' }}>
                                 <Grid xs={12} sx={{ display: 'flex', alignItems: 'flex-start' }}>
                                     <Typography sx={{ fontSize: 23, color: 'black', textAlign: 'left', ml: 2 }}>
@@ -45,7 +57,7 @@ const ChatRoom = ({ roomId, title, leaderNickname, memberCnt }) => {
                                 <Grid xs={12} sx={{ height: 40 }}></Grid>
                                 <Grid xs={6} sx={{ display: 'flex', alignItems: 'flex-start' }}>
                                     <Typography sx={{ fontSize: 20, color: 'black', textAlign: 'left', ml: 2 }}>
-                                        {leaderNickname}
+                                        {leaderNickName}
                                     </Typography>
                                 </Grid>
                                 <Grid xs={6}>

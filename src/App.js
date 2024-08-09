@@ -10,6 +10,7 @@ import MyPage from './pages/MyPage/MyPage';
 import Join from './pages/Auth/Join';
 import Login from './pages/Auth/Login';
 import ChatRoomTest from './pages/Chat/ChatRoomTest';
+import ChatWindow from './pages/Chat/ChatWindow';
 
 const App = () => {
     return (
@@ -77,6 +78,14 @@ const App = () => {
                     element={
                         <MainLayout headerTitle="마이페이지" showSearchIcon={false}>
                             <MyPage />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/ChatWindow"
+                    element={
+                        <MainLayout headerTitle="채팅창" showSearchIcon={false}>
+                            <ChatWindow />
                         </MainLayout>
                     }
                 />
