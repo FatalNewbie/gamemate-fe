@@ -25,7 +25,7 @@ const App = () => {
                 <Route
                     path="/join"
                     element={
-                        <MainLayout headerTitle="게임메이트">
+                        <MainLayout headerTitle="게임메이트" showHeader={false} showFooter={false}>
                             <Join />
                         </MainLayout>
                     }
@@ -33,7 +33,7 @@ const App = () => {
                 <Route
                     path="/login"
                     element={
-                        <MainLayout headerTitle="게임메이트">
+                        <MainLayout headerTitle="게임메이트" showHeader={false} showFooter={false}>
                             <Login />
                         </MainLayout>
                     }

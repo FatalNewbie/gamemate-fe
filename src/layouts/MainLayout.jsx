@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SearchBar from '../components/SearchBar';
 
-const MainLayout = ({ children, headerTitle, showSearchIcon = true }) => {
+const MainLayout = ({ children, headerTitle, showSearchIcon = true, showHeader = true, showFooter = true }) => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     const handleSearchOpen = () => {
@@ -27,11 +27,11 @@ const MainLayout = ({ children, headerTitle, showSearchIcon = true }) => {
                 bgcolor="#fff"
                 boxShadow={3}
             >
-                <Header title={headerTitle} showSearchIcon={showSearchIcon} onSearchClick={handleSearchOpen} />
+                {showHeader && <Header title={headerTitle} showSearchIcon={showSearchIcon} onSearchClick={handleSearchOpen} />}
                 <Box component="main" flexGrow={1} overflow="auto" p={2} paddingBottom="70px">
                     {children}
                 </Box>
-                <Footer />
+                {showFooter && <Footer />}
                 {isSearchOpen && (
                     <Box
                         position="absolute"

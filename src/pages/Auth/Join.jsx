@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Container, Box, Typography, TextField, Button } from '@mui/material';
+import { Container, Box, Typography, TextField, Button, Dialog } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import logo from '../../assets/logo.png';
 
 const Join = () => {
     const navigate = useNavigate();
@@ -12,6 +13,15 @@ const Join = () => {
     const [nickname, setNickname] = useState('');
     const [error, setError] = useState('');
     const [isRegistering, setIsRegistering] = useState(true); // 회원가입 상태
+    const [open, setOpen] = useState(false); // 모달 열기 상태
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     const handleStartRegister = () => {
         setIsRegistering(false); // 회원가입 상태를 false로 변경
@@ -20,7 +30,6 @@ const Join = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // 비밀번호와 비밀번호 확인이 일치하는지 확인
         if (password !== confirmPassword) {
             alert('비밀번호가 일치하지 않습니다.');
             return;
@@ -34,8 +43,8 @@ const Join = () => {
             });
 
             if (response.status === 200) {
-                // 회원가입 성공 시 로그인 페이지로 이동
                 navigate('/login');
+                handleClose(); // 모달 닫기
             }
         } catch (error) {
             console.error('회원가입 실패:', error);
@@ -43,7 +52,7 @@ const Join = () => {
                 const errorData = error.response.data;
                 if (errorData.success === false) {
                     if (errorData.username) {
-                        alert(errorData.username); // 이메일 중복 에러
+                        alert(errorData.username);
                     }
                     if (errorData.errors) {
                         if (errorData.errors.password) {
@@ -59,14 +68,21 @@ const Join = () => {
 
     return (
         <Container maxWidth="xs" style={{ marginTop: '50px' }}>
-            {isRegistering ? (
+            <Box display="flex" alignItems="center" mt={15} mb={15}>
+                <img src={logo} alt="Logo" style={{ width: 70, height: 70 }} />
+                <Typography variant="h3">게임메이트</Typography>
+            </Box>
+            <Button variant="contained" onClick={handleClickOpen} fullWidth>
+                이메일 계정으로 시작하기
+            </Button>
+            <Dialog open={open}
+                    onClose={handleClose}
+                    fullWidth
+//                     maxWidth="xs"
+                    PaperProps={{ style: { maxWidth: '370px' } }}>
                 <Box sx={{
-                    marginTop: 5,
-                    paddingTop: 10,
-                    paddingBottom: 10,
-                    paddingRight: 2,
-                    paddingLeft: 2,
-                    boxShadow: 3
+                    padding: 2,
+                    boxShadow: 3,
                 }}>
                     <Typography variant="h4" align="center">회원가입</Typography>
                     <Typography variant="body2" align="center">
@@ -115,19 +131,7 @@ const Join = () => {
                         가입하기
                     </Button>
                 </Box>
-            ) : (
-                <Box sx={{ paddingTop: 20 }}>
-                    <Button variant="outlined" fullWidth onClick={() => handleStartRegister('Google')} style={{ marginTop: '10px' }}>
-                        Google 계정으로 시작하기
-                    </Button>
-                    <Button variant="outlined" fullWidth onClick={() => handleStartRegister('Naver')} style={{ marginTop: '10px' }}>
-                        Naver 계정으로 시작하기
-                    </Button>
-                    <Button variant="outlined" fullWidth onClick={() => handleStartRegister('이메일')} style={{ marginTop: '10px' }}>
-                        이메일 계정으로 시작하기
-                    </Button>
-                </Box>
-            )}
+            </Dialog>
         </Container>
     );
 };

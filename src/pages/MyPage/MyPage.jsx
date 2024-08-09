@@ -3,14 +3,20 @@ import { Box, Typography, Avatar, Button } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'; // 아래 방향 화살표 아이콘 임포트
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 axios.defaults.baseURL = 'http://localhost:8080'; // 백엔드 서버 주소
 
 const MyPage = () => {
     const [cookies] = useCookies(['token']);
     const [user, setUser] = useState(null); // 사용자 정보를 저장할 상태
+    const navigate = useNavigate();
 
     useEffect(() => {
+        // 쿠키에 토큰이 없으면 로그인 페이지로 이동
+        if(!cookies.token) {
+            navigate('/login');
+        }
         const fetchUserData = async () => {
             try {
                 const response = await axios.get('/mypage', {
@@ -29,7 +35,7 @@ const MyPage = () => {
         };
 
         fetchUserData(); // 데이터 가져오기
-    }, [cookies.token]);
+    }, [cookies.token, navigate]);
 
     if (!user) {
         return <Typography>로딩 중...</Typography>; // 데이터가 로드되기 전 표시할 내용
@@ -42,7 +48,6 @@ const MyPage = () => {
                 <Avatar sx={{ width: 70, height: 70 }}>N</Avatar>
                 <Box sx={{ marginLeft: 2 }}>
                     <Typography variant="h5">{user.nickname}</Typography>
-                    <Typography variant="body2">@{user.username}</Typography>
                     <Typography variant="body2">@type</Typography>
                 </Box>
             </Box>
