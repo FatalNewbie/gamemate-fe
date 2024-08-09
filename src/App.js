@@ -18,6 +18,7 @@ import Join from './pages/Auth/Join';
 import Login from './pages/Auth/Login';
 import ProfileImageEdit from './pages/MyPage/ProfileImageEdit';
 import ChatRoomTest from './pages/Chat/ChatRoomTest';
+import ChatWindow from './pages/Chat/ChatWindow';
 
 const App = () => {
     return (
@@ -149,6 +150,14 @@ const App = () => {
                     element={
                         <MainLayout headerTitle="친구 요청" showSearchIcon={false}>
                             <FriendRequests />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/ChatWindow"
+                    element={
+                        <MainLayout headerTitle="채팅창" showSearchIcon={false}>
+                            <ChatWindow />
                         </MainLayout>
                     }
                 />

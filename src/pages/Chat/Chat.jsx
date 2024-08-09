@@ -48,7 +48,7 @@ const Chat = () => {
                             <ChatRoom
                                 roomId={chatRoom.id}
                                 title={chatRoom.title}
-                                leaderNickname={chatRoom.leaderNickname}
+                                leaderNickName={chatRoom.leaderNickname}
                                 memberCnt={chatRoom.memberCnt}
                             />
                         </Box>

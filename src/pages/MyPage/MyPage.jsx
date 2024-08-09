@@ -4,7 +4,6 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 
 axios.defaults.baseURL = 'http://localhost:8080'; // 백엔드 서버 주소
 

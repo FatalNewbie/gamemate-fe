@@ -5,8 +5,10 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useEffect, useState } from 'react';
 import { api } from '../../apis/customAxios';
+import { useCookies } from 'react-cookie';
 
 const ChatRoomTest = () => {
+    const [cookies] = useCookies(['token']);
     // 채팅방제목인풋
     const [inputTitle, setInputTitle] = useState('');
     // 채팅방인원인풋
@@ -41,6 +43,9 @@ const ChatRoomTest = () => {
                     memberCnt: inputMemberCnt,
                 },
                 {
+                    headers: {
+                        Authorization: cookies.token,
+                    },
                     withCredentials: true, // 쿠키 포함 설정
                 }
             );
@@ -60,6 +65,9 @@ const ChatRoomTest = () => {
                     addMemberUsername: inputMemberUsername,
                 },
                 {
+                    headers: {
+                        Authorization: cookies.token,
+                    },
                     withCredentials: true, // 쿠키 포함 설정
                 }
             );
