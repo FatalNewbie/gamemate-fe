@@ -27,7 +27,7 @@ const Join = () => {
         setIsRegistering(false); // 회원가입 상태를 false로 변경
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         if (password !== confirmPassword) {
@@ -35,35 +35,7 @@ const Join = () => {
             return;
         }
 
-        try {
-            const response = await axios.post('http://localhost:8080/join', {
-                username,
-                password,
-                nickname
-            });
-
-            if (response.status === 200) {
-                navigate('/login');
-                handleClose(); // 모달 닫기
-            }
-        } catch (error) {
-            console.error('회원가입 실패:', error);
-            if (error.response) {
-                const errorData = error.response.data;
-                if (errorData.success === false) {
-                    if (errorData.username) {
-                        alert(errorData.username);
-                    }
-                    if (errorData.errors) {
-                        if (errorData.errors.password) {
-                            alert(errorData.errors.password);
-                        }
-                    }
-                }
-            } else {
-                alert('회원가입에 실패했습니다. 다시 시도해주세요.');
-            }
-        }
+        navigate('/join-additional', { state: { username, password, nickname } });
     };
 
     return (
@@ -128,7 +100,7 @@ const Join = () => {
                         onChange={(e) => setNickname(e.target.value)}
                     />
                     <Button variant="contained" color="primary" fullWidth onClick={handleSubmit} sx={{ marginTop: '16px' }}>
-                        가입하기
+                        다음
                     </Button>
                 </Box>
             </Dialog>
