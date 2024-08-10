@@ -2,13 +2,31 @@
     margin: auto;
 }
 
-.post-new-car {
+/*
+ .post-new-card {
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px;
     display: flex;
-    flex-direction: column; /* 세로 방향으로 배치 */
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* 그림자 설정 */
+    flex-direction: column; 
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); 
+} 
+
+*/
+
+@keyframes slide-in {
+    0% {
+        transform: translateX(100%); /* 시작 위치: 오른쪽 */
+        opacity: 0; /* 시작 시 투명 */
+    }
+    100% {
+        transform: translateX(0); /* 최종 위치: 원래 위치 */
+        opacity: 1; /* 최종 시 불투명 */
+    }
+}
+
+.slide-in {
+    animation: slide-in 0.5s ease-out; /* 애니메이션 적용 */
 }
 
 .onoff-choice {

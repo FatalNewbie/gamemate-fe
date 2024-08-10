@@ -5,6 +5,7 @@ import KakaoMap from './KakaoMap';
 import { api } from '../../apis/customAxios';
 import { useCookies } from 'react-cookie';
 import { jwtDecode } from 'jwt-decode';
+import DateDisplay from '../../components/DateDisplay';
 
 const { kakao } = window;
 
@@ -103,6 +104,23 @@ const GameMate = () => {
         <div className="gamemate-post-container">
             <div className="post-card">
                 <h2 className="game-title">{post.gameTitle}</h2>
+                <>
+                    {username === post.username && (
+                        <div className="post-edit-box">
+                            <button className="post-edit-button">수정</button>
+                            <button className="post-delete-button">삭제</button>
+                        </div>
+                    )}
+                </>
+                <div className="profile-box">
+                    <div className="user-profile">
+                        <div className="left-section">
+                            <img src="" alt="글쓰기" className="write-icon" />
+                            <span className="writer-nickname">{post.nickname}</span>
+                        </div>
+                        <DateDisplay dateString={post.createdDate} />
+                    </div>
+                </div>
                 {/* 2행 2열로 배치할 부분 */}
                 <div className="status-grid">
                     <div className="status-item">
@@ -119,13 +137,28 @@ const GameMate = () => {
                     </div>
                     <div className="status-item">
                         <span className="status-label">지역</span>
-                        <span className="status-icon">{post.mateRegionGu || '미정'}</span>
+                        <span className="status-icon">
+                            {post.status === 'ON'
+                                ? '온라인'
+                                : post.mateRegionSi
+                                ? post.mateRegionSi + ' ' + post.mateRegionGu
+                                : '미정'}
+                        </span>
                     </div>
                 </div>
+
                 <p className="post-content">{post.mateContent}</p>
-                <h3>위치</h3>
-                <div className="map-placeholder">
-                    <KakaoMap post={post} /> {/* KakaoMap 컴포넌트 사용 */}
+
+                <div>
+                    {post.mateLocation && (
+                        <>
+                            <h3>위치</h3>
+                            <div>{post.mateLocation}</div>
+                            <div className="map-placeholder">
+                                <KakaoMap post={post} /> {/* KakaoMap 컴포넌트 사용 */}
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 <div className="apply-button-box">
@@ -142,31 +175,36 @@ const GameMate = () => {
                                 <div>
                                     <div className="comment-header">
                                         <i className="fas fa-user"></i>
-                                        <span className="nickname">
+                                        <span className="comment-nickname">
                                             <strong>{comment.nickname}</strong>
                                         </span>
                                     </div>
+                                    <div className="comment-created-date">
+                                        <DateDisplay dateString={post.createdDate} />
+                                    </div>
                                     <div className="comment-content">{comment.content}</div>
                                 </div>
-                                <div className="recomment-button" onClick={() => handleReplyClick(comment.id)}>
-                                    답글
-                                </div>
-                                <div className="options">
-                                    <button className="dots-icon" aria-haspopup="true" aria-expanded="false">
-                                        <span className="dot"></span>
-                                        <span className="dot"></span>
-                                        <span className="dot"></span>
-                                    </button>
+                                <div className="comment-endbox">
+                                    <div className="recomment-button" onClick={() => handleReplyClick(comment.id)}>
+                                        답글
+                                    </div>
+                                    <div className="options">
+                                        <button className="dots-icon" aria-haspopup="true" aria-expanded="false">
+                                            <span className="dot"></span>
+                                            <span className="dot"></span>
+                                            <span className="dot"></span>
+                                        </button>
 
-                                    <div className="options-menu">
-                                        {username === comment.username ? (
-                                            <>
-                                                <button className="edit-button">수정</button>
-                                                <button className="delete-button">삭제</button>
-                                            </>
-                                        ) : (
-                                            <button className="report-button">신고</button>
-                                        )}
+                                        <div className="options-menu">
+                                            {username === comment.username ? (
+                                                <>
+                                                    <button className="edit-button">수정</button>
+                                                    <button className="delete-button">삭제</button>
+                                                </>
+                                            ) : (
+                                                <button className="report-button">신고</button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -191,14 +229,41 @@ const GameMate = () => {
                             {comment.recomments.length > 0 && (
                                 <div className="recomment-box">
                                     {comment.recomments.map((recomment) => (
-                                        <div className="recomment-nickname" key={recomment.id}>
-                                            <div className="recomment-header">
-                                                <i className="fas fa-user"></i>
-                                                <span className="nickname">
-                                                    <strong>{recomment.nickname}</strong>
-                                                </span>
+                                        <div className="recomment-mid-box">
+                                            <div className="recomment-endbox" key={recomment.id}>
+                                                <div className="recomment-header">
+                                                    <i className="fas fa-user"></i>
+                                                    <span className="recomment-nickname">
+                                                        <strong>{recomment.nickname}</strong>
+                                                    </span>
+                                                </div>
+                                                <div className="comment-created-date">
+                                                    <DateDisplay dateString={post.createdDate} />
+                                                </div>
+                                                <div className="recomment-content">{recomment.content}</div>
                                             </div>
-                                            <div className="recomment-content">{recomment.content}</div>
+                                            <div className="options">
+                                                <button
+                                                    className="dots-icon"
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                >
+                                                    <span className="dot"></span>
+                                                    <span className="dot"></span>
+                                                    <span className="dot"></span>
+                                                </button>
+
+                                                <div className="options-menu">
+                                                    {username === recomment.username ? (
+                                                        <>
+                                                            <button className="edit-button">수정</button>
+                                                            <button className="delete-button">삭제</button>
+                                                        </>
+                                                    ) : (
+                                                        <button className="report-button">신고</button>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
