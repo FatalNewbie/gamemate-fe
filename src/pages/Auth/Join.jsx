@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Box, Typography, TextField, Button, Dialog } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import logo from '../../assets/logo.png';
 
 const Join = () => {
@@ -27,7 +26,7 @@ const Join = () => {
         setIsRegistering(false); // 회원가입 상태를 false로 변경
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (password !== confirmPassword) {
