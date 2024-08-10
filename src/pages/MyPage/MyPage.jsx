@@ -114,6 +114,7 @@ const MyPage = () => {
                     borderRadius: 1,
                     minHeight: '100px',
                     marginBottom: 2,
+                    marginTop: 2,
                     boxShadow: 3,
                 }}
             >

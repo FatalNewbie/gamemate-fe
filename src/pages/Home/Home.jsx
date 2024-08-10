@@ -156,7 +156,7 @@ const Home = () => {
     const handleFriendRequest = async () => {
         try {
           const token = cookies.token;
-          await axios.post('/friend/', {
+          const response = await axios.post('/friend/', {
             receiverId: selectedUser.id,
           }, {
             headers: {
@@ -170,7 +170,7 @@ const Home = () => {
     
           setUsers(updatedUsers);
           setOpen(false);
-          setSnackbarMessage('친구 요청이 완료되었습니다.');
+          setSnackbarMessage(response.data.data.message);
           setIsSnackbarOpen(true);
         } catch (error) {
           console.error('Error sending friend request:', error);
@@ -574,7 +574,7 @@ const Home = () => {
             {/* 친구 요청 완료 알림 */}
             <Snackbar
                 open={isSnackbarOpen}
-                autoHideDuration={6000}
+                autoHideDuration={1000}
                 onClose={handleSnackbarClose}
                 anchorOrigin={{
                     vertical: 'top',
@@ -589,7 +589,12 @@ const Home = () => {
                     transform: 'translate(-50%, -50%)',
                 }}
             >
-                <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+                <Alert onClose={handleSnackbarClose} severity="success" sx={{ 
+                    width: '100%',
+                    backgroundColor: 'rgba(10, 8, 138, 0.8)', // 배경 색상
+                    color: '#ffffff', // 텍스트 색상
+                    fontSize: '11px',
+                    }}>
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
