@@ -1,8 +1,10 @@
-.post-card {
-    border: 1px solid #ccc;
+.post-list-card {
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    box-shadow: 0 0px 20px rgba(0, 0, 0, 0.1); /* 그림자 설정 */
-    margin-top: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 설정 */
+    margin-top: 4px;
+    background-color: #fff;
+    padding: 14px 2px;
 }
 
 .title-box {
@@ -21,12 +23,7 @@
     font-size: 14px;
     color: #1a1818;
     margin-bottom: 10px;
-}
-
-.post-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    margin-right: 10px;
 }
 
 .genre-container {
@@ -45,13 +42,19 @@
     margin-right: 5px; /* 오른쪽 여백 추가 */
 }
 
+.post-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .icon {
     margin-right: 5px;
     margin-left: 10px;
 }
 
 .nickname {
-    padding-right: 200px;
+    padding-right: 190px;
 }
 
 .participants {
@@ -59,4 +62,5 @@
     background-color: #e6e6fa; /* 연한 보라색 배경 */
     border-radius: 20px;
     padding: 5px 10px;
+    margin-right: 10px;
 }

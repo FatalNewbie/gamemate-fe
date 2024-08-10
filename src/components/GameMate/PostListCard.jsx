@@ -2,7 +2,7 @@ import React from 'react';
 
 const PostListCard = ({ username, nickname, status, gameTitle, gameGenre, mateCnt, mateContent }) => {
     return (
-        <div className="post-card">
+        <div className="post-list-card">
             <div className="title-box">
                 <div className="title">{gameTitle}</div>
                 <div className="location">{status}</div>

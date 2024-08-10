@@ -1,27 +1,26 @@
 .gamemate-container {
     margin: auto;
     position: relative;
+    padding: 8px;
 }
 
 .online-posts,
 .offline-posts {
     margin-left: 10px;
-    height: 35px;
-    width: 80px;
-    background-color: #5a6268;
+    height: 25px;
+    width: 70px;
+    background-color: #b4b3f6;
     color: white;
     border: none;
     border-radius: 30px;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 12px;
+    font-weight: bold;
 }
 
-.online-posts.active {
-    background-color: #3d3da3; /* 온라인 버튼이 활성화된 색 */
-}
-
+.online-posts.active,
 .offline-posts.active {
-    background-color: #3d3da3; /* 오프라인 버튼이 활성화된 색 */
+    background-color: #3f3dbd; /* 온라인 버튼이 활성화된 색 */
 }
 
 .write-button {
