@@ -85,7 +85,7 @@ const Recommend = () => {
   const handleFriendRequest = async () => {
     try {
       const token = cookies.token;
-      await axios.post('/friend/', {
+      const response = await axios.post('/friend/', {
         receiverId: selectedUser.id,
       }, {
         headers: {
@@ -99,7 +99,7 @@ const Recommend = () => {
 
       setUsers(updatedUsers);
       setFriendModalOpen(false);
-      setSnackbarMessage('친구 요청이 완료되었습니다.');
+      setSnackbarMessage(response.data.data.message);
       setIsSnackbarOpen(true);
     } catch (error) {
       console.error('Error sending friend request:', error);
@@ -109,7 +109,7 @@ const Recommend = () => {
   const handleFriendRequestCancel = async () => {
     try {
       const token = cookies.token;
-      await axios.put('/friend/cancel', {
+      const response2 = await axios.put('/friend/cancel', {
         receiverId: selectedUser.id,
         status: 'REJECTED',
       }, {
@@ -124,7 +124,7 @@ const Recommend = () => {
 
       setUsers(updatedUsers);
       setCancelModalOpen(false);
-      setSnackbarMessage('친구 요청이 취소되었습니다.');
+      setSnackbarMessage(response2.data.data.message);
       setIsSnackbarOpen(true);
     } catch (error) {
       console.error('Error cancelling friend request:', error);
@@ -142,7 +142,11 @@ const Recommend = () => {
         color="primary"
         startIcon={<ArrowBack />}
         onClick={() => navigate('/')}
-        sx={{ marginBottom: '20px' }}
+        sx = {{fontSize: '13px',
+          backgroundColor: 'rgba(10, 8, 138, 0.8)',
+          color: 'white',
+          marginBottom: '20px' 
+      }}
       >
         뒤로 가기
       </Button>
@@ -190,12 +194,26 @@ const Recommend = () => {
               </Box>
               <Box className="tags" marginBottom={'3px'}>
                 {user.common_genre.map((genre, index) => (
-                  <Chip key={index} label={genre} className="tag" size="small" color="primary" sx={{ fontSize: '10px', fontWeight: 200 }} />
+                  <Chip key={index} 
+                  label={genre} 
+                  className="tag" 
+                  size="small" 
+                  sx = {{fontSize: '10px',
+                      backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                      color: 'white'
+                  }} />
                 ))}
               </Box>
               <Box className="tags">
                 {user.common_play_time.map((time, index) => (
-                  <Chip key={index} label={time} className="tag" size="small" color="primary" sx={{ fontSize: '10px', fontWeight: 200 }} />
+                  <Chip key={index} 
+                  label={time} 
+                  className="tag" 
+                  size="small" 
+                  sx = {{fontSize: '10px',
+                      backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                      color: 'white'
+                  }}/>
                 ))}
               </Box>
             </Grid>
@@ -215,8 +233,8 @@ const Recommend = () => {
             variant="h6"
             sx={{
               fontFamily: 'Roboto, sans-serif',
-              fontWeight: 700,
-              fontSize: '16pt',
+              fontWeight: 600,
+              fontSize: '11pt',
               letterSpacing: '-0.5px',
               mb: 2,
             }}
@@ -246,8 +264,8 @@ const Recommend = () => {
             variant="h6"
             sx={{
               fontFamily: 'Roboto, sans-serif',
-              fontWeight: 700,
-              fontSize: '16pt',
+              fontWeight: 600,
+              fontSize: '11pt',
               letterSpacing: '-0.5px',
               mb: 2,
             }}
@@ -268,7 +286,7 @@ const Recommend = () => {
       {/* 친구 요청 완료 및 취소 알림 */}
       <Snackbar
           open={isSnackbarOpen}
-          autoHideDuration={6000}
+          autoHideDuration={1000}
           onClose={handleSnackbarClose}
           anchorOrigin={{
               vertical: 'top',
@@ -276,14 +294,18 @@ const Recommend = () => {
           }}
           sx={{
               top: '50%',
-              transform: 'translateY(-50%)',
               width: '80%', 
               maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
               left: '50%',
               transform: 'translate(-50%, -50%)',
           }}
       >
-          <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          <Alert onClose={handleSnackbarClose} severity="success" sx={{ 
+            width: '100%',
+            backgroundColor: 'rgba(10, 8, 138, 0.8)', // 배경 색상
+            color: '#ffffff', // 텍스트 색상
+            fontSize: '11px',
+            }}>
               {snackbarMessage}
           </Alert>
       </Snackbar>

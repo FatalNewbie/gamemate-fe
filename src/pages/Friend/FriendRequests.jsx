@@ -65,7 +65,7 @@ const FriendRequests = () => {
     const handleFriendRequestAccept = async () => {
         try {
             const token = cookies.token;
-            await axios.put('/friend/respond', {
+            const response2 = await axios.put('/friend/respond', {
                 requesterId: selectedRequest.requester.id,
                 status: 'ACCEPTED',
             }, {
@@ -76,7 +76,7 @@ const FriendRequests = () => {
 
             setFriendRequests(prevRequests => prevRequests.filter(request => request.requester.id !== selectedRequest.requester.id));
             setIsAcceptModalOpen(false);
-            setSnackbarMessage('친구 요청이 수락되었습니다.');
+            setSnackbarMessage(response2.data.data.message);
             setIsSnackbarOpen(true);
         } catch (error) {
             console.error('친구 요청 수락 중 오류 발생:', error);
@@ -86,7 +86,7 @@ const FriendRequests = () => {
     const handleFriendRequestDecline = async () => {
         try {
             const token = cookies.token;
-            await axios.put('/friend/respond', {
+            const response3 = await axios.put('/friend/respond', {
                 requesterId: selectedRequest.requester.id,
                 status: 'REJECTED',
             }, {
@@ -97,7 +97,7 @@ const FriendRequests = () => {
 
             setFriendRequests(prevRequests => prevRequests.filter(request => request.requester.id !== selectedRequest.requester.id));
             setIsDeclineModalOpen(false);
-            setSnackbarMessage('친구 요청이 거절되었습니다.');
+            setSnackbarMessage(response3.data.data.message);
             setIsSnackbarOpen(true);
         } catch (error) {
             console.error('친구 요청 거절 중 오류 발생:', error);
@@ -214,7 +214,17 @@ const FriendRequests = () => {
                     p: 4,
                     borderRadius: 1,
                 }}>
-                    <Typography variant="h6" sx={{ mb: 2 }}>
+                    <Typography
+                        id="cancel-request-modal"
+                        variant="h6"
+                        sx={{
+                        fontFamily: 'Roboto, sans-serif',
+                        fontWeight: 600,
+                        fontSize: '11pt',
+                        letterSpacing: '-0.5px',
+                        mb: 2,
+                        }}
+                    >
                         {selectedRequest?.requester.nickname}님을 친구로 수락하시겠습니까?
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
@@ -244,7 +254,17 @@ const FriendRequests = () => {
                     p: 4,
                     borderRadius: 1,
                 }}>
-                    <Typography variant="h6" sx={{ mb: 2 }}>
+                    <Typography
+                        id="cancel-request-modal"
+                        variant="h6"
+                        sx={{
+                        fontFamily: 'Roboto, sans-serif',
+                        fontWeight: 600,
+                        fontSize: '11pt',
+                        letterSpacing: '-0.5px',
+                        mb: 2,
+                        }}
+                    >
                         {selectedRequest?.requester.nickname}님의 친구 요청을 거절하시겠습니까?
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
@@ -261,7 +281,7 @@ const FriendRequests = () => {
             {/* 친구 요청 수락 및 거절 완료 알림 */}
             <Snackbar
                 open={isSnackbarOpen}
-                autoHideDuration={6000}
+                autoHideDuration={1000}
                 onClose={handleSnackbarClose}
                 anchorOrigin={{
                     vertical: 'top',
@@ -276,7 +296,12 @@ const FriendRequests = () => {
                     transform: 'translate(-50%, -50%)',
                 }}
             >
-                <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+                <Alert onClose={handleSnackbarClose} severity="success" sx={{ 
+                    width: '100%',
+                    backgroundColor: 'rgba(10, 8, 138, 0.8)', // 배경 색상
+                    color: '#ffffff', // 텍스트 색상
+                    fontSize: '11px',
+                    }}>
                     {snackbarMessage}
                 </Alert>
             </Snackbar>

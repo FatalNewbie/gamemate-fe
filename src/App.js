@@ -16,6 +16,7 @@ import FriendRequests from './pages/Friend/FriendRequests';
 import FriendsList from './pages/Friend/FriendList';
 import Join from './pages/Auth/Join';
 import Login from './pages/Auth/Login';
+import JoinAdditional from './pages/Auth/JoinAdditional';
 import ProfileImageEdit from './pages/MyPage/ProfileImageEdit';
 import ChatRoomTest from './pages/Chat/ChatRoomTest';
 import ChatWindow from './pages/Chat/ChatWindow';
@@ -25,12 +26,20 @@ const App = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Navigate to="/home" replace />} />
+                <Route path="/" element={<Navigate to="/login" replace />} />
                 <Route
                     path="/join"
                     element={
                         <MainLayout headerTitle="게임메이트" showHeader={false} showFooter={false}>
                             <Join />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/join-additional"
+                    element={
+                        <MainLayout headerTitle="게임메이트" showHeader={false} showFooter={false}>
+                            <JoinAdditional />
                         </MainLayout>
                     }
                 />
