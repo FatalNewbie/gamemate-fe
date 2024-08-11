@@ -142,7 +142,11 @@ const Recommend = () => {
         color="primary"
         startIcon={<ArrowBack />}
         onClick={() => navigate('/')}
-        sx={{ marginBottom: '20px' }}
+        sx = {{fontSize: '13px',
+          backgroundColor: 'rgba(10, 8, 138, 0.8)',
+          color: 'white',
+          marginBottom: '20px' 
+      }}
       >
         뒤로 가기
       </Button>
@@ -190,12 +194,26 @@ const Recommend = () => {
               </Box>
               <Box className="tags" marginBottom={'3px'}>
                 {user.common_genre.map((genre, index) => (
-                  <Chip key={index} label={genre} className="tag" size="small" color="primary" sx={{ fontSize: '10px', fontWeight: 200 }} />
+                  <Chip key={index} 
+                  label={genre} 
+                  className="tag" 
+                  size="small" 
+                  sx = {{fontSize: '10px',
+                      backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                      color: 'white'
+                  }} />
                 ))}
               </Box>
               <Box className="tags">
                 {user.common_play_time.map((time, index) => (
-                  <Chip key={index} label={time} className="tag" size="small" color="primary" sx={{ fontSize: '10px', fontWeight: 200 }} />
+                  <Chip key={index} 
+                  label={time} 
+                  className="tag" 
+                  size="small" 
+                  sx = {{fontSize: '10px',
+                      backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                      color: 'white'
+                  }}/>
                 ))}
               </Box>
             </Grid>
@@ -276,7 +294,6 @@ const Recommend = () => {
           }}
           sx={{
               top: '50%',
-              transform: 'translateY(-50%)',
               width: '80%', 
               maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
               left: '50%',

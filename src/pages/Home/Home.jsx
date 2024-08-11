@@ -18,6 +18,7 @@ import {
     CircularProgress,
     Snackbar,
     Alert,
+    Chip
 } from '@mui/material';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 import profilePlaceholder from '../../assets/profile_placeholder.png';
@@ -353,18 +354,32 @@ const Home = () => {
                                     >
                                         {index === 1 && (
                                             <>
-                                                <Box sx={{ mt: 2 }}>
+                                                <Box className="tags" sx={{display: 'flex', gap: 1, flexWrap: 'wrap', marginTop: '10px'}}>
                                                     {visibleUsers[1].common_genre.map((genre, index) => (
-                                                        <span key={index} className="tag3">
-                                                            {genre}
-                                                        </span>
+                                                        <Chip
+                                                            key={index}
+                                                            label={genre}
+                                                            size="small"
+                                                            sx={{
+                                                                fontSize: '10px',
+                                                                backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                                                                color: 'white',
+                                                            }}
+                                                        />
                                                     ))}
                                                 </Box>
-                                                <Box className="modal-tags">
+                                                <Box className="modal-tags" sx={{display: 'flex', gap: 1, flexWrap: 'wrap'}}>
                                                     {visibleUsers[1].common_play_time.map((time, index) => (
-                                                        <span key={index} className="tag4">
-                                                            {time}
-                                                        </span>
+                                                        <Chip
+                                                            key={index}
+                                                            label={time}
+                                                            size="small"
+                                                            sx={{
+                                                                fontSize: '10px',
+                                                                backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                                                                color: 'white',
+                                                            }}
+                                                        />
                                                     ))}
                                                 </Box>
                                             </>
@@ -582,7 +597,6 @@ const Home = () => {
                 }}
                 sx={{
                     top: '50%',
-                    transform: 'translateY(-50%)',
                     width: '80%', 
                     maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
                     left: '50%',
