@@ -9,7 +9,7 @@ const Login = ({ login }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    const [setCookie] = useCookies(['token']);
+    const [cookies, setCookie] = useCookies(['token']);
     const [open, setOpen] = useState(false); // 다이얼로그 열기 상태
 
     useEffect(() => {
