@@ -7,8 +7,8 @@ import GameDetails from './pages/GameList/GameDetails'; // Correct import path
 import GameMate from './pages/GameMate/GameMate';
 import GameMatePost from './pages/GameMate/GameMatePost';
 import GameMateNew from './pages/GameMate/GameMateNew';
+import GamteMateUpdate from './pages/GameMate/GameMateUpdate';
 import KakaoSearch from './pages/GameMate/KakaoSearch';
-import InfiniteScroll from './pages/GameMate/InfiniteScroll';
 import Chat from './pages/Chat/Chat';
 import MyPage from './pages/MyPage/MyPage';
 import Recommend from './pages/Recommend/Recommend';
@@ -19,6 +19,7 @@ import Login from './pages/Auth/Login';
 import ProfileImageEdit from './pages/MyPage/ProfileImageEdit';
 import ChatRoomTest from './pages/Chat/ChatRoomTest';
 import ChatWindow from './pages/Chat/ChatWindow';
+import { ImportExport } from '@mui/icons-material';
 
 const App = () => {
     return (
@@ -86,6 +87,14 @@ const App = () => {
                     element={
                         <MainLayout headerTitle="게임메이트">
                             <GameMatePost />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/gamemate/posts/:id/write"
+                    element={
+                        <MainLayout headerTitle="게임메이트">
+                            <GamteMateUpdate />
                         </MainLayout>
                     }
                 />

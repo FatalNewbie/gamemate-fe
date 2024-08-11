@@ -17,10 +17,13 @@
 }
 
 .post-edit-box {
-    padding-top: 10px;
     display: flex; /* flexbox 사용 */
     justify-content: flex-end; /* 오른쪽으로 정렬 */
     gap: 6px; /* 버튼 간의 간격 */
+    padding-right: 10px;
+    padding: 10px 0px;
+    margin-top: 10px;
+    border-top: 1px solid #e0e0e0; /* 얇은 실선 추가 */
 }
 
 .post-edit-button,
@@ -34,11 +37,13 @@
 .post-edit-button {
     color: rgb(0, 0, 0); /* 글자 색상 */
     font-weight: bold;
+    background-color: white;
 }
 
 .post-delete-button {
     color: rgb(209, 28, 28); /* 글자 색상 */
     font-weight: bold;
+    background-color: white;
 }
 
 .status-grid {
@@ -107,8 +112,6 @@
 }
 
 .post-content {
-    padding: 10px 0px;
-    border-bottom: 1px solid #e0e0e0; /* 얇은 실선 추가 */
     line-height: 2; /* 줄간격 조정 (원하는 값으로 변경) */
 }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom'; // useNavigate 추가
+import { useParams, useNavigate } from 'react-router-dom'; // useNavigate 추가
 import '../GameMate/GameMatePost.css';
 import KakaoMap from './KakaoMap';
 import { api } from '../../apis/customAxios';
@@ -9,10 +9,12 @@ import DateDisplay from '../../components/DateDisplay';
 
 const { kakao } = window;
 
-const GameMate = () => {
+const GameMatePost = () => {
     const [cookies] = useCookies(['token']);
 
     const { username } = jwtDecode(cookies.token);
+
+    const navigate = useNavigate();
 
     const { id } = useParams();
     const [post, setPost] = useState(null);
@@ -82,7 +84,7 @@ const GameMate = () => {
         const response = await api.post(
             `/post/${id}/comment`,
             {
-                pCommentId: commentId,
+                parentCommentId: commentId,
                 content: recomment,
             },
             {
@@ -96,6 +98,10 @@ const GameMate = () => {
         window.location.reload(); // 페이지 새로고침
     };
 
+    const handleEditClick = (post) => {
+        navigate(`/gamemate/posts/${id}/write`, { state: { post } });
+    };
+
     if (!post || !comments) {
         return <div>로딩 중...</div>; // post가 없을 때 로딩 메시지 출력
     }
@@ -104,14 +110,7 @@ const GameMate = () => {
         <div className="gamemate-post-container">
             <div className="post-card">
                 <h2 className="game-title">{post.gameTitle}</h2>
-                <>
-                    {username === post.username && (
-                        <div className="post-edit-box">
-                            <button className="post-edit-button">수정</button>
-                            <button className="post-delete-button">삭제</button>
-                        </div>
-                    )}
-                </>
+
                 <div className="profile-box">
                     <div className="user-profile">
                         <div className="left-section">
@@ -161,9 +160,25 @@ const GameMate = () => {
                     )}
                 </div>
 
-                <div className="apply-button-box">
-                    <button className="apply-button">메이트 신청하기</button>
-                </div>
+                <>
+                    {username === post.username && (
+                        <div className="post-edit-box">
+                            <button className="post-edit-button" onClick={() => handleEditClick(post)}>
+                                수정
+                            </button>
+                            <button className="post-delete-button">삭제</button>
+                        </div>
+                    )}
+                </>
+
+                <>
+                    {username !== post.username && (
+                        <div className="apply-button-box">
+                            <button className="apply-button">메이트 신청하기</button>
+                        </div>
+                    )}
+                </>
+
                 <h3 className="comment-cnt">댓글 {post.commentCnt}</h3>
 
                 {comments && comments.content.length === 0 ? (
@@ -288,4 +303,4 @@ const GameMate = () => {
     );
 };
 
-export default GameMate;
+export default GameMatePost;
