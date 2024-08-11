@@ -7,6 +7,7 @@ import SearchBar from '../components/SearchBar';
 
 const MainLayout = ({ children, headerTitle, showSearchIcon = true, showHeader = true, showFooter = true }) => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [activePage, setActivePage] = useState('/home'); // activePage 상태 추가
 
     const handleSearchOpen = () => {
         setIsSearchOpen(true);
@@ -27,11 +28,11 @@ const MainLayout = ({ children, headerTitle, showSearchIcon = true, showHeader =
                 bgcolor="#fff"
                 boxShadow={3}
             >
-                {showHeader && <Header title={headerTitle} showSearchIcon={showSearchIcon} onSearchClick={handleSearchOpen} />}
+                {showHeader && <Header title={headerTitle} showSearchIcon={showSearchIcon} onSearchClick={handleSearchOpen} setActivePage={setActivePage} activePage={activePage} />}
                 <Box component="main" flexGrow={1} overflow="auto" p={2} paddingBottom="70px">
                     {children}
                 </Box>
-                {showFooter && <Footer />}
+                {showFooter && <Footer setActivePage={setActivePage} activePage={activePage} />}
                 {isSearchOpen && (
                     <Box
                         position="absolute"

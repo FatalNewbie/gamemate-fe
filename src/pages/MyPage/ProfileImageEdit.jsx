@@ -74,6 +74,7 @@ function ProfileImageEdit() {
             if (response.status === 200) {
                 alert('프로필 이미지가 업데이트되었습니다.');
             }
+            navigate('/mypage');
         } catch (error) {
             console.error('프로필 이미지를 업데이트하는 데 실패했습니다:', error);
             alert('프로필 이미지 업데이트 실패');

@@ -4,7 +4,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
-const Header = ({ title, showSearchIcon = true, onSearchClick, setActivePage }) => {
+
+const Header = ({ title, showSearchIcon = true, onSearchClick, setActivePage, activePage, onOpenEditModal }) => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -17,8 +18,22 @@ const Header = ({ title, showSearchIcon = true, onSearchClick, setActivePage }) 
     };
 
     const handleMyPageClick = () => {
+        console.log('setActivePage 호출됨');
         setActivePage('/mypage'); // 푸터의 activePage 상태 업데이트
         navigate('/mypage');
+        handleMenuClose();
+    };
+
+    const handleLogoutClick = () => {
+        setActivePage('/home') // 로그아웃 시 activePage 초기화
+        navigate('/login'); // 로그인 페이지로 이동
+        handleMenuClose();
+    };
+
+    const handleEditProfileClick = () => {
+        if (onOpenEditModal) {
+            onOpenEditModal(); // 모달 열기
+        }
         handleMenuClose();
     };
 
@@ -88,9 +103,13 @@ const Header = ({ title, showSearchIcon = true, onSearchClick, setActivePage }) 
                         },
                     }}
                 >
-                    <MenuItem onClick={handleMyPageClick}>마이페이지</MenuItem>
-                    <MenuItem onClick={handleMenuClose}>로그아웃</MenuItem>
-                    <MenuItem onClick={handleMenuClose}>회원탈퇴</MenuItem>
+                    {activePage !== '/mypage' && (
+                        <MenuItem onClick={handleMyPageClick}>마이페이지</MenuItem>
+                    )}
+                    <MenuItem onClick={handleLogoutClick}>로그아웃</MenuItem>
+                    {activePage === '/mypage' && (
+                        <MenuItem onClick={handleMenuClose}>회원탈퇴</MenuItem>
+                    )}
                 </Menu>
             </Toolbar>
         </AppBar>

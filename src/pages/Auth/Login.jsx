@@ -11,11 +11,41 @@ const Login = ({ login }) => {
     const navigate = useNavigate();
     const [cookies, setCookie] = useCookies(['token']);
     const [open, setOpen] = useState(false); // 다이얼로그 열기 상태
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 관리
 
     useEffect(() => {
         // 컴포넌트가 마운트될 때 다이얼로그를 자동으로 열기
         setOpen(true);
     }, []);
+
+    const onNaverLogin = () => {
+        window.location.href = "http://localhost:8080/oauth2/authorization/naver"
+    }
+
+    useEffect(() => {
+        const fetchJwtToken = async () => {
+            try {
+                const dataResponse = await axios.get("http://localhost:8080/token", { withCredentials: true });
+                const jwtToken = dataResponse.headers['authorization'];
+
+                if (jwtToken) {
+                    const tokenValue = jwtToken.replace(`Bearer `, ``);
+                    localStorage.setItem('token', tokenValue);
+                    alert('로그인 성공');
+                    navigate('/'); // JWT 저장 후 대시보드로 리디렉션
+                } else {
+                    alert('토큰을 받아오지 못했습니다.');
+                }
+            } catch (error) {
+                console.error('로그인 중 오류 발생:', error);
+                alert('로그인 실패. 다시 시도해 주세요.');
+            }
+        };
+
+        if (isLoggedIn) {
+            fetchJwtToken(); // 로그인 상태가 true일 때만 JWT 요청
+        }
+    }, [isLoggedIn, navigate]); // 로그인 상태에 따라 호출
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -48,15 +78,11 @@ const Login = ({ login }) => {
             const token = response.headers['authorization'];
             setCookie('token', token);
 
-//             if (localStorage.getItem('role') === 'ROLE_ADMIN') {
-//                 navigate('/admin');
-//             } else {
-//                 navigate('/');
-//             }
             navigate('/');
+
         } catch (error) {
             console.error('Login error:', error);
-            alert(error.message);
+            alert('로그인 중 오류가 발생했습니다.');
         }
     };
 
@@ -95,8 +121,12 @@ const Login = ({ login }) => {
                     <Button
                         fullWidth
                         variant="outlined"
-                        startIcon={<img src={process.env.PUBLIC_URL + '/naverLogo.png'} alt="Naver Icon" style={{ width: 23, height: 23, marginRight: 10 }} />}
+                        startIcon={<img src={process.env.PUBLIC_URL + '/naverLogo.png'}
+                            alt="Naver Icon"
+                            style={{ width: 23, height: 23, marginRight: 10 }}
+                        />}
                         style={{ marginTop: '10px' }}
+                        onClick={onNaverLogin}
                     >
                         Naver 계정으로 로그인
                     </Button>

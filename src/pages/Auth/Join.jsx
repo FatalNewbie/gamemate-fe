@@ -27,7 +27,7 @@ const Join = () => {
         setIsRegistering(false); // 회원가입 상태를 false로 변경
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         if (password !== confirmPassword) {
@@ -35,36 +35,19 @@ const Join = () => {
             return;
         }
 
-        try {
-            const response = await axios.post('http://localhost:8080/join', {
-                username,
-                password,
-                nickname
-            });
-
-            if (response.status === 200) {
-                navigate('/login');
-                handleClose(); // 모달 닫기
-            }
-        } catch (error) {
-            console.error('회원가입 실패:', error);
-            if (error.response) {
-                const errorData = error.response.data;
-                if (errorData.success === false) {
-                    if (errorData.username) {
-                        alert(errorData.username);
-                    }
-                    if (errorData.errors) {
-                        if (errorData.errors.password) {
-                            alert(errorData.errors.password);
-                        }
-                    }
-                }
-            } else {
-                alert('회원가입에 실패했습니다. 다시 시도해주세요.');
-            }
-        }
+        navigate('/join-additional', { state: { username, password, nickname } });
     };
+
+    const handleGoogleLogin = () => {
+        // 구글 로그인 URL로 리다이렉트
+        const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+        const redirectUri = process.env.REACT_APP_REDIRECT_URI;
+        window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=code&scope=openid%20email%20profile`;
+    };
+
+    const onNaverLogin = () => {
+        window.location.href = "http://localhost:8080/oauth2/authorization/naver"
+    }
 
     return (
         <Container maxWidth="xs" style={{ marginTop: '50px' }}>
@@ -72,14 +55,40 @@ const Join = () => {
                 <img src={logo} alt="Logo" style={{ width: 70, height: 70 }} />
                 <Typography variant="h3">게임메이트</Typography>
             </Box>
-            <Button variant="contained" onClick={handleClickOpen} fullWidth>
-                이메일 계정으로 시작하기
-            </Button>
-            <Dialog open={open}
-                    onClose={handleClose}
+            <Box mt={2}>
+                <Button
+                    variant="outlined"
+                    startIcon={<img src={process.env.PUBLIC_URL + '/googleLogo.png'} alt="Google Icon" style={{ width: 20, height: 20, marginRight: 10 }} />}
                     fullWidth
-//                     maxWidth="xs"
-                    PaperProps={{ style: { maxWidth: '370px' } }}>
+                    onClick={handleGoogleLogin}
+                >
+                    구글 계정으로 시작하기
+                </Button>
+            </Box>
+            <Box mt={2}>
+                <Button
+                    variant="outlined"
+                    startIcon={<img src={process.env.PUBLIC_URL + '/naverLogo.png'} alt="Naver Icon" style={{ width: 23, height: 23, marginRight: 10 }} />}
+                    fullWidth
+                    onClick={onNaverLogin}
+                >
+                    네이버 계정으로 시작하기
+                </Button>
+            </Box>
+            <Box mt={2}>
+                <Button variant="contained" onClick={handleClickOpen} fullWidth>
+                    이메일 계정으로 시작하기
+                </Button>
+            </Box>
+            <Typography variant="body2" align="center" style={{ marginTop: 5}} >
+                이미 계정이 있으신가요? <Button onClick={() => navigate('/login')}>로그인</Button>
+            </Typography>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                fullWidth
+                PaperProps={{ style: { maxWidth: '370px' } }}
+            >
                 <Box sx={{
                     padding: 2,
                     boxShadow: 3,
@@ -128,7 +137,7 @@ const Join = () => {
                         onChange={(e) => setNickname(e.target.value)}
                     />
                     <Button variant="contained" color="primary" fullWidth onClick={handleSubmit} sx={{ marginTop: '16px' }}>
-                        가입하기
+                        다음
                     </Button>
                 </Box>
             </Dialog>
