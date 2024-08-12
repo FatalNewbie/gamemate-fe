@@ -42,7 +42,7 @@ const App = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Navigate to={isLoggedIn ? "/home" : "/login"} replace />} />
+                <Route path="/" element={<Navigate to={isLoggedIn ? "/home" : "/join"} replace />} />
                 <Route
                     path="/join"
                     element={
