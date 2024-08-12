@@ -12,9 +12,11 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
+import { useCookies } from 'react-cookie';
 
 const CommentModal = ({ open, onClose, game, onConfirm }) => {
     const [comment, setComment] = useState('');
+    const [cookies] = useCookies(['token']); // useCookies 사용
 
     const handleConfirm = () => {
         const commentData = {
@@ -23,7 +25,11 @@ const CommentModal = ({ open, onClose, game, onConfirm }) => {
         };
 
         axios
-            .post(`http://localhost:8080/games/${game.id}/comments`, commentData)
+            .post(`http://localhost:8080/games/${game.id}/comments`, commentData, {
+                headers: {
+                    Authorization: `${cookies.token}`, // 토큰을 헤더에 포함
+                },
+            })
             .then((response) => {
                 console.log('Comment saved successfully:', response.data);
                 onConfirm(comment);

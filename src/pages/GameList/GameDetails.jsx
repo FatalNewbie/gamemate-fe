@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Typography } from '@mui/material'; // Typography 가져오기
+import { Box, Typography } from '@mui/material';
 import axios from 'axios';
 import GameDescriptionBox from './GameDescriptionBox';
 import GameRatingBox from './GameRatingBox';
 import GameCommentsBox from './GameCommentsBox';
 import RatingModal from './RatingModal';
 import CommentModal from './CommentModal';
-import token from './authToken'; // Import the token
+import { useCookies } from 'react-cookie';
 
 const GameDetails = () => {
     const { id } = useParams();
+    const [cookies] = useCookies(['token']);
     const [game, setGame] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -26,10 +27,14 @@ const GameDetails = () => {
             try {
                 const response = await axios.get(`http://localhost:8080/games/${id}`, {
                     headers: {
-                        Authorization: `${token}`, // Use the token here
+                        Authorization: `${cookies.token}`,
                     },
                 });
-                setGame(response.data);
+                if (response.data && response.data.data) {
+                    setGame(response.data.data);
+                } else {
+                    throw new Error('Game data not found');
+                }
                 setLoading(false);
             } catch (err) {
                 setError(err);
@@ -37,7 +42,7 @@ const GameDetails = () => {
             }
         };
         fetchGameDetails();
-    }, [id]);
+    }, [id, cookies.token]);
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -45,7 +50,7 @@ const GameDetails = () => {
                 const response = await axios.get(`http://localhost:8080/games/${id}/comments`, {
                     params: { page: commentPage - 1, size: 10 },
                 });
-                const fetchedComments = response.data.content || [];
+                const fetchedComments = response.data.data.content || [];
 
                 if (commentPage === 1) {
                     setComments(fetchedComments);
@@ -53,7 +58,7 @@ const GameDetails = () => {
                     setComments((prevComments) => [...prevComments, ...fetchedComments]);
                 }
 
-                setTotalComments(response.data.totalElements);
+                setTotalComments(response.data.data.totalElements);
             } catch (err) {
                 console.error(err);
             }
@@ -67,18 +72,22 @@ const GameDetails = () => {
     const handleOpenCommentModal = () => setOpenCommentModal(true);
     const handleCloseCommentModal = () => setOpenCommentModal(false);
 
-    const handleAddToGameList = (event) => {
-        event.target.style.backgroundColor = '#8F8EC9';
+    const truncateText = (text, maxLength) => {
+        if (text.length > maxLength) {
+            return text.slice(0, maxLength) + '...';
+        }
+        return text;
     };
 
-    const cleanDeveloperName = (name) => {
+    const cleanDeveloperName = (name, maxLength = 20) => {
         let cleanedName = name.replace(/^(주식회사 |\(주\))/g, '');
         cleanedName = cleanedName.replace(/( 주식회사| Inc\.?| \(유\)| \(주\)|\(주\))$/g, '');
-        return cleanedName;
+        return truncateText(cleanedName, maxLength);
     };
 
-    const cleanGenre = (genre) => {
-        return genre.replace(/\(베팅성\)$/, '');
+    const cleanGenre = (genre, maxLength = 20) => {
+        let cleanedGenre = genre.replace(/\(베팅성\)$/, '');
+        return truncateText(cleanedGenre, maxLength);
     };
 
     const chipStyle = {
@@ -97,8 +106,28 @@ const GameDetails = () => {
         return (total / ratings.length / 2).toFixed(1);
     };
 
-    const totalRaters = game ? game.ratings.length : 0;
-    const averageRating = game ? calculateAverageRating(game.ratings) : 0;
+    const handleUpdateRating = (newRating, newTotalRaters, newAverageRating) => {
+        if (game && game.ratings) {
+            const updatedRatings = [...game.ratings];
+            const existingRatingIndex = updatedRatings.findIndex((rating) => rating.userId === cookies.userId);
+
+            if (existingRatingIndex !== -1) {
+                updatedRatings[existingRatingIndex].rating = newRating;
+            } else {
+                updatedRatings.push({ userId: cookies.userId, rating: newRating });
+            }
+
+            setGame((prevGame) => ({
+                ...prevGame,
+                ratings: updatedRatings,
+                totalRaters: newTotalRaters, // 평가 인원수 업데이트
+                averageRating: newAverageRating, // 평균 평점 업데이트
+            }));
+        }
+    };
+
+    const totalRaters = game && game.ratings ? game.ratings.length : 0;
+    const averageRating = game && game.ratings ? calculateAverageRating(game.ratings) : 0;
 
     const loadMoreComments = () => {
         setCommentPage((prevPage) => prevPage + 1);
@@ -142,7 +171,11 @@ const GameDetails = () => {
                 averageRating={averageRating}
                 totalRaters={totalRaters}
                 userRating={userRating}
+                setUserRating={setUserRating}
                 handleOpenRatingModal={handleOpenRatingModal}
+                gameId={id}
+                game={game} // 여기서 game 객체를 전달합니다
+                onRatingUpdate={handleUpdateRating} // 추가된 함수
             />
             <GameCommentsBox
                 comments={comments}
