@@ -47,6 +47,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding-left: 10px;
 }
 
 .icon {
@@ -54,8 +55,10 @@
     margin-left: 10px;
 }
 
-.nickname {
-    padding-right: 190px;
+.time-ago {
+    padding-right: 200px;
+    font-size: 13px;
+    color: #272727;
 }
 
 .participants {

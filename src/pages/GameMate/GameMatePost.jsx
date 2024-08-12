@@ -8,6 +8,7 @@ import { useCookies } from 'react-cookie';
 import { jwtDecode } from 'jwt-decode';
 import DateDisplay from '../../components/DateDisplay';
 import EditCommentModal from './EditCommentModal';
+import EditRecommentModal from './EditRecommentModal';
 
 const { kakao } = window;
 
@@ -46,6 +47,13 @@ const GameMatePost = () => {
         console.log('모달열림');
     };
 
+    const handleEditReCommentClick = (recomment) => {
+        setOpenCommentId(recomment.id); // 클릭한 댓글 ID를 저장
+        setCurrentComment(recomment);
+        setModalOpen(true);
+        console.log('모달열림');
+    };
+
     const handleCloseModal = () => {
         setModalOpen(false);
         setCurrentComment(null);
@@ -59,6 +67,10 @@ const GameMatePost = () => {
         );
         console.log('업데이트된 댓글 목록:', updatedComments); // 업데이트된 댓글 목록 로그
         setComments(updatedComments);
+    };
+
+    const handleUpdateRecomment = (commentId, newContent) => {
+        window.location.reload();
     };
 
     const handleDeleteComment = (commentId) => {
@@ -257,7 +269,11 @@ const GameMatePost = () => {
                             <h3>위치</h3>
                             <div>{post.mateLocation}</div>
                             <div className="map-placeholder">
-                                <KakaoMap post={post} /> {/* KakaoMap 컴포넌트 사용 */}
+                                {post && post.latitude !== null ? (
+                                    <KakaoMap post={post} />
+                                ) : (
+                                    <p>위치 정보가 없습니다.</p> // 위치 정보가 없을 때 보여줄 내용
+                                )}
                             </div>
                         </>
                     )}
@@ -362,10 +378,12 @@ const GameMatePost = () => {
                                         value={recomment}
                                         onChange={handleRecommentChange}
                                         className="comment-input"
+                                        required
                                     />
                                     <button
                                         onClick={() => handleRecommentSubmit(comment.id)}
-                                        className="comment-submit-button"
+                                        className="recomment-submit-button"
+                                        disabled={!recomment.trim()}
                                     >
                                         <strong>등록</strong>
                                     </button>
@@ -377,6 +395,16 @@ const GameMatePost = () => {
                                     {comment.recomments.map((recomment) => (
                                         <div className="recomment-mid-box">
                                             <div className="recomment-endbox" key={recomment.id}>
+                                                {openCommentId === recomment.id &&
+                                                    isModalOpen && ( // 추가된 조건
+                                                        <EditRecommentModal
+                                                            isOpen={isModalOpen} // 모달 열림
+                                                            onClose={handleCloseModal}
+                                                            comment={currentComment} // 현재 댓글 전달
+                                                            onUpdate={handleUpdateRecomment} // 댓글 업데이트 핸들러
+                                                            id={id}
+                                                        />
+                                                    )}
                                                 <div className="recomment-header">
                                                     <Avatar
                                                         src={recomment.userProfile} // S3 URL
@@ -401,8 +429,18 @@ const GameMatePost = () => {
                                             <div className="recomment-edit-box">
                                                 {username === recomment.username ? (
                                                     <>
-                                                        <button className="edit-button">수정</button>
-                                                        <button className="delete-button">삭제</button>
+                                                        <button
+                                                            className="edit-button"
+                                                            onClick={() => handleEditReCommentClick(recomment)}
+                                                        >
+                                                            수정
+                                                        </button>
+                                                        <button
+                                                            className="delete-button"
+                                                            onClick={() => handleDeleteComment(recomment.id)}
+                                                        >
+                                                            삭제
+                                                        </button>
                                                     </>
                                                 ) : (
                                                     <button className="report-button">신고</button>
@@ -423,8 +461,9 @@ const GameMatePost = () => {
                     value={comment}
                     onChange={handleCommentChange}
                     className="comment-input"
+                    required
                 />
-                <button onClick={handleCommentSubmit} className="comment-submit-button">
+                <button onClick={handleCommentSubmit} className="comment-submit-button" disabled={!comment.trim()}>
                     <strong>등록</strong>
                 </button>
             </div>
