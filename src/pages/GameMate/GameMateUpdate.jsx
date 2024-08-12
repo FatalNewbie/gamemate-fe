@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom'; // useNavigate 추가
-import '../GameMate/GameMatePost.css';
+import { useParams, useLocation, useNavigate } from 'react-router-dom'; // useNavigate 추가
+import '../GameMate/GameMateUpdate.css';
 import KakaoMap from './KakaoMap';
 import { api } from '../../apis/customAxios';
 import { regions } from './regions';
@@ -12,6 +12,7 @@ const { kakao } = window;
 
 const GameMatePost = () => {
     const [cookies] = useCookies(['token']);
+    const navigate = useNavigate();
 
     const { username } = jwtDecode(cookies.token);
 
@@ -46,6 +47,22 @@ const GameMatePost = () => {
 
     const handleSubAreaChange = (e) => {
         setField('mateRegionGu', e.target.value);
+    };
+
+    //데이터를 updatedData 담아 전송
+    const handleUpdate = async () => {
+        const response = await api.put(`/posts/${id}`, updatedPostData, {
+            headers: {
+                Authorization: cookies.token,
+            },
+        });
+
+        // 게시글 ID를 사용하여 상세 페이지로 이동
+        navigate(`/gamemate/posts/${id}`);
+    };
+
+    const handleUpdateCancel = async () => {
+        navigate(`/gamemate/posts/${id}`);
     };
 
     if (!post) {
@@ -114,7 +131,10 @@ const GameMatePost = () => {
                     </div>
                 </div>
                 <p className="post-content">
-                    <textarea value={post.mateContent} onChange={(e) => setField('mateContent', e.target.value)} />
+                    <textarea
+                        value={updatedPostData.mateContent}
+                        onChange={(e) => setField('mateContent', e.target.value)}
+                    />
                 </p>
                 <div>
                     {post.mateLocation && (
@@ -129,8 +149,13 @@ const GameMatePost = () => {
                 </div>
                 <>
                     {username === post.username && (
-                        <div className="post-edit-box">
-                            <button className="post-edit-button">등록</button>
+                        <div className="post-edit-complete-box">
+                            <button className="post-edit-complete-button" onClick={handleUpdate}>
+                                등록
+                            </button>
+                            <button className="post-edit-cancel-button" onClick={handleUpdateCancel}>
+                                취소
+                            </button>
                         </div>
                     )}
                 </>
