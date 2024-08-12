@@ -127,9 +127,6 @@ const RecievedFriendRequests = () => {
             >
                 뒤로 가기
             </Button>
-            <Typography variant="h5" gutterBottom>
-                친구 요청 목록
-            </Typography>
             <List>
                 {friendRequests.map((request, index) => (
                     <ListItem key={index} sx={{ display: 'flex', alignItems: 'center', padding: 2, marginBottom: '10px', borderRadius: '5                                                               %'}} component={Paper} elevation={3}>
@@ -286,7 +283,6 @@ const RecievedFriendRequests = () => {
                 }}
                 sx={{
                     top: '50%',
-                    transform: 'translateY(-50%)',
                     width: '80%', 
                     maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
                     left: '50%',

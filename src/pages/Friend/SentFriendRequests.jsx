@@ -174,7 +174,7 @@ const SentFriendRequests = () => {
                     mb: 2,
                     }}
                 >
-                    {selectedUser?.recommend_user}님께 보낸 친구 요청을 취소하시겠습니까?
+                    친구 요청을 취소하시겠습니까?
                 </Typography>
                 <Box display="flex" justifyContent="space-around">
                     <Button variant="contained" color="primary" onClick={handleFriendRequestCancel}>

@@ -174,7 +174,7 @@ const FriendList = () => {
             {/* 친구 삭제 완료 알림 */}
             <Snackbar
                 open={isSnackbarOpen}
-                autoHideDuration={6000}
+                autoHideDuration={1000}
                 onClose={handleSnackbarClose}
                 anchorOrigin={{
                     vertical: 'top',
@@ -182,14 +182,18 @@ const FriendList = () => {
                 }}
                 sx={{
                     top: '50%',
-                    transform: 'translateY(-50%)',
                     width: '80%', 
                     maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                 }}
             >
-                <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+                <Alert onClose={handleSnackbarClose} severity="success" sx={{ 
+                    width: '100%',
+                    backgroundColor: 'rgba(10, 8, 138, 0.8)', // 배경 색상
+                    color: '#ffffff', // 텍스트 색상
+                    fontSize: '11px',
+                    }}>
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
