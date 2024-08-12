@@ -3,13 +3,15 @@ import { Dialog, DialogTitle, DialogContent, Typography, Box, Chip, Button, Icon
 import StarIcon from '@mui/icons-material/Star';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
+import { useCookies } from 'react-cookie'; // For fetching the token from cookies
 
-const RatingUpdateModal = ({ open, onClose, game, ratingId, currentRating, onConfirm }) => {
-    const [selectedRating, setSelectedRating] = useState(currentRating);
+const RatingUpdateModal = ({ open, onClose, game, currentRating, onUpdate }) => {
+    const [selectedRating, setSelectedRating] = useState(currentRating || 0);
     const [hoverRating, setHoverRating] = useState(0);
+    const [cookies] = useCookies(['token']); // Fetch token from cookies
 
     useEffect(() => {
-        setSelectedRating(currentRating);
+        setSelectedRating((currentRating || 0) / 2);
     }, [currentRating]);
 
     const handleMouseMove = (index, event) => {
@@ -29,14 +31,20 @@ const RatingUpdateModal = ({ open, onClose, game, ratingId, currentRating, onCon
 
     const handleConfirm = () => {
         const ratingData = {
-            rating: selectedRating * 2, // 5점 만점에서 10점 만점으로 변환
+            gameId: game.id,
+            rating: selectedRating * 2, // Convert to a 10-point scale
         };
 
         axios
-            .put(`http://localhost:8080/games/${game.id}/ratings/${ratingId}`, ratingData)
+            .put(`http://localhost:8080/games/${game.id}/ratings`, ratingData, {
+                headers: {
+                    Authorization: `${cookies.token}`, // Use token from cookies
+                    'Content-Type': 'application/json',
+                },
+            })
             .then((response) => {
                 console.log('Rating updated successfully:', response.data);
-                onConfirm(selectedRating);
+                onUpdate(selectedRating * 2); // Update the rating in parent component
                 onClose();
             })
             .catch((error) => {
@@ -44,15 +52,27 @@ const RatingUpdateModal = ({ open, onClose, game, ratingId, currentRating, onCon
             });
     };
 
-    const cleanDeveloperName = (name) => {
-        let cleanedName = name.replace(/^(주식회사 |\(주\))/g, '');
-        cleanedName = cleanedName.replace(/( 주식회사| Inc\.?| \(유\)| \(주\)|\(주\))$/g, '');
-        return cleanedName;
+    const truncateText = (text, maxLength) => {
+        if (text.length > maxLength) {
+            return text.slice(0, maxLength) + '...';
+        }
+        return text;
     };
 
-    const cleanGenre = (genre) => {
-        return genre.replace(/\(베팅성\)$/, '');
+    const cleanDeveloperName = (name, maxLength = 20) => {
+        let cleanedName = name.replace(/^(주식회사 |\(주\))/g, '');
+        cleanedName = cleanedName.replace(/( 주식회사| Inc\.?| \(유\)| \(주\)|\(주\))$/g, '');
+        return truncateText(cleanedName, maxLength);
     };
+
+    const cleanGenre = (genre, maxLength = 20) => {
+        let cleanedGenre = genre.replace(/\(베팅성\)$/, '');
+        return truncateText(cleanedGenre, maxLength);
+    };
+
+    if (!game) {
+        return null; // Return null if game object is not available
+    }
 
     return (
         <Dialog open={open} onClose={onClose} PaperProps={{ style: { padding: '20px', borderRadius: '10px' } }}>
@@ -64,11 +84,11 @@ const RatingUpdateModal = ({ open, onClose, game, ratingId, currentRating, onCon
             </DialogTitle>
             <DialogContent sx={{ textAlign: 'center', padding: '8px 16px' }}>
                 <Typography variant="h6" sx={{ marginTop: '20px', marginBottom: '10px', fontSize: '1rem' }}>
-                    {game.title}
+                    {game.title || 'Game Title'}
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
                     <Chip
-                        label={game.platform}
+                        label={game.platform || 'No platform information'}
                         sx={{
                             backgroundColor: '#0A088A',
                             color: '#fff',

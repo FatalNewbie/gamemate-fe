@@ -12,9 +12,11 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
+import { useCookies } from 'react-cookie';
 
 const CommentUpdateModal = ({ open, onClose, game, commentId, existingComment, onConfirm }) => {
     const [comment, setComment] = useState(existingComment);
+    const [cookies] = useCookies(['token']); // useCookies 사용
 
     useEffect(() => {
         setComment(existingComment); // 모달이 열릴 때 기존 댓글 내용을 설정
@@ -27,7 +29,11 @@ const CommentUpdateModal = ({ open, onClose, game, commentId, existingComment, o
         };
 
         axios
-            .put(`http://localhost:8080/games/${game.id}/comments/${commentId}`, commentData)
+            .put(`http://localhost:8080/games/${game.id}/comments/${commentId}`, commentData, {
+                headers: {
+                    Authorization: `${cookies.token}`, // 토큰을 헤더에 포함
+                },
+            })
             .then((response) => {
                 console.log('Comment updated successfully:', response.data);
                 onConfirm(comment);

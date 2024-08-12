@@ -1,8 +1,66 @@
-import React from 'react';
-import { Box, Typography, Chip, Divider } from '@mui/material'; // 필요한 모듈 가져오기
-import StarIcon from '@mui/icons-material/Star'; // StarIcon 가져오기
+import React, { useEffect, useState } from 'react';
+import { Box, Typography, Chip, Divider, Button } from '@mui/material';
+import StarIcon from '@mui/icons-material/Star';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports'; // Import the game controller icon
+import AddGameModal from './AddGameModal';
+import DeleteGameModal from './DeleteGameModal';
+import LoginRequiredModal from './LoginRequiredModal'; // Import the LoginRequiredModal
+import axios from 'axios';
+import { useCookies } from 'react-cookie';
 
 const GameDescriptionBox = ({ game, chipStyle, cleanDeveloperName, cleanGenre }) => {
+    const [isGameInList, setIsGameInList] = useState(false);
+    const [openAddModal, setOpenAddModal] = useState(false);
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
+    const [openLoginModal, setOpenLoginModal] = useState(false); // State for LoginRequiredModal
+    const [cookies] = useCookies(['token']);
+    const isLoggedIn = !!cookies.token; // Determine if the user is logged in
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            const checkGameInList = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:8080/games/my-games/${game.id}/exists`, {
+                        headers: {
+                            Authorization: `${cookies.token}`,
+                        },
+                    });
+                    if (response.data && response.data.data) {
+                        setIsGameInList(true);
+                    } else {
+                        setIsGameInList(false);
+                    }
+                } catch (error) {
+                    console.error('Error checking if game is in list:', error);
+                    setIsGameInList(false);
+                }
+            };
+            checkGameInList();
+        }
+    }, [game.id, cookies.token, isLoggedIn]);
+
+    const handleAddGameClick = () => {
+        if (isLoggedIn) {
+            if (isGameInList) {
+                setOpenDeleteModal(true);
+            } else {
+                setOpenAddModal(true);
+            }
+        } else {
+            setOpenLoginModal(true);
+        }
+    };
+
+    const handleGameAdded = () => {
+        setIsGameInList(true);
+        setOpenAddModal(false);
+    };
+
+    const handleGameDeleted = () => {
+        setIsGameInList(false);
+        setOpenDeleteModal(false);
+    };
+
     return (
         <>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -104,7 +162,50 @@ const GameDescriptionBox = ({ game, chipStyle, cleanDeveloperName, cleanGenre })
                 </Typography>
                 <Box sx={{ flex: 1, fontSize: '0.65rem' }}>{game.description}</Box>
             </Box>
+
             <Divider sx={{ marginBottom: '16px', marginTop: '16px' }} />
+
+            <Button
+                variant="contained"
+                sx={{
+                    backgroundColor: '#0A088A',
+                    color: '#fff',
+                    borderRadius: '30px',
+                    fontWeight: 'bold',
+                    width: '300px', // Reduced width
+                    height: '50px', // Reduced height
+                    marginTop: '20px',
+                    display: 'block',
+                    mx: 'auto',
+                    fontSize: '13pt', // Reduced font size
+                    textAlign: 'center',
+                    boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+                    '&:hover': {
+                        backgroundColor: '#8F8EC9',
+                    },
+                }}
+                onClick={handleAddGameClick}
+            >
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <SportsEsportsIcon sx={{ marginRight: '8px' }} /> 내 게임 목록에 추가
+                </Box>
+            </Button>
+
+            <AddGameModal
+                open={openAddModal}
+                onClose={() => setOpenAddModal(false)}
+                gameId={game.id}
+                onGameAdded={handleGameAdded}
+            />
+
+            <DeleteGameModal
+                open={openDeleteModal}
+                onClose={() => setOpenDeleteModal(false)}
+                gameId={game.id}
+                onGameDeleted={handleGameDeleted}
+            />
+
+            <LoginRequiredModal open={openLoginModal} onClose={() => setOpenLoginModal(false)} />
         </>
     );
 };
