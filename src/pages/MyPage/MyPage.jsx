@@ -303,7 +303,7 @@ const MyPage = () => {
                         </Box>
                     ))}
 
-                    <Button onClick={() => navigate('/friends')} endIcon={<ArrowForwardIosIcon />} sx = {{
+                    <Button onClick={() => navigate('/friends')} sx = {{
                         color: 'rgba(10, 8, 138)'
                     }}>
                         더보기
