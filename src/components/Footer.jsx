@@ -1,21 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import { Home, SportsEsports, Group, QuestionAnswer, Person } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../App.css';
 
-const Footer = () => {
-    const [value, setValue] = React.useState('home');
+const Footer = ({ setActivePage, activePage }) => {
+    const location = useLocation();
+//     const [value, setValue] = React.useState('home');
     const navigate = useNavigate();
 
     const handleChange = (event, newValue) => {
-        setValue(newValue);
+        setActivePage(newValue);
         navigate(newValue);
     };
 
+    useEffect(() => {
+        setActivePage(location.pathname);
+    }, [location.pathname, setActivePage]);
+
     return (
         <BottomNavigation
-            value={value}
+            value={activePage}
             onChange={handleChange}
             sx={{
                 height: '70px',
@@ -30,6 +35,7 @@ const Footer = () => {
                 },
                 '& .MuiBottomNavigationAction-root': {
                     color: '#21272A',
+                    flex: 1,
                 },
                 paddingLeft: '10px',
                 paddingRight: '10px',
@@ -43,13 +49,14 @@ const Footer = () => {
                 showLabel={true}
                 disableRipple
                 sx={{
+                    padding: '0px',
                     '& .MuiBottomNavigationAction-label': {
                         fontFamily: 'Roboto, sans-serif',
                         fontSize: '0.6rem',
                     },
                     '& .MuiSvgIcon-root': {
                         fontSize: '1.8rem',
-                        color: value === '/home' ? '#0A088A' : '#21272A',
+                        color: activePage === '/home' ? '#0A088A' : '#21272A',
                     },
                     '&:hover': {
                         backgroundColor: 'transparent',
@@ -66,13 +73,14 @@ const Footer = () => {
                 showLabel={true}
                 disableRipple
                 sx={{
+                    padding: '0px',
                     '& .MuiBottomNavigationAction-label': {
                         fontFamily: 'Roboto, sans-serif',
                         fontSize: '0.6rem',
                     },
                     '& .MuiSvgIcon-root': {
                         fontSize: '1.8rem',
-                        color: value === '/gamelist' ? '#0A088A' : '#21272A',
+                        color: activePage === '/gamelist' ? '#0A088A' : '#21272A',
                     },
                     '&:hover': {
                         backgroundColor: 'transparent',
@@ -89,13 +97,14 @@ const Footer = () => {
                 showLabel={true}
                 disableRipple
                 sx={{
+                    padding: '0px',
                     '& .MuiBottomNavigationAction-label': {
                         fontFamily: 'Roboto, sans-serif',
                         fontSize: '0.6rem',
                     },
                     '& .MuiSvgIcon-root': {
                         fontSize: '1.8rem',
-                        color: value === '/gamemate' ? '#0A088A' : '#21272A',
+                        color: activePage === '/gamemate' ? '#0A088A' : '#21272A',
                     },
                     '&:hover': {
                         backgroundColor: 'transparent',
@@ -112,13 +121,14 @@ const Footer = () => {
                 showLabel={true}
                 disableRipple
                 sx={{
+                    padding: '0px',
                     '& .MuiBottomNavigationAction-label': {
                         fontFamily: 'Roboto, sans-serif',
                         fontSize: '0.6rem',
                     },
                     '& .MuiSvgIcon-root': {
-                        fontSize: '1.5rem',
-                        color: value === '/chat' ? '#0A088A' : '#21272A',
+                        fontSize: '1.8rem',
+                        color: activePage === '/chat' ? '#0A088A' : '#21272A',
                     },
                     '&:hover': {
                         backgroundColor: 'transparent',
@@ -135,13 +145,14 @@ const Footer = () => {
                 showLabel={true}
                 disableRipple
                 sx={{
+                    padding: '0px',
                     '& .MuiBottomNavigationAction-label': {
                         fontFamily: 'Roboto, sans-serif',
                         fontSize: '0.6rem',
                     },
                     '& .MuiSvgIcon-root': {
                         fontSize: '1.8rem',
-                        color: value === '/mypage' ? '#0A088A' : '#21272A',
+                        color: activePage === '/mypage' ? '#0A088A' : '#21272A',
                     },
                     '&:hover': {
                         backgroundColor: 'transparent',

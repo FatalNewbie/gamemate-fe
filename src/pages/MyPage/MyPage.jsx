@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Avatar, Button, Chip, IconButton } from '@mui/material';
+import { Box, Typography, Avatar, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -14,6 +14,11 @@ const MyPage = () => {
     const [user, setUser] = useState(null); // 사용자 정보를 저장할 상태
     const [friendCount, setFriendCount] = useState(0); // 친구 수를 저장할 상태
     const [friendRequests, setFriendRequests] = useState(0); // 친구 요청 수를 저장할 상태
+    const [openEditModal, setOpenEditModal] = useState(false); // 모달 열림 상태
+    const [editedUser, setEditedUser] = useState({ nickname: '', userProfile: '' }); // 수정할 사용자 정보
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [posts, setPosts] = useState([]); // 내가 쓴 글 목록 상태 추가
     const [friends, setFriends] = useState([]); // 친구 목록의 일부를 저장할 상태
     const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 사용
 
@@ -22,6 +27,7 @@ const MyPage = () => {
         if (!cookies.token) {
             navigate('/login');
         }
+
         const fetchUserData = async () => {
             try {
                 const response = await axios.get('/mypage', {
@@ -32,6 +38,10 @@ const MyPage = () => {
 
                 if (response.status === 200) {
                     setUser(response.data); // 사용자 정보를 상태에 저장
+                    setEditedUser({
+                        nickname: response.data.nickname,
+                        password: '' // 비밀번호 초기화
+                    });
                 }
             } catch (error) {
                 console.error('사용자 정보를 가져오는 데 실패했습니다:', error);
@@ -119,7 +129,8 @@ const MyPage = () => {
                 <Avatar
                     src={user.userProfile} // S3 URL
                     alt="User Profile"
-                    style={{ width: '70px', height: '70px' }}
+                    style={{ width: '70px', height: '70px', cursor: 'pointer' }}
+                    onClick={handleAvatarClick}
                     onError={(e) => {
                         e.target.onerror = null; // prevents looping
                         e.target.src = 'path/to/default/image.png'; // 대체 이미지 경로
@@ -131,9 +142,9 @@ const MyPage = () => {
                     <Box sx={{ marginTop: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                         <Box sx={{display: 'flex', gap: 1, flexWrap: 'wrap'}}>
                             {user.preferredGenres?.map((genre, index) => (
-                                <Chip key={index} 
-                                label={genre} 
-                                size="small" 
+                                <Chip key={index}
+                                label={genre}
+                                size="small"
                                 sx = {{fontSize: '8px',
                                     backgroundColor: 'rgba(10, 8, 138, 0.8)',
                                     color: 'white'
@@ -142,9 +153,9 @@ const MyPage = () => {
                         </Box>
                         <Box sx={{display: 'flex', gap: 1, flexWrap: 'wrap'}}>
                             {user.playTimes?.map((time, index) => (
-                                <Chip key={index} 
-                                label={time} 
-                                size="small" 
+                                <Chip key={index}
+                                label={time}
+                                size="small"
                                 sx = {{fontSize: '8px',
                                     backgroundColor: 'rgba(93, 90, 224, 0.8)',
                                     color: 'white'
@@ -153,15 +164,19 @@ const MyPage = () => {
                         </Box>
                     </Box>
                 </Box>
+                {/* 수정 버튼 추가 */}
+                <Box sx={{ flexGrow: 1 }} />
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button
+                        variant="contained"
+                        onClick={handleOpenEditModal}
+                        sx={{ backgroundColor: '#0A088A', color: 'white', '&:hover': { backgroundColor: '#120EE8' } }}
+//                         onClick={() => navigate('/edit-profile')} // 버튼 클릭 시 프로필 수정 페이지로 이동
+                    >
+                        정보 수정
+                    </Button>
+                </Box>
             </Box>
-
-            {/* 수정 버튼 추가 */}
-            <Button
-                variant="contained"
-                onClick={() => navigate('/edit-profile')} // 버튼 클릭 시 프로필 수정 페이지로 이동
-            >
-                프로필 수정
-            </Button>
 
             <Box
                 sx={{
@@ -218,13 +233,13 @@ const MyPage = () => {
                             <Typography variant="body1">{friend.nickname}</Typography>
                         </Box>
                     ))}
-                
+
                     <Button onClick={() => navigate('/friends')} endIcon={<ArrowForwardIosIcon />} sx = {{
                         color: 'rgba(10, 8, 138)'
                     }}>
                         더보기
                     </Button>
-                    
+
                 </Box>
             </Box>
 
@@ -246,13 +261,74 @@ const MyPage = () => {
                     내가 쓴 글 목록
                 </Typography>
                 {/* 내가 쓴 글 목록 공간 */}
-                내가 쓴 글 목록이 여기에 표시됩니다.
+{/*                 내가 쓴 글 목록이 여기에 표시됩니다. */}
+                {posts.length > 0 ? (
+                    <Box>
+                        {posts.map(post => (
+                            <Box key={post.id} sx={{ marginBottom: 1 }}>
+                                <Typography variant="body1">{post.title}</Typography>
+                                <Typography variant="body2" color="textSecondary">{post.content}</Typography>
+                            </Box>
+                        ))}
+                    </Box>
+                ) : (
+                    <Typography>내가 쓴 글이 없습니다.</Typography>
+                )}
                 <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
                     <Button>
                         <ArrowDropDownIcon />
                     </Button>
                 </Box>
             </Box>
+
+            {/* 사용자 정보 수정 모달 */}
+            <Dialog
+                open={openEditModal}
+                onClose={handleCloseEditModal}
+                fullWidth
+                PaperProps={{ style: { maxWidth: '370px' } }}
+            >
+                <DialogTitle>회원정보 수정</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        label="닉네임"
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
+                        name="nickname"
+                        value={editedUser.nickname || ''} // 기본 값 설정
+                        onChange={handleInputChange} // 입력 변경 시 상태 업데이트
+                    />
+                    <TextField
+                        label="비밀번호"
+                        variant="outlined"
+                        type="password"
+                        fullWidth
+                        margin="normal"
+                        name="password"
+                        value={editedUser.password || ''} // 기본 값 설정
+                        onChange={handleInputChange} // 입력 변경 시 상태 업데이트
+                    />
+                    <TextField
+                        label="비밀번호 확인"
+                        variant="outlined"
+                        type="password"
+                        fullWidth
+                        margin="normal"
+                        name="confirmPassword"
+                        value={confirmPassword} // confirmPassword 상태 값 설정
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="contained" color="primary" onClick={handleSaveChanges}>
+                        저장
+                    </Button>
+                    <Button variant="outlined" color="secondary" onClick={handleCloseEditModal}>
+                        취소
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };

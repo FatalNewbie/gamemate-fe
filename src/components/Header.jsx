@@ -1,12 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import logo from '../assets/logo.png';
-const Header = ({ title, showSearchIcon = true, onSearchClick, setActivePage }) => {
+
+const Header = ({ title, showSearchIcon = true, onSearchClick, setActivePage, activePage, onOpenEditModal }) => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
+    const [cookies, setCookie] = useCookies(['token']);
+    const [username, setUsername] = useState('');
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await axios.get('/mypage', {
+                    headers: {
+                        Authorization: cookies.token,
+                    },
+                });
+
+                if (response.data) {
+                    setUsername(response.data.username);
+                } else {
+                    console.error("사용자 정보를 찾을 수 없습니다.");
+                }
+            } catch (error) {
+                console.error("사용자 정보를 가져오는 중 오류 발생:", error.response || error.message);
+            }
+        };
+
+        fetchUserData();
+    }, [cookies.token]);
 
     const handleMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -17,9 +44,48 @@ const Header = ({ title, showSearchIcon = true, onSearchClick, setActivePage }) 
     };
 
     const handleMyPageClick = () => {
+        console.log('setActivePage 호출됨');
         setActivePage('/mypage'); // 푸터의 activePage 상태 업데이트
         navigate('/mypage');
         handleMenuClose();
+    };
+
+    const handleLogoutClick = () => {
+        // 쿠키에서 토큰 삭제
+        setCookie('token', '', { path: '/', expires: new Date(0) }); // 토큰 삭제
+        setActivePage('/home') // 로그아웃 시 activePage 초기화
+        navigate('/login'); // 로그인 페이지로 이동
+        handleMenuClose();
+    };
+
+    const handleEditProfileClick = () => {
+        if (onOpenEditModal) {
+            onOpenEditModal(); // 모달 열기
+        }
+        handleMenuClose();
+    };
+
+    const handleDeleteAccount = async () => {
+        const confirmed = window.confirm("정말로 회원탈퇴 하시겠습니까?");
+        if (!confirmed) {
+            return; // 확인을 누르지 않았다면 함수 종료
+        }
+
+        try {
+            await axios.get('/delete', {
+                params: {
+                    username: username
+                },
+                headers: {
+                    Authorization: cookies.token,
+                },
+            });
+
+            // 삭제 후 로그아웃 처리
+            handleLogoutClick(); // 로그아웃 처리 후 activePage 초기화 및 로그인 페이지로 이동
+        } catch (error) {
+            console.error("회원탈퇴 중 오류 발생:", error.response || error.message);
+        }
     };
 
     return (
@@ -88,9 +154,13 @@ const Header = ({ title, showSearchIcon = true, onSearchClick, setActivePage }) 
                         },
                     }}
                 >
-                    <MenuItem onClick={handleMyPageClick}>마이페이지</MenuItem>
-                    <MenuItem onClick={handleMenuClose}>로그아웃</MenuItem>
-                    <MenuItem onClick={handleMenuClose}>회원탈퇴</MenuItem>
+                    {activePage !== '/mypage' && (
+                        <MenuItem onClick={handleMyPageClick}>마이페이지</MenuItem>
+                    )}
+                    <MenuItem onClick={handleLogoutClick}>로그아웃</MenuItem>
+                    {activePage === '/mypage' && (
+                        <MenuItem onClick={handleDeleteAccount}>회원탈퇴</MenuItem>
+                    )}
                 </Menu>
             </Toolbar>
         </AppBar>

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { useAuth } from './hooks/UseAuth'; // 로그인 상태 확인용 커스텀 훅
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home/Home';
 import GameList from './pages/GameList/GameList';
@@ -24,10 +25,24 @@ import ChatWindow from './pages/Chat/ChatWindow';
 import { ImportExport } from '@mui/icons-material';
 
 const App = () => {
+    const { isLoggedIn } = useAuth();
+    const [authChecked, setAuthChecked] = useState(false);
+
+    useEffect(() => {
+        // 로그인 상태를 확인한 후 authChecked를 true로 설정
+        if (typeof isLoggedIn === 'boolean') {
+            setAuthChecked(true);
+        }
+    }, [isLoggedIn]);
+
+    if (!authChecked) {
+        return <div>Loading...</div>; // 로그인 상태를 확인 중일 때 로딩 표시
+    }
+
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Navigate to="/login" replace />} />
+                <Route path="/" element={<Navigate to={isLoggedIn ? "/home" : "/login"} replace />} />
                 <Route
                     path="/join"
                     element={
