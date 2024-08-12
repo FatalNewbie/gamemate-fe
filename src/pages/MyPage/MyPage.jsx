@@ -110,11 +110,80 @@ const MyPage = () => {
             }
         };
 
+        const fetchUserPosts = async () => {
+            try {
+                const response = await axios.get('/posts', {
+                    headers: {
+                        Authorization: cookies.token,
+                    },
+                    params: { status: 'active', // 또는 필요한 상태 값
+                              page: 0, // 첫 페이지
+                              size: 10 // 페이지 크기
+                    }
+                });
+                if (response.status === 200) {
+                    setPosts(response.data.content); // 데이터 저장 (content는 CustomPage의 데이터)
+                }
+            } catch (error) {
+                console.error('글 목록을 가져오는 데 실패했습니다:', error);
+            }
+        };
+
         fetchUserData(); // 데이터 가져오기
         fetchFriendsCount(); // 친구 수 가져오기
         fetchFriendRequests(); // 친구 요청 목록 가져오기
         fetchUserInfo(); // 선호 장르, 플레이 시간대 가져오기
+        fetchUserPosts(); // 데이터 가져오기
     }, [cookies.token, navigate]);
+
+    const handleOpenEditModal = () => {
+        setOpenEditModal(true);
+    };
+
+    const handleCloseEditModal = () => {
+        setOpenEditModal(false);
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setEditedUser((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const handleSaveChanges = async () => {
+        if (editedUser.password !== confirmPassword) {
+            alert('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+
+        try {
+            const response = await axios.put('/update', {
+                ...editedUser,
+                password: editedUser.password, // 비밀번호 포함
+            }, {
+                headers: {
+                    Authorization: cookies.token,
+                },
+            });
+
+            if (response.status === 200) {
+                setUser(response.data); // 상태 업데이트
+                alert('회원 정보가 수정되었습니다.');
+                handleCloseEditModal(); // 모달 닫기
+                // 페이지 새로고침을 강제로 처리
+                window.location.reload(); // 새로고침 처리
+            }
+        } catch (error) {
+            console.error('회원 정보를 수정하는 데 실패했습니다:', error);
+            alert('회원 정보 수정에 실패했습니다. 나중에 다시 시도해 주세요.');
+        }
+    };
+
+    const handleAvatarClick = () => {
+        navigate('/edit-profile'); // 프로필 수정 페이지로 이동
+    };
 
     // user 데이터가 로드된 후에만 usePageTime 훅을 호출
 
