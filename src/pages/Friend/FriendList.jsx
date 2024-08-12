@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { Box, Typography, List, ListItem, Avatar, IconButton, Modal, Button, Snackbar, Alert, Divider } from '@mui/material';
-import { Delete } from '@mui/icons-material';
+import { Delete, ArrowBack } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const FriendList = () => {
     const [cookies] = useCookies(['token']);
@@ -11,6 +12,7 @@ const FriendList = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchFriends = async () => {
@@ -65,50 +67,69 @@ const FriendList = () => {
 
     return (
         <Box>
-            <Typography
-                variant="h6"
+            <Button
+                variant="contained"
+                color="primary"
+                startIcon={<ArrowBack />}
+                onClick={() => navigate(-1)}
                 sx={{
-                    fontFamily: 'Roboto, sans-serif',
-                    fontWeight: 700,
-                    fontSize: '16pt',
-                    letterSpacing: '-0.5px',
-                    marginBottom: '20px',
-                    marginTop: '10px',
+                    marginBottom: 2,
+                    backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                    '&:hover': {
+                        backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                    },
+                    borderRadius: 2,
+                    textTransform: 'none',
                 }}
             >
-                👥 친구 목록
-            </Typography>
-            <List>
-                {friends.map(friend => (
-                    <ListItem key={friend.id} sx={{ display: 'block', alignItems: 'center' }}>
-                        <Box sx={{display: 'flex'}}>
-                            <Avatar sx={{ width: 50, height: 50, marginRight: 2 }}>
-                                {friend.nickname.charAt(0).toUpperCase()}
-                            </Avatar>
-                            <Box sx={{ flexGrow: 1 }}>
-                                <Typography variant="h6">{friend.nickname}</Typography>
-                                <Typography variant="body2">{friend.username}</Typography>
+                뒤로 가기
+            </Button>
+            {friends.length === 0 ? (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '300px',
+                    }}
+                >
+                    <Typography variant="h6" color="textSecondary">
+                        아직 친구로 등록된 유저가 없습니다.
+                    </Typography>
+                </Box>
+            ) : (
+                <List>
+                    {friends.map(friend => (
+                        <ListItem key={friend.id} sx={{ display: 'block', alignItems: 'center' }}>
+                            <Box sx={{display: 'flex'}}>
+                                <Avatar sx={{ width: 50, height: 50, marginRight: 2 }}>
+                                    {friend.nickname.charAt(0).toUpperCase()}
+                                </Avatar>
+                                <Box sx={{ flexGrow: 1 }}>
+                                    <Typography variant="h6">{friend.nickname}</Typography>
+                                    <Typography variant="body2">{friend.username}</Typography>
+                                </Box>
+                                <IconButton
+                                    color="secondary"
+                                    onClick={() => handleDeleteModalOpen(friend)}
+                                    sx={{
+                                        backgroundColor: '#f5f5f5',  // 버튼 배경 색상
+                                        '&:hover': {
+                                            backgroundColor: '#e0e0e0',  // 호버 시 배경 색상
+                                        },
+                                        borderRadius: '30%',  // 둥근 버튼 모양
+                                        padding: '8px',  // 버튼 패딩
+                                        color: '#ff1744',  // 아이콘 색상
+                                    }}
+                                >
+                                    <Delete />
+                                </IconButton>
                             </Box>
-                            <IconButton
-                                color="secondary"
-                                onClick={() => handleDeleteModalOpen(friend)}
-                                sx={{
-                                    backgroundColor: '#f5f5f5',  // 버튼 배경 색상
-                                    '&:hover': {
-                                        backgroundColor: '#e0e0e0',  // 호버 시 배경 색상
-                                    },
-                                    borderRadius: '30%',  // 둥근 버튼 모양
-                                    padding: '8px',  // 버튼 패딩
-                                    color: '#ff1744',  // 아이콘 색상
-                                }}
-                            >
-                                <Delete />
-                            </IconButton>
-                        </Box>
-                        <Divider sx={{ backgroundColor: 'rgba(128, 128, 128, 0.3)', width: '100%', mb: 2, marginTop: '10px' }} />
-                    </ListItem>
-                ))}
-            </List>
+                            <Divider sx={{ backgroundColor: 'rgba(128, 128, 128, 0.3)', width: '100%', mb: 2, marginTop: '10px' }} />
+                        </ListItem>
+                    ))}
+                </List>
+            )}
 
             {/* 삭제 확인 모달 */}
             <Modal

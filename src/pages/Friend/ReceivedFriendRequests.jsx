@@ -17,7 +17,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
 
-const FriendRequests = () => {
+const RecievedFriendRequests = () => {
     const [cookies] = useCookies(['token']);
     const [friendRequests, setFriendRequests] = useState([]);
     const [selectedRequest, setSelectedRequest] = useState(null);
@@ -30,7 +30,7 @@ const FriendRequests = () => {
     useEffect(() => {
         const fetchFriendRequests = async () => {
             try {
-                const response = await axios.get('/friend/requests', {
+                const response = await axios.get('/friend/received-requests', {
                     headers: {
                         Authorization: cookies.token,
                     },
@@ -117,9 +117,9 @@ const FriendRequests = () => {
                 onClick={() => navigate(-1)}
                 sx={{
                     marginBottom: 2,
-                    backgroundColor: '#1976d2',
+                    backgroundColor: 'rgba(10, 8, 138, 0.8)',
                     '&:hover': {
-                        backgroundColor: '#1565c0',
+                        backgroundColor: 'rgba(93, 90, 224, 0.8)',
                     },
                     borderRadius: 2,
                     textTransform: 'none',
@@ -144,34 +144,28 @@ const FriendRequests = () => {
                                 {request.requester.username}
                             </Typography>
                             <Box mt={1}>
-                                <Typography variant="subtitle2" fontWeight={700}>
-                                    선호 장르
-                                </Typography>
-                                <Box>
+                                <Box sx={{display: 'flex', gap: 1, flexWrap: 'wrap'}}>
                                     {request.requester.preferredGenres.map((genre, idx) => (
-                                        <Chip
-                                            key={idx}
-                                            label={genre}
-                                            size="small"
-                                            color="primary"
-                                            sx={{ marginRight: 0.5, marginBottom: 0.5 }}
-                                        />
+                                        <Chip key={index} 
+                                        label={genre} 
+                                        size="small" 
+                                        sx = {{fontSize: '8px',
+                                            backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                                            color: 'white'
+                                        }}/>
                                     ))}
                                 </Box>
                             </Box>
                             <Box mt={1}>
-                                <Typography variant="subtitle2" fontWeight={700}>
-                                    플레이 시간대
-                                </Typography>
-                                <Box>
+                                <Box sx={{display: 'flex', gap: 1, flexWrap: 'wrap'}}>
                                     {request.requester.playTimes.map((time, idx) => (
-                                        <Chip
-                                            key={idx}
-                                            label={time}
-                                            size="small"
-                                            color="primary"
-                                            sx={{ marginRight: 0.5, marginBottom: 0.5 }}
-                                        />
+                                        <Chip key={index} 
+                                        label={time} 
+                                        size="small" 
+                                        sx = {{fontSize: '8px',
+                                            backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                                            color: 'white'
+                                        }}/>
                                     ))}
                                 </Box>
                             </Box>
@@ -181,7 +175,9 @@ const FriendRequests = () => {
                                 variant="contained"
                                 color="primary"
                                 onClick={() => handleAcceptModalOpen(request)}
-                                sx={{ textTransform: 'none' }}
+                                sx={{textTransform: 'none', 
+                                    backgroundColor: 'rgba(10, 8, 138, 0.8)'
+                                }}
                             >
                                 수락
                             </Button>
@@ -189,7 +185,8 @@ const FriendRequests = () => {
                                 variant="outlined"
                                 color="primary"
                                 onClick={() => handleDeclineModalOpen(request)}
-                                sx={{ textTransform: 'none' }}
+                                sx={{textTransform: 'none',
+                                }}
                             >
                                 거절
                             </Button>
@@ -309,4 +306,4 @@ const FriendRequests = () => {
     );
 };
 
-export default FriendRequests;
+export default RecievedFriendRequests;

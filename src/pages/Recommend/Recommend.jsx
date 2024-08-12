@@ -181,9 +181,6 @@ const Recommend = () => {
                   {user.recommend_user}
                 </Typography>
                 <Box className="icon-buttons" display={"flex"} alignContent={'center'}>
-                  <IconButton className="icon-button">
-                    <ChatBubbleOutline sx={{ fontSize: 15 }} />
-                  </IconButton>
                   <IconButton
                     className="icon-button"
                     onClick={() => user.requested ? handleCancelModalOpen(user) : handleFriendModalOpen(user)}

@@ -53,7 +53,7 @@ const Login = ({ login }) => {
 //             } else {
 //                 navigate('/');
 //             }
-            navigate('/');
+            navigate('/home');
         } catch (error) {
             console.error('Login error:', error);
             alert(error.message);

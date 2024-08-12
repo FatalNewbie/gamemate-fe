@@ -12,7 +12,8 @@ import KakaoSearch from './pages/GameMate/KakaoSearch';
 import Chat from './pages/Chat/Chat';
 import MyPage from './pages/MyPage/MyPage';
 import Recommend from './pages/Recommend/Recommend';
-import FriendRequests from './pages/Friend/FriendRequests';
+import ReceivedFriendRequests from './pages/Friend/ReceivedFriendRequests';
+import SentFriendRequests from './pages/Friend/SentFriendRequests';
 import FriendsList from './pages/Friend/FriendList';
 import Join from './pages/Auth/Join';
 import Login from './pages/Auth/Login';
@@ -164,10 +165,18 @@ const App = () => {
                     }
                 />
                 <Route
-                    path="/friendrequests"
+                    path="/received-friendrequests"
                     element={
-                        <MainLayout headerTitle="친구 요청" showSearchIcon={false}>
-                            <FriendRequests />
+                        <MainLayout headerTitle="받은 친구 요청" showSearchIcon={false}>
+                            <ReceivedFriendRequests />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/sent-friendrequests"
+                    element={
+                        <MainLayout headerTitle="보낸 친구 요청" showSearchIcon={false}>
+                            <SentFriendRequests />
                         </MainLayout>
                     }
                 />

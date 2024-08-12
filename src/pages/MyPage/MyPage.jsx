@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Avatar, Button, Chip } from '@mui/material';
+import { Box, Typography, Avatar, Button, Chip, IconButton } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +14,7 @@ const MyPage = () => {
     const [user, setUser] = useState(null); // 사용자 정보를 저장할 상태
     const [friendCount, setFriendCount] = useState(0); // 친구 수를 저장할 상태
     const [friendRequests, setFriendRequests] = useState(0); // 친구 요청 수를 저장할 상태
+    const [friends, setFriends] = useState([]); // 친구 목록의 일부를 저장할 상태
     const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 사용
 
     useEffect(() => {
@@ -42,7 +45,9 @@ const MyPage = () => {
                         Authorization: cookies.token,
                     },
                 });
+                const friendsData = response.data.data;
                 setFriendCount(response.data.data.length); // 친구 수 계산
+                setFriends(friendsData.slice(0, 3)); // 친구 목록 중 3명만 보여주기
             } catch (error) {
                 console.error('친구 수를 가져오는 데 실패했습니다:', error);
             }
@@ -57,9 +62,6 @@ const MyPage = () => {
                     },
                 });
 
-                if (response.status === 200) {
-                    setFriendRequests(response.data.data.length); // 친구 요청 수를 상태에 저장
-                }
             } catch (error) {
                 console.error('친구 요청 목록을 가져오는 데 실패했습니다:', error);
             }
@@ -161,6 +163,27 @@ const MyPage = () => {
                 프로필 수정
             </Button>
 
+            <Box
+                sx={{
+                    justifyContent: 'space-between',
+                    alignContent: 'center',
+                    minHeight: '100px',
+                    marginBottom: 2,
+                }}
+            >
+                {/* 친구 요청 목록 버튼 */}
+                <Box sx={{ display: 'flex', justifyContent: 'space-around', marginTop: 2 }}>
+                    <IconButton onClick={() => navigate('/received-friendrequests')}>
+                        <PersonAddIcon />
+                        <Typography variant="body2" sx={{ marginLeft: 1 }}>받은 친구 요청</Typography>
+                    </IconButton>
+                    <IconButton onClick={() => navigate('/sent-friendrequests')}>
+                        <PersonAddIcon />
+                        <Typography variant="body2" sx={{ marginLeft: 1 }}>보낸 친구 요청</Typography>
+                    </IconButton>
+                </Box>
+            </Box>
+
             {/* 친구 목록 */}
             <Box
                 sx={{
@@ -188,51 +211,20 @@ const MyPage = () => {
                     >
                     친구 목록
                 </Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography
-                        variant="body2"
-                        sx={{
-                            fontFamily: 'Roboto, sans-serif',
-                            fontWeight: 500,
-                            fontSize: '10pt',
-                            letterSpacing: '-0.5px',
-                            marginBottom: '10px',
-                        }}
-                    >친구가 {friendCount}명 있습니다.</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-                    <Button onClick={() => navigate('/friends')}>친구 목록 보기</Button>
-                </Box>
-            </Box>
-
-            <Box
-                sx={{
-                    bgcolor: '#fff',
-                    paddingTop: 2,
-                    paddingRight: 2,
-                    paddingBottom: 0,
-                    paddingLeft: 2,
-                    borderRadius: 1,
-                    minHeight: '100px',
-                    marginBottom: 2,
-                    boxShadow: 3,
-                }}
-            >
-                <Typography
-                        variant="h6"
-                        sx={{
-                            fontFamily: 'Roboto, sans-serif',
-                            fontWeight: 700,
-                            fontSize: '14pt',
-                            letterSpacing: '-0.5px',
-                            marginBottom: '10px',
-                        }}
-                    >
-                    친구 요청 목록 ({friendRequests}개)
-                </Typography>
-                {/* 친구 요청 목록 버튼 */}
-                <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-                    <Button onClick={() => navigate('/friendrequests')}>친구 요청 보기</Button>
+                <Box sx={{ display: 'column', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 2}}>
+                    {friends.map((friend, index) => (
+                        <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
+                            <Avatar src={friend.profilePicture || ''} alt={friend.nickname} sx={{ width: 50, height: 50, marginRight: 2 }} />
+                            <Typography variant="body1">{friend.nickname}</Typography>
+                        </Box>
+                    ))}
+                
+                    <Button onClick={() => navigate('/friends')} endIcon={<ArrowForwardIosIcon />} sx = {{
+                        color: 'rgba(10, 8, 138)'
+                    }}>
+                        더보기
+                    </Button>
+                    
                 </Box>
             </Box>
 
