@@ -13,6 +13,8 @@ const Chat = () => {
     const [chatRooms, setChatRooms] = useState([]);
     // 쿠키
     const [cookies] = useCookies(['token']);
+    // 로딩
+    const [isLoading, setIsLoading] = useState(true);
 
     const getAllChatRooms = async () => {
         try {
@@ -25,6 +27,8 @@ const Chat = () => {
             setChatRooms(data);
         } catch (error) {
             console.error('Error fetching chat rooms:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -36,6 +40,14 @@ const Chat = () => {
     useEffect(() => {
         getAllChatRooms();
     }, [cookies.token]);
+
+    if (isLoading) {
+        return <div>roading...</div>;
+    }
+
+    if (chatRooms.length === 0) {
+        return <div>참여한 채팅방이 없습니다. 게임메이트 메뉴에서 원하는 채팅방에 참여해보세요!</div>;
+    }
 
     return (
         <Container sx={{ padding: 0, margin: 0 }}>

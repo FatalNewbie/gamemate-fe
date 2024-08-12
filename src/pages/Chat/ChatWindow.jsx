@@ -14,7 +14,7 @@ import { useCookies } from 'react-cookie';
 const ChatWindow = () => {
     // useLcation사용하여 navigate하면서 넘겨준 값 가져옴
     const location = useLocation();
-    const { roomId, title, leaderNickName, memberCnt } = location.state || {};
+    const { roomId, title, leaderNickname, memberCnt } = location.state || {};
 
     // 쿠키
     const [cookies] = useCookies(['token']);
@@ -56,7 +56,7 @@ const ChatWindow = () => {
             webSocketFactory: () => socket,
             reconnectDelay: 5000, // 자동 재연결을 위한 지연 시간 (밀리초)
             connectHeaders: {
-                login: leaderNickName,
+                login: leaderNickname,
                 Authorization: cookies.token,
             },
             debug: (str) => {
@@ -159,7 +159,7 @@ const ChatWindow = () => {
         if (messageContent && stompClient) {
             console.log('Stompclient in sendMessage is :', stompClient);
             let chatMessage = {
-                writer: leaderNickName,
+                writer: userNickname,
                 content: inputMessage,
                 chatRoomId: roomId,
                 type: 'CHAT',
@@ -258,51 +258,52 @@ const ChatWindow = () => {
     }
 
     return (
-        <Container>
-            <Box>
-                <Grid container>
-                    <Grid xs={12}>
-                        <p>{title}</p>
-                    </Grid>
-                    <Grid xs={12} sx={{ height: 600, overflow: 'auto' }}>
-                        {messages.map((message) => (
-                            <Box key={message.id}>
-                                <ChatMessage
-                                    chatRoomId={message.chatRoomId}
-                                    content={message.content}
-                                    id={message.id}
-                                    time={message.time}
-                                    type={message.type}
-                                    writer={message.writer}
-                                    userNickname={userNickname}
-                                ></ChatMessage>
-                            </Box>
-                        ))}
-                        <div ref={messagesEndRef} />
-                    </Grid>
-
-                    <Grid xs={8}>
-                        <TextField
-                            id="outlined-basic"
-                            variant="outlined"
-                            value={inputMessage}
-                            onChange={inputMessageHandler}
-                            onKeyDown={handleKeyDownHandler}
-                            sx={{ width: '100%' }}
-                        />
-                    </Grid>
-                    <Grid xs={4}>
-                        <Button
-                            variant="contained"
-                            onClick={sendMessageBtnHandler}
-                            sx={{ height: '100%', width: 100, ml: 2 }}
-                        >
-                            전송
-                        </Button>
-                    </Grid>
+        <Box>
+            <Grid container>
+                <Grid xs={12}>
+                    <p>{title}</p>
                 </Grid>
-            </Box>
-        </Container>
+                <Grid xs={12} sx={{ height: 650, overflow: 'auto' }}>
+                    {messages.map((message) => (
+                        <Box key={message.id}>
+                            <ChatMessage
+                                chatRoomId={message.chatRoomId}
+                                content={message.content}
+                                id={message.id}
+                                time={message.time}
+                                type={message.type}
+                                writer={message.writer}
+                                writerId={message.writerId}
+                                userNickname={userNickname}
+                                leaderNickname={leaderNickname}
+                                reloadMessage={getPrevMessages}
+                            ></ChatMessage>
+                        </Box>
+                    ))}
+                    <div ref={messagesEndRef} />
+                </Grid>
+
+                <Grid xs={8}>
+                    <TextField
+                        id="outlined-basic"
+                        variant="outlined"
+                        value={inputMessage}
+                        onChange={inputMessageHandler}
+                        onKeyDown={handleKeyDownHandler}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>
+                <Grid xs={4}>
+                    <Button
+                        variant="contained"
+                        onClick={sendMessageBtnHandler}
+                        sx={{ height: '100%', width: 100, ml: 2 }}
+                    >
+                        전송
+                    </Button>
+                </Grid>
+            </Grid>
+        </Box>
     );
 };
 export default ChatWindow;
