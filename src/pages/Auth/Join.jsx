@@ -30,6 +30,20 @@ const Join = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        // 이메일 형식 검사
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(username)) {
+            alert('유효한 이메일 주소를 입력해 주세요.');
+            return;
+        }
+
+        // 비밀번호 형식 검사
+        const passwordPattern = /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordPattern.test(password)) {
+            alert('비밀번호는 최소 8자 이상이며 소문자, 숫자, 특수 문자를 포함해야 합니다.');
+            return;
+        }
+
         if (password !== confirmPassword) {
             alert('비밀번호가 일치하지 않습니다.');
             return;
@@ -39,10 +53,7 @@ const Join = () => {
     };
 
     const handleGoogleLogin = () => {
-        // 구글 로그인 URL로 리다이렉트
-        const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-        const redirectUri = process.env.REACT_APP_REDIRECT_URI;
-        window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=code&scope=openid%20email%20profile`;
+        window.location.href = "http://localhost:8080/oauth2/authorization/google"
     };
 
     const onNaverLogin = () => {
