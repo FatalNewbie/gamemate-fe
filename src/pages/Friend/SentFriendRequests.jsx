@@ -110,7 +110,7 @@ const SentFriendRequests = () => {
                 {friendRequests.map((request, index) => (
                     <ListItem key={index} sx={{ display: 'flex', alignItems: 'center', padding: 2, marginBottom: '10px', borderRadius: '5%'}} component={Paper} elevation={3}>
                         <Avatar sx={{ width: 50, height: 50, marginRight: 2 }}>
-                            {request.receiver.nickname.charAt(0).toUpperCase()}
+                            {request.receiver.userProfile}
                         </Avatar>
                         <Box sx={{ flexGrow: 1 }}>
                             <Typography variant="h6" fontWeight={700}>

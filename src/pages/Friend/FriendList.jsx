@@ -103,7 +103,7 @@ const FriendList = () => {
                         <ListItem key={friend.id} sx={{ display: 'block', alignItems: 'center' }}>
                             <Box sx={{display: 'flex'}}>
                                 <Avatar sx={{ width: 50, height: 50, marginRight: 2 }}>
-                                    {friend.nickname.charAt(0).toUpperCase()}
+                                    {friend.userProfile}
                                 </Avatar>
                                 <Box sx={{ flexGrow: 1 }}>
                                     <Typography variant="h6">{friend.nickname}</Typography>

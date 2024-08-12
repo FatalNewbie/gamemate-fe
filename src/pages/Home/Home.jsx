@@ -296,16 +296,21 @@ const Home = () => {
                                             boxShadow: 'none',
                                         }}
                                     >
-                                        <img
-                                            src={profilePlaceholder}
-                                            alt="Profile"
-                                            className="profile-pic"
+                                        <Avatar
+                                            src={user.userProfile} // S3 URL
+                                            alt="User Profile"
                                             style={{
+                                                width: '60px', height: '60px',
                                                 transform: index === 1 ? 'scale(1.7)' : 'scale(0.9)',
                                                 opacity: index === 1 ? 1 : 0.6,
                                                 transition: 'transform 0.3s, opacity 0.3s',
-                                                marginLeft: index !== 0 ? '10px' : '14px',
+                                                marginLeft: 6,
+                                                marginRight: 6,
                                                 marginBottom: index === 1 ? '40px' : '0px',
+                                            }}
+                                            onError={(e) => {
+                                                e.target.onerror = null; // prevents looping
+                                                e.target.src = {profilePlaceholder}; // 대체 이미지 경로
                                             }}
                                         />
                                         <Typography
@@ -354,7 +359,17 @@ const Home = () => {
                                     >
                                         {index === 1 && (
                                             <>
-                                                <Box className="tags" sx={{display: 'flex', gap: 1, flexWrap: 'wrap', marginTop: '10px'}}>
+                                                <Box
+                                                    className="tags"
+                                                    sx={{
+                                                        display: 'flex',
+                                                        justifyContent: 'center', // 중앙 정렬
+                                                        alignItems: 'center', // 수직 정렬
+                                                        gap: 1,
+                                                        flexWrap: 'wrap',
+                                                        marginTop: '10px',
+                                                    }}
+                                                >
                                                     {visibleUsers[1].common_genre.map((genre, index) => (
                                                         <Chip
                                                             key={index}
@@ -368,7 +383,17 @@ const Home = () => {
                                                         />
                                                     ))}
                                                 </Box>
-                                                <Box className="modal-tags" sx={{display: 'flex', gap: 1, flexWrap: 'wrap'}}>
+                                                <Box
+                                                    className="modal-tags"
+                                                    sx={{
+                                                        display: 'flex',
+                                                        justifyContent: 'center', // 중앙 정렬
+                                                        alignItems: 'center', // 수직 정렬
+                                                        gap: 1,
+                                                        flexWrap: 'wrap',
+                                                        marginTop: '10px',
+                                                    }}
+                                                >
                                                     {visibleUsers[1].common_play_time.map((time, index) => (
                                                         <Chip
                                                             key={index}
@@ -521,10 +546,37 @@ const Home = () => {
                 aria-labelledby="user-info-modal"
                 aria-describedby="user-info-modal-description"
             >
-                <Box className="modal-box">
+                <Box className="modal-box"
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
+                        borderRadius: 1,
+                    }}
+                >
                     {selectedUser && (
                         <>
-                            <img src={profilePlaceholder} alt="Profile" className="modal-profile-pic" />
+                            <Avatar
+                                            src={selectedUser.userProfile} // S3 URL
+                                            alt="Profile"
+                                            className="modal-profile-pic"
+                                            style={{
+                                                width: '80px', height: '80px',
+                                            }}
+                                            onError={(e) => {
+                                                e.target.onerror = null; // prevents looping
+                                                e.target.src = {profilePlaceholder}; // 대체 이미지 경로
+                                            }}
+                                        />
+
                             <Typography
                                 id="user-info-modal"
                                 variant="h6"
