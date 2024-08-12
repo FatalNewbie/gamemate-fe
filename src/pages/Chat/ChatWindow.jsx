@@ -14,7 +14,7 @@ import { useCookies } from 'react-cookie';
 const ChatWindow = () => {
     // useLcation사용하여 navigate하면서 넘겨준 값 가져옴
     const location = useLocation();
-    const { roomId, title, leaderNickName, memberCnt } = location.state || {};
+    const { roomId, title, leaderNickname, memberCnt } = location.state || {};
 
     // 쿠키
     const [cookies] = useCookies(['token']);
@@ -30,11 +30,20 @@ const ChatWindow = () => {
     // 스크롤을 자동으로 하단으로 내리기 위한 ref
     const messagesEndRef = useRef(null);
 
+    // 현재의 스크롤 위치 ref
+    const chatContainerRef = useRef(null);
+
+    // 사용자 스크롤 상태 관리
+    const [isUserScrolled, setIsUserScrolled] = useState(false);
+
     // 로그인한 유저 정보 서버에서 가져와서 들고있는 변수
     const [userNickname, setUserNicnkname] = useState('');
 
     // 유저정보 불러올떄까지 로딩
     const [isLoading, setIsLoading] = useState(true);
+
+    // 새로운 메시지 도착 알림 버튼의 display 속성값. 초기값 display=none
+    const [newMessageArriveBtnDisplay, setNewMessageArriveBtnDisplay] = useState('none');
 
     // 구독을 담당하는 useEffect
     useEffect(() => {
@@ -56,7 +65,7 @@ const ChatWindow = () => {
             webSocketFactory: () => socket,
             reconnectDelay: 5000, // 자동 재연결을 위한 지연 시간 (밀리초)
             connectHeaders: {
-                login: leaderNickName,
+                login: leaderNickname,
                 Authorization: cookies.token,
             },
             debug: (str) => {
@@ -112,6 +121,7 @@ const ChatWindow = () => {
         setMessages([]);
     }, [roomId]);
 
+    //웹소켓 연결성공시 호출, 구독요청
     const onConnected = (client, roomId) => {
         // // Subscribe to the Public Topic
         // stompClient.subscribe('/topic/chat/' + roomId, onMessageReceived, {
@@ -142,12 +152,25 @@ const ChatWindow = () => {
         }
     };
 
+    // 웹소캣으로부터 메시지를 받았을때 처리하는 함수
     const onMessageReceived = (payload) => {
         let message = JSON.parse(payload.body);
         console.log(message);
-        setMessages((prevMessages) => [...prevMessages, message]);
+        // 이전 메시지 상태를 가져와서 새로운 메시지를 추가
+        setMessages((prevMessages) => {
+            // 새로운 메시지를 포함한 새로운 배열 생성
+            const updatedMessages = [...prevMessages, message];
+
+            // 메시지를 정렬하여 'invite' 타입이 맨 마지막으로 가도록 함
+            return updatedMessages.sort((a, b) => {
+                if (a.type === 'INVITE' && b.type !== 'INVITE') return 1; // a가 'invite'이면 뒤로
+                if (a.type !== 'INVITE' && b.type === 'INVITE') return -1; // b가 'invite'이면 앞으로
+                return 0; // 같으면 순서 유지
+            });
+        });
     };
 
+    // 메시지 보내는 함수. 발행처리
     const sendMessage = () => {
         console.log(inputMessage);
         console.log(inputMessage.trim());
@@ -159,7 +182,7 @@ const ChatWindow = () => {
         if (messageContent && stompClient) {
             console.log('Stompclient in sendMessage is :', stompClient);
             let chatMessage = {
-                writer: leaderNickName,
+                writer: userNickname,
                 content: inputMessage,
                 chatRoomId: roomId,
                 type: 'CHAT',
@@ -180,7 +203,7 @@ const ChatWindow = () => {
         }
     };
 
-    // 이전 메시지 가져오는 함수.
+    // DB에서 이전 채팅 메시지 가져오는 함수.
     const getPrevMessages = async () => {
         try {
             const response = await api.get(`/message/${roomId}`, {
@@ -193,7 +216,15 @@ const ChatWindow = () => {
             console.log(response);
             // 받아온 값이 배열이 아닐 경우 Message를 빈배열로 저장
             if (Array.isArray(data)) {
-                setMessages(data);
+                // 메시지를 정렬하여 상태에 저장. 초대 메시지를 맨 아래로
+                const sortedMessages = data.sort((a, b) => {
+                    // a가 'invite' 타입이면 1을 반환하여 b보다 뒤로 이동
+                    if (a.type === 'INVITE' && b.type !== 'INVITE') return 1;
+                    // b가 'invite' 타입이면 -1을 반환하여 a보다 앞으로 이동
+                    if (a.type !== 'INVITE' && b.type === 'INVITE') return -1;
+                    return 0; // 두 메시지 타입이 같으면 변화 없음
+                });
+                setMessages(sortedMessages);
             } else {
                 setMessages([]);
             }
@@ -225,11 +256,20 @@ const ChatWindow = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
+    // 스크롤이 맨 아래에 있는지 확인하는 함수
+    // const isScrolledToBottom = () => {
+    //     if (!chatContainerRef.current) return true;
+    //     const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+    //     return scrollTop + clientHeight >= scrollHeight - 5; // 약간의 여유를 두기 위해 -5
+    // };
+
     // 전송버튼 핸들러
     const sendMessageBtnHandler = () => {
         sendMessage();
         // 채팅입력창 비우기
         setInputMessage('');
+        // 채팅창 맨 아래로 스크롤
+        scrollToBottom();
     };
 
     // 채팅입력창 핸들러
@@ -237,6 +277,7 @@ const ChatWindow = () => {
         setInputMessage(event.target.value);
     };
 
+    // 엔터키 눌렀을때 핸들러 (메시지 전송)
     const handleKeyDownHandler = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
@@ -244,13 +285,48 @@ const ChatWindow = () => {
         }
     };
 
+    // 새로운 메시지 도착 버튼 클릭했을때 핸들러
+    const newMessageArriveBtnHandler = (event) => {
+        scrollToBottom();
+        setNewMessageArriveBtnDisplay('none');
+    };
+
+    // 스크롤 이벤트 핸들러, 스크롤의 현재위치를 받아와
+    const handleScroll = () => {
+        const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+        console.log(`scoroll in bottom? : ${!(scrollTop + clientHeight < scrollHeight)}`);
+
+        // 사용자가 스크롤을 올렸는지 체크 사용자가 스크롤을 올리면 true, 맨 아래로 내리면 false
+        setIsUserScrolled(scrollTop + clientHeight < scrollHeight);
+    };
+
+    // useEffect
     useEffect(() => {
         getUserNickname();
     }, []);
 
-    // 메시지 추가시마다 스크롤 맨 아래로
     useEffect(() => {
-        scrollToBottom();
+        const chatContainer = chatContainerRef.current;
+        if (chatContainer) {
+            console.log('스크롤 이벤트 리스너 추가');
+            chatContainer.addEventListener('scroll', handleScroll); // 스크롤 이벤트 리스너 추가
+        }
+        return () => {
+            if (chatContainer) {
+                console.log('스크롤 이벤트 리스너 해제');
+                chatContainer.removeEventListener('scroll', handleScroll); // 컴포넌트 언마운트 시 리스너 제거
+            }
+        };
+    }, [chatContainerRef.current]);
+
+    // 메시지 추가시마다 스크롤이 맨 아래에 있다면 새로운 메시지 받고 스크롤 맨 아래로
+    useEffect(() => {
+        // 새로운 메시지가 도착할 때
+        if (!isUserScrolled) {
+            scrollToBottom();
+        } else {
+            setNewMessageArriveBtnDisplay('block');
+        }
     }, [messages]);
 
     if (isLoading) {
@@ -258,51 +334,78 @@ const ChatWindow = () => {
     }
 
     return (
-        <Container>
-            <Box>
-                <Grid container>
-                    <Grid xs={12}>
-                        <p>{title}</p>
-                    </Grid>
-                    <Grid xs={12} sx={{ height: 600, overflow: 'auto' }}>
-                        {messages.map((message) => (
-                            <Box key={message.id}>
-                                <ChatMessage
-                                    chatRoomId={message.chatRoomId}
-                                    content={message.content}
-                                    id={message.id}
-                                    time={message.time}
-                                    type={message.type}
-                                    writer={message.writer}
-                                    userNickname={userNickname}
-                                ></ChatMessage>
-                            </Box>
-                        ))}
-                        <div ref={messagesEndRef} />
-                    </Grid>
-
-                    <Grid xs={8}>
-                        <TextField
-                            id="outlined-basic"
-                            variant="outlined"
-                            value={inputMessage}
-                            onChange={inputMessageHandler}
-                            onKeyDown={handleKeyDownHandler}
-                            sx={{ width: '100%' }}
-                        />
-                    </Grid>
-                    <Grid xs={4}>
-                        <Button
-                            variant="contained"
-                            onClick={sendMessageBtnHandler}
-                            sx={{ height: '100%', width: 100, ml: 2 }}
-                        >
-                            전송
-                        </Button>
-                    </Grid>
+        <Box>
+            <Grid container>
+                <Grid xs={12}>
+                    <p>{title}</p>
                 </Grid>
-            </Box>
-        </Container>
+                <Grid xs={12} sx={{ height: 650, overflow: 'auto' }} ref={chatContainerRef}>
+                    {messages.map((message) => (
+                        <Box key={message.id}>
+                            <ChatMessage
+                                chatRoomId={message.chatRoomId}
+                                content={message.content}
+                                id={message.id}
+                                time={message.time}
+                                type={message.type}
+                                writer={message.writer}
+                                writerId={message.writerId}
+                                userNickname={userNickname}
+                                leaderNickname={leaderNickname}
+                                reloadMessage={getPrevMessages}
+                            ></ChatMessage>
+                        </Box>
+                    ))}
+
+                    <div ref={messagesEndRef} />
+                </Grid>
+                <Grid xs={12} sx={{ position: 'relative' }}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{
+                            position: 'absolute',
+                            bottom: '0px',
+                            display: newMessageArriveBtnDisplay,
+                            zIndex: 1000,
+                            left: '50%', // 수평 중앙 정렬
+                            transform: 'translateX(-50%)', // 버튼의 가로 중앙을 맞춤
+                            width: '100%',
+                            borderRadius: '8px 8px 0 0', // 왼쪽 위, 오른쪽 위 모서리만 둥글게 설정,
+                            pb: 0.1,
+                            mb: 0.2,
+                            opacity: 0.8, // 투명도를 80%로 설정
+                            transition: 'opacity 0.3s ease', // 부드러운 전환 효과
+                            '&:hover': {
+                                opacity: 1, // 호버 시 투명도를 100%로 설정
+                            },
+                        }}
+                        onClick={newMessageArriveBtnHandler}
+                    >
+                        새로운 메시지가 도착했습니다!
+                    </Button>
+                </Grid>
+                <Grid xs={8}>
+                    <TextField
+                        id="outlined-basic"
+                        variant="outlined"
+                        value={inputMessage}
+                        onChange={inputMessageHandler}
+                        onKeyDown={handleKeyDownHandler}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>
+                <Grid xs={4}>
+                    <Button
+                        variant="contained"
+                        onClick={sendMessageBtnHandler}
+                        sx={{ height: '100%', width: 100, ml: 2 }}
+                    >
+                        전송
+                    </Button>
+                </Grid>
+            </Grid>
+        </Box>
     );
 };
 export default ChatWindow;

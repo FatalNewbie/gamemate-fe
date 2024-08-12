@@ -29,7 +29,7 @@ const ChatRoom = ({ roomId, title, leaderNickName, memberCnt }) => {
 
     const chatRoomBtnHandler = () => {
         navigate('/ChatWindow', {
-            state: { roomId: roomId, title: title, leaderNickName: leaderNickName, memberCnt: memberCnt },
+            state: { roomId: roomId, title: title, leaderNickname: leaderNickName, memberCnt: memberCnt },
         });
     };
 
