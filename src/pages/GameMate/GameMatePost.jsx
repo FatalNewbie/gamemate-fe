@@ -7,6 +7,8 @@ import { useCookies } from 'react-cookie';
 import { jwtDecode } from 'jwt-decode';
 import DateDisplay from '../../components/DateDisplay';
 import EditCommentModal from './EditCommentModal';
+import SockJS from 'sockjs-client';
+import { Client } from '@stomp/stompjs';
 
 const { kakao } = window;
 
@@ -37,6 +39,17 @@ const GameMatePost = () => {
     const [currentComment, setCurrentComment] = useState(null);
 
     const [openCommentId, setOpenCommentId] = useState(null); // 현재 열려있는 댓글 ID
+
+    //웹소켓 관련
+    const stompClientRef = useRef(null);
+
+    //채팅방ID
+    const [chatRoomId, setChatRoomId] = useState(null);
+
+    //메이트신청하기 버튼 관련
+    const [mateApplyBtnText, setMateApplyBtnText] = useState('메이트 신청하기'); // 버튼 텍스트 상태
+    const [mateApplyBtnColor, setMateApplyBtnColor] = useState('#3d3da3'); // 버튼 색상 상태
+    const [mateApplyBtnDisabled, setMateApplyBtnDisabled] = useState(false); // 버튼 비활성화 상태
 
     const handleEditCommentClick = (comment) => {
         setOpenCommentId(comment.id); // 클릭한 댓글 ID를 저장
@@ -94,6 +107,29 @@ const GameMatePost = () => {
             fetchGames(page);
         }
     }, [page]); // page가 변경될 때마다 실행
+
+    //컴포넌트 마운트시 백에서 채팅방ID가져옴
+    useEffect(() => {
+        try {
+            getChatRoomId();
+        } catch (error) {
+            console.error('Error get chatRoomId', error);
+        }
+
+        //클린업함수. 다른창 넘어갈때 웹소켓 연결해제
+        return () => {
+            if (stompClientRef.current) {
+                stompClientRef.current.deactivate();
+            }
+        };
+    }, []);
+
+    // 채팅방ID가져와서 chatRoomId에 값 들어가면 웹소켓 연결 시작
+    useEffect(() => {
+        if (chatRoomId !== null) {
+            connectWebSocket();
+        }
+    }, [chatRoomId]);
 
     const showPost = async () => {
         const response = await api.get(`/posts/${id}`, {
@@ -196,6 +232,98 @@ const GameMatePost = () => {
         navigate(`/gamemate/posts/${id}/write`, { state: { post } });
     };
 
+    //백에서 게시글id로 채팅방 id가져옴.
+    const getChatRoomId = async () => {
+        const response = await api.get(`/chat/post/${id}`, {
+            headers: {
+                Authorization: cookies.token,
+            },
+        });
+
+        setChatRoomId(response);
+    };
+
+    // 웹소켓 연결
+    const connectWebSocket = async () => {
+        var socket = new SockJS('http://localhost:8080/ws');
+        const client = new Client({
+            webSocketFactory: () => socket,
+            reconnectDelay: 5000,
+            connectHeaders: {
+                Authorization: cookies.token,
+            },
+            debug: (str) => {
+                console.log(str);
+            },
+            onConnect: () => {
+                stompClientRef.current = client;
+                console.log('websocket successfully connected');
+                subscribe(client);
+            },
+            onStompError: (frame) => {
+                console.error(`Broker reported error: ${frame.headers.message}`);
+                console.error(`Additional details: ${frame.body}`);
+            },
+            onWebSocketClose: (event) => {
+                console.error(`WebSocket closed: ${event}`);
+            },
+        });
+        client.activate();
+    };
+
+    // 게시글에 해당되는 채팅방 구독
+    const subscribe = (client) => {
+        console.log('subscribe to ' + chatRoomId);
+        if (!chatRoomId) {
+            console.error('roomId is undefined in onConnected');
+            return;
+        }
+
+        if (!client) {
+            console.error('stompClient is null in onConnected');
+            return;
+        }
+
+        try {
+            // 구독 요청을 보냅니다.
+            const subscription = client.subscribe('/topic/chat/' + chatRoomId, null, {
+                ack: 'auto', // 자동 메시지 확인
+            });
+        } catch (error) {
+            console.error('Error during subscription:', error);
+        } finally {
+            console.log(`Successfully subscribed to room ${chatRoomId}`);
+        }
+    };
+
+    // 메이트신청버튼 핸들러
+    const mateApplyBtnHandler = (event) => {
+        console.log('버튼 클릭');
+
+        // 채팅방참가신청메시지 발행
+        if (stompClientRef.current) {
+            let chatMessage = {
+                writer: post.nickname,
+                content: 'invite message',
+                chatRoomId: chatRoomId,
+                type: 'INVITE',
+            };
+
+            stompClientRef.current.publish({
+                destination: '/app/message/send/' + chatRoomId,
+                headers: {},
+                body: JSON.stringify(chatMessage),
+            });
+        } else {
+            console.error('STOMP client is not connected.');
+            console.log(stompClientRef.current);
+        }
+
+        setMateApplyBtnText('신청 완료');
+        setMateApplyBtnColor('#A9A9A9');
+        setMateApplyBtnDisabled(true);
+    };
+
     if (!post) {
         return <div>로딩 중...</div>; // post가 없을 때 로딩 메시지 출력
     }
@@ -268,7 +396,14 @@ const GameMatePost = () => {
                 <>
                     {username !== post.username && (
                         <div className="apply-button-box">
-                            <button className="apply-button">메이트 신청하기</button>
+                            <button
+                                className="apply-button"
+                                onClick={mateApplyBtnHandler}
+                                style={{ backgroundColor: mateApplyBtnColor }}
+                                disabled={mateApplyBtnDisabled}
+                            >
+                                {mateApplyBtnText}
+                            </button>
                         </div>
                     )}
                 </>
