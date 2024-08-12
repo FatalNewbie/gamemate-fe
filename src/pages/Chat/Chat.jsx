@@ -41,6 +41,12 @@ const Chat = () => {
         getAllChatRooms();
     }, [cookies.token]);
 
+    useEffect(() => {
+        chatRooms.forEach((chatRoom) => {
+            console.log(`${chatRoom.id}, ${chatRoom.title}`);
+        });
+    }, [chatRooms]);
+
     if (isLoading) {
         return <div>roading...</div>;
     }
