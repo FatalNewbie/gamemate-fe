@@ -145,12 +145,15 @@
 
 .comment-mid-box {
     display: flex; /* Flexbox 사용 */
-    justify-content: space-between; /* 하위 요소 간의 간격을 동일하게 유지 */
-    align-items: center; /* 세로 방향 중앙 정렬 */
+}
+
+.comment-header {
+    display: flex;
 }
 
 .comment-created-date {
     padding-left: 15px;
+    display: flex;
 }
 
 .comment-endbox {
@@ -160,11 +163,12 @@
 }
 
 .recomment-button {
-    font-size: 15px;
+    font-size: 12px;
     font-weight: bold;
-    color: #2c2c2c;
+    color: #6c6c6c;
     cursor: pointer; /* 커서 변경 */
-    padding-right: 5px;
+    padding-left: 20px;
+    width: 30px;
 }
 
 .comment-nickname,
@@ -175,6 +179,12 @@
 
 .comment-content {
     padding-left: 15px;
+    width: 230px;
+}
+
+.comment-edit-box {
+    margin-left: auto; /* 오른쪽 끝으로 밀기 */
+    width: 70px;
 }
 
 .recomment-input-header {
@@ -320,20 +330,17 @@
 .edit-button,
 .delete-button,
 .report-button {
-    padding: 5px 10px;
     border: none;
-    width: 50px;
     background-color: transparent;
     cursor: pointer;
     font-weight: bold;
+    font-size: 12px;
+    font-weight: bold;
+    color: #6c6c6c;
+    cursor: pointer; /* 커서 변경 */
 }
 
 .edit-button:hover,
 .delete-button:hover {
     background-color: #f0f0f0; /* 호버 시 색상 변경 */
-}
-
-.delete-button,
-.report-button {
-    color: rgb(209, 28, 28);
 }

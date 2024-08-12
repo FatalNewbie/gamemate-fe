@@ -177,10 +177,10 @@ const GameMateNew = () => {
                 )}
                 {step === 1 && (
                     <div className="slide-in">
-                        <h2>함께 할 게임을 선택해주세요</h2>
+                        <h2>함께 할 게임을 알려주세요</h2>
                         <input
                             type="text"
-                            placeholder="찾는 게임이 없다면 직접 입력해도 좋아요!"
+                            placeholder="게임 제목을 입력해주세요."
                             className="game-input"
                             value={postData.gameTitle || ''} // null일 경우 빈 문자열로 처리
                             onChange={(e) => setField('gameTitle', e.target.value)} // 필드 이름을 문자열로 전달
