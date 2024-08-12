@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'; // useNavigate 추가
+import { Avatar } from '@mui/material';
 import '../GameMate/GameMatePost.css';
 import KakaoMap from './KakaoMap';
 import { api } from '../../apis/customAxios';
@@ -208,7 +209,15 @@ const GameMatePost = () => {
                 <div className="profile-box">
                     <div className="user-profile">
                         <div className="left-section">
-                            <img src="" alt="글쓰기" className="write-icon" />
+                            <Avatar
+                                src={post.userProfile} // S3 URL
+                                alt="User Profile"
+                                style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                                onError={(e) => {
+                                    e.target.onerror = null; // prevents looping
+                                    e.target.src = 'path/to/default/image.png'; // 대체 이미지 경로
+                                }}
+                            />
                             <span className="writer-nickname">{post.nickname}</span>
                         </div>
                         <DateDisplay dateString={post.createdDate} />
@@ -297,18 +306,31 @@ const GameMatePost = () => {
                                     )}
                                 <div>
                                     <div className="comment-header">
-                                        <i className="fas fa-user"></i>
+                                        <Avatar
+                                            src={comment.userProfile} // S3 URL
+                                            alt="User Profile"
+                                            style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                                            onError={(e) => {
+                                                e.target.onerror = null; // prevents looping
+                                                e.target.src = 'path/to/default/image.png'; // 대체 이미지 경로
+                                            }}
+                                        />
                                         <div className="comment-nickname">
                                             <strong>{comment.nickname}</strong>
                                         </div>
                                     </div>
-                                    <div className="comment-created-date">
-                                        <DateDisplay dateString={post.createdDate} />
-                                        <div className="recomment-button" onClick={() => handleReplyClick(comment.id)}>
-                                            답글
+                                    <div className="comment-content-box">
+                                        <div className="comment-created-date">
+                                            <DateDisplay dateString={post.createdDate} />
+                                            <div
+                                                className="recomment-button"
+                                                onClick={() => handleReplyClick(comment.id)}
+                                            >
+                                                답글
+                                            </div>
                                         </div>
+                                        <div className="comment-content">{comment.content}</div>
                                     </div>
-                                    <div className="comment-content">{comment.content}</div>
                                 </div>
 
                                 <div className="comment-edit-box">
@@ -356,37 +378,35 @@ const GameMatePost = () => {
                                         <div className="recomment-mid-box">
                                             <div className="recomment-endbox" key={recomment.id}>
                                                 <div className="recomment-header">
-                                                    <i className="fas fa-user"></i>
+                                                    <Avatar
+                                                        src={recomment.userProfile} // S3 URL
+                                                        alt="User Profile"
+                                                        style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                                                        onError={(e) => {
+                                                            e.target.onerror = null; // prevents looping
+                                                            e.target.src = 'path/to/default/image.png'; // 대체 이미지 경로
+                                                        }}
+                                                    />
                                                     <span className="recomment-nickname">
                                                         <strong>{recomment.nickname}</strong>
                                                     </span>
                                                 </div>
-                                                <div className="comment-created-date">
-                                                    <DateDisplay dateString={post.createdDate} />
+                                                <div className="comment-content-box">
+                                                    <div className="comment-created-date">
+                                                        <DateDisplay dateString={post.createdDate} />
+                                                    </div>
+                                                    <div className="recomment-content">{recomment.content}</div>
                                                 </div>
-                                                <div className="recomment-content">{recomment.content}</div>
                                             </div>
-                                            <div className="options">
-                                                <button
-                                                    className="dots-icon"
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                >
-                                                    <span className="dot"></span>
-                                                    <span className="dot"></span>
-                                                    <span className="dot"></span>
-                                                </button>
-
-                                                <div className="options-menu">
-                                                    {username === recomment.username ? (
-                                                        <>
-                                                            <button className="edit-button">수정</button>
-                                                            <button className="delete-button">삭제</button>
-                                                        </>
-                                                    ) : (
-                                                        <button className="report-button">신고</button>
-                                                    )}
-                                                </div>
+                                            <div className="recomment-edit-box">
+                                                {username === recomment.username ? (
+                                                    <>
+                                                        <button className="edit-button">수정</button>
+                                                        <button className="delete-button">삭제</button>
+                                                    </>
+                                                ) : (
+                                                    <button className="report-button">신고</button>
+                                                )}
                                             </div>
                                         </div>
                                     ))}
