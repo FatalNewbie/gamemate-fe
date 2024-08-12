@@ -31,7 +31,7 @@ const GameList = () => {
                 params: { page, size },
             });
 
-            const newGames = response.data.content;
+            const newGames = response.data.data.content;
 
             // 중복을 제거하고 새로운 게임들만 추가
             setAllGames((prevGames) => {

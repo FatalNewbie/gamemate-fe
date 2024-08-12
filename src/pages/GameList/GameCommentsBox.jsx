@@ -3,20 +3,12 @@ import { Box, Typography, Avatar, Button, Divider, IconButton } from '@mui/mater
 import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LoginRequiredModal from './LoginRequiredModal'; // LoginRequiredModal import
-import token from './authToken'; // authToken import
+import { useCookies } from 'react-cookie';
 
 const GameCommentsBox = ({ comments, totalComments, commentPage, loadMoreComments, handleOpenCommentModal }) => {
     const [openLoginModal, setOpenLoginModal] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    useEffect(() => {
-        // 토큰이 있는지를 확인하여 로그인 상태 설정
-        if (token) {
-            setIsLoggedIn(true);
-        } else {
-            setIsLoggedIn(false);
-        }
-    }, []);
+    const [cookies] = useCookies(['token']); // useCookies 사용
+    const isLoggedIn = !!cookies.token; // 로그인 상태 확인
 
     const handleIconClick = () => {
         if (isLoggedIn) {

@@ -3,11 +3,12 @@ import { Dialog, DialogTitle, DialogContent, Typography, Box, Chip, Button, Icon
 import StarIcon from '@mui/icons-material/Star';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
-import token from './authToken'; // Import the token
+import { useCookies } from 'react-cookie'; // Import useCookies
 
-const RatingModal = ({ open, onClose, game, onConfirm, userId }) => {
+const RatingModal = ({ open, onClose, game, onUpdate, userId }) => {
     const [selectedRating, setSelectedRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
+    const [cookies] = useCookies(['token']); // Get token from cookies
 
     const handleMouseMove = (index, event) => {
         const { left, width } = event.currentTarget.getBoundingClientRect();
@@ -26,20 +27,20 @@ const RatingModal = ({ open, onClose, game, onConfirm, userId }) => {
 
     const handleConfirm = () => {
         const ratingData = {
-            userId: userId, // Set the actual userId here
-            rating: selectedRating * 2, // Convert to a 10-point scale
+            userId: userId,
+            rating: selectedRating * 2,
         };
 
         axios
             .post(`http://localhost:8080/games/${game.id}/ratings`, ratingData, {
                 headers: {
-                    Authorization: `${token}`, // Use the token here
+                    Authorization: `${cookies.token}`,
                     'Content-Type': 'application/json',
                 },
             })
             .then((response) => {
                 console.log('Rating saved successfully:', response.data);
-                onConfirm(selectedRating);
+                onUpdate(selectedRating * 2);
                 onClose();
             })
             .catch((error) => {
@@ -47,16 +48,22 @@ const RatingModal = ({ open, onClose, game, onConfirm, userId }) => {
             });
     };
 
-    const cleanDeveloperName = (name) => {
-        if (!name) return '';
-        let cleanedName = name.replace(/^(주식회사 |\(주\))/g, '');
-        cleanedName = cleanedName.replace(/( 주식회사| Inc\.?| \(유\)| \(주\)|\(주\))$/g, '');
-        return cleanedName;
+    const truncateText = (text, maxLength) => {
+        if (text.length > maxLength) {
+            return text.slice(0, maxLength) + '...';
+        }
+        return text;
     };
 
-    const cleanGenre = (genre) => {
-        if (!genre) return '';
-        return genre.replace(/\(베팅성\)$/, '');
+    const cleanDeveloperName = (name, maxLength = 20) => {
+        let cleanedName = name.replace(/^(주식회사 |\(주\))/g, '');
+        cleanedName = cleanedName.replace(/( 주식회사| Inc\.?| \(유\)| \(주\)|\(주\))$/g, '');
+        return truncateText(cleanedName, maxLength);
+    };
+
+    const cleanGenre = (genre, maxLength = 20) => {
+        let cleanedGenre = genre.replace(/\(베팅성\)$/, '');
+        return truncateText(cleanedGenre, maxLength);
     };
 
     return (
