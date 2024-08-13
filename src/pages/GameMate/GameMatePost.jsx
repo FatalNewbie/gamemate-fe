@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'; // useNavigate 추가
-import { Avatar } from '@mui/material';
 import '../GameMate/GameMatePost.css';
 import KakaoMap from './KakaoMap';
 import { api } from '../../apis/customAxios';
@@ -11,6 +10,8 @@ import EditCommentModal from './EditCommentModal';
 import EditRecommentModal from './EditRecommentModal';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import { Avatar, Snackbar, Alert } from '@mui/material';
 
 const { kakao } = window;
 
@@ -53,6 +54,7 @@ const GameMatePost = () => {
     const [mateApplyBtnColor, setMateApplyBtnColor] = useState('#3d3da3'); // 버튼 색상 상태
     const [mateApplyBtnDisabled, setMateApplyBtnDisabled] = useState(false); // 버튼 비활성화 상태
 
+    //댓글 수정하기
     const handleEditCommentClick = (comment) => {
         setOpenCommentId(comment.id); // 클릭한 댓글 ID를 저장
         setCurrentComment(comment);
@@ -73,42 +75,35 @@ const GameMatePost = () => {
         setOpenCommentId(null);
     };
 
-    const handleUpdateComment = (commentId, newContent) => {
-        console.log('newContent:', newContent);
-        const updatedComments = comments.map((comment) =>
-            comment.id === commentId ? { ...comment, content: newContent } : comment
-        );
-        console.log('업데이트된 댓글 목록:', updatedComments); // 업데이트된 댓글 목록 로그
-        setComments(updatedComments);
+    //친구 추가하기
+    const [open, setOpen] = useState(false);
+    const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+
+    const handleSnackbarClose = () => {
+        setIsSnackbarOpen(false);
     };
 
-    const handleUpdateRecomment = (commentId, newContent) => {
-        window.location.reload();
-    };
-
-    const handleDeleteComment = (commentId) => {
-        const confirmDelete = window.confirm('삭제하시겠습니까?');
-        if (confirmDelete) {
-            // API 호출하여 댓글 삭제
-            api.delete(`/post/${id}/comment/${commentId}`, {
-                headers: {
-                    Authorization: cookies.token,
+    const handleFriendRequest = async (receiverId) => {
+        try {
+            const response = await api.post(
+                '/friend/',
+                {
+                    receiverId: receiverId,
                 },
-            })
-                .then((response) => {
-                    // 삭제 후 댓글 목록 업데이트
-                    setComments((prevComments) => prevComments.filter((comment) => comment.id !== commentId));
-                    console.log('댓글이 삭제되었습니다:', response.data);
-                })
-                .catch((error) => {
-                    console.error('댓글 삭제 중 오류 발생:', error);
-                });
-        }
-    };
+                {
+                    headers: {
+                        Authorization: cookies.token,
+                    },
+                }
+            );
 
-    const handleReplyClick = (commentId) => {
-        // 클릭한 댓글 ID로 상태 업데이트
-        setReplyToCommentId(commentId === replyToCommentId ? null : commentId);
+            setOpen(false);
+            setSnackbarMessage(response.data.message);
+            setIsSnackbarOpen(true);
+        } catch (error) {
+            console.error('Error sending friend request:', error);
+        }
     };
 
     useEffect(() => {
@@ -117,7 +112,7 @@ const GameMatePost = () => {
 
     useEffect(() => {
         if (page >= 0) {
-            fetchGames(page);
+            fetchComments(page);
         }
     }, [page]); // page가 변경될 때마다 실행
 
@@ -154,17 +149,7 @@ const GameMatePost = () => {
         setPost(response.data);
     };
 
-    // const showComments = async () => {
-    //     const response = await api.get(`/post/${id}/comment?page=0&size=10`, {
-    //         headers: {
-    //             Authorization: cookies.token,
-    //         },
-    //     });
-    //     console.log(response.data);
-    //     setComments(response.data);
-    // };
-
-    const fetchGames = async () => {
+    const fetchComments = async () => {
         try {
             setLoading(true);
             const response = await api.get(`/post/${id}/comment?page=${page}&size=5`, {
@@ -243,6 +228,66 @@ const GameMatePost = () => {
 
     const handleEditClick = (post) => {
         navigate(`/gamemate/posts/${id}/write`, { state: { post } });
+    };
+
+    const handleUpdateComment = (commentId, newContent) => {
+        console.log('newContent:', newContent);
+        const updatedComments = comments.map((comment) =>
+            comment.id === commentId ? { ...comment, content: newContent } : comment
+        );
+        console.log('업데이트된 댓글 목록:', updatedComments); // 업데이트된 댓글 목록 로그
+        setComments(updatedComments);
+    };
+
+    const handleUpdateRecomment = (commentId, newContent) => {
+        window.location.reload();
+    };
+
+    //댓글 삭제하기
+    const handleDeleteComment = (commentId) => {
+        const confirmDelete = window.confirm('삭제하시겠습니까?');
+        if (confirmDelete) {
+            // API 호출하여 댓글 삭제
+            api.delete(`/post/${id}/comment/${commentId}`, {
+                headers: {
+                    Authorization: cookies.token,
+                },
+            })
+                .then((response) => {
+                    // 삭제 후 댓글 목록 업데이트
+                    window.location.reload();
+                })
+                .catch((error) => {
+                    console.error('댓글 삭제 중 오류 발생:', error);
+                });
+        }
+    };
+
+    const handleReplyClick = (commentId) => {
+        // 클릭한 댓글 ID로 상태 업데이트
+        setReplyToCommentId(commentId === replyToCommentId ? null : commentId);
+    };
+
+    //댓글 삭제하기
+    const handleDeletePost = (postId) => {
+        const confirmDelete = window.confirm(
+            '글을 삭제하면 채팅방도 함께 사라지고 다시 되돌릴 수 없습니다.\n삭제하시겠습니까?'
+        );
+        if (confirmDelete) {
+            // API 호출하여 댓글 삭제
+            api.delete(`/posts/${postId}`, {
+                headers: {
+                    Authorization: cookies.token,
+                },
+            })
+                .then((response) => {
+                    // 삭제 후 댓글 목록 업데이트
+                    navigate('/gamemate');
+                })
+                .catch((error) => {
+                    console.error('글 삭제 중 오류 발생:', error);
+                });
+        }
     };
 
     //백에서 게시글id로 채팅방 id가져옴.
@@ -413,7 +458,9 @@ const GameMatePost = () => {
                             <button className="post-edit-button" onClick={() => handleEditClick(post)}>
                                 수정
                             </button>
-                            <button className="post-delete-button">삭제</button>
+                            <button className="post-delete-button" onClick={() => handleDeletePost(post.id)}>
+                                삭제
+                            </button>
                         </div>
                     )}
                 </>
@@ -468,6 +515,12 @@ const GameMatePost = () => {
                                         />
                                         <div className="comment-nickname">
                                             <strong>{comment.nickname}</strong>
+                                            {username !== comment.username && (
+                                                <PersonAddAltIcon
+                                                    onClick={() => handleFriendRequest(comment.userId)}
+                                                    sx={{ fontSize: 'medium', pl: '7px' }}
+                                                />
+                                            )}
                                         </div>
                                     </div>
                                     <div className="comment-content-box">
@@ -485,7 +538,7 @@ const GameMatePost = () => {
                                 </div>
 
                                 <div className="comment-edit-box">
-                                    {username === comment.username ? (
+                                    {comment.deletedDate ? null : username === comment.username ? (
                                         <>
                                             <button
                                                 className="edit-button"
@@ -552,6 +605,12 @@ const GameMatePost = () => {
                                                     />
                                                     <span className="recomment-nickname">
                                                         <strong>{recomment.nickname}</strong>
+                                                        {username !== recomment.username && (
+                                                            <PersonAddAltIcon
+                                                                onClick={() => handleFriendRequest(recomment.userId)}
+                                                                sx={{ fontSize: 'medium', pl: '7px' }}
+                                                            />
+                                                        )}
                                                     </span>
                                                 </div>
                                                 <div className="comment-content-box">
@@ -602,6 +661,35 @@ const GameMatePost = () => {
                     <strong>등록</strong>
                 </button>
             </div>
+            <Snackbar
+                open={isSnackbarOpen}
+                autoHideDuration={1000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                sx={{
+                    top: '50%',
+                    width: '80%',
+                    maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                }}
+            >
+                <Alert
+                    onClose={handleSnackbarClose}
+                    severity="success"
+                    sx={{
+                        width: '100%',
+                        backgroundColor: 'rgba(10, 8, 138, 0.8)', // 배경 색상
+                        color: '#ffffff', // 텍스트 색상
+                        fontSize: '11px',
+                    }}
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </div>
     );
 };

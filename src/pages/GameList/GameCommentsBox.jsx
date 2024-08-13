@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Avatar, Button, Divider, IconButton } from '@mui/material';
+import { Box, Typography, Avatar, Button, Divider, IconButton, Snackbar, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditIcon from '@mui/icons-material/Edit';
@@ -8,8 +8,10 @@ import LoginRequiredModal from './LoginRequiredModal';
 import CommentDeleteModal from './CommentDeleteModal';
 import CommentUpdateModal from './CommentUpdateModal';
 import profilePlaceholder from '../../assets/profile_placeholder.png';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
+import { api } from '../../apis/customAxios';
 
 function parseJwt(token) {
     try {
@@ -98,6 +100,37 @@ const GameCommentsBox = ({
         setOpenUpdateModal(false);
     };
 
+    //친구 추가하기
+    const [open, setOpen] = useState(false);
+    const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+
+    const handleSnackbarClose = () => {
+        setIsSnackbarOpen(false);
+    };
+
+    const handleFriendRequest = async (receiverId) => {
+        try {
+            const response = await api.post(
+                '/friend/',
+                {
+                    receiverId: receiverId,
+                },
+                {
+                    headers: {
+                        Authorization: cookies.token,
+                    },
+                }
+            );
+
+            setOpen(false);
+            setSnackbarMessage(response.data.message);
+            setIsSnackbarOpen(true);
+        } catch (error) {
+            console.error('Error sending friend request:', error);
+        }
+    };
+
     return (
         <Box
             sx={{
@@ -137,6 +170,12 @@ const GameCommentsBox = ({
                                         <Typography variant="body1" sx={{ fontWeight: 'bold', mr: 1 }}>
                                             {comment.nickname}
                                         </Typography>
+                                        {comment.username !== loggedInUsername && (
+                                            <PersonAddAltIcon
+                                                onClick={() => handleFriendRequest(comment.userId)}
+                                                sx={{ fontSize: 'medium', pl: '7px' }}
+                                            />
+                                        )}
                                         <Typography variant="body2" sx={{ color: '#666' }}>
                                             {new Date(comment.createdDate).toLocaleDateString()}
                                         </Typography>
@@ -201,6 +240,35 @@ const GameCommentsBox = ({
                 onClose={() => setOpenDeleteModal(false)}
                 onConfirm={handleDeleteConfirm}
             />
+            <Snackbar
+                open={isSnackbarOpen}
+                autoHideDuration={1000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                sx={{
+                    top: '50%',
+                    width: '80%',
+                    maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                }}
+            >
+                <Alert
+                    onClose={handleSnackbarClose}
+                    severity="success"
+                    sx={{
+                        width: '100%',
+                        backgroundColor: 'rgba(10, 8, 138, 0.8)', // 배경 색상
+                        color: '#ffffff', // 텍스트 색상
+                        fontSize: '11px',
+                    }}
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 };
