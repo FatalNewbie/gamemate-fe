@@ -29,6 +29,10 @@
     animation: slide-in 0.5s ease-out; /* 애니메이션 적용 */
 }
 
+.gamemate-new-box {
+    height: 100px;
+}
+
 .onoff-choice {
     display: flex;
     margin-bottom: 20px;
@@ -51,11 +55,11 @@
 }
 
 .online-new.active {
-    background-color: #3d3da3; /* 온라인 버튼이 활성화된 색 */
+    background-color: #3f3dbd; /* 온라인 버튼이 활성화된 색 */
 }
 
 .offline-new.active {
-    background-color: #3d3da3; /* 오프라인 버튼이 활성화된 색 */
+    background-color: #3f3dbd; /* 오프라인 버튼이 활성화된 색 */
 }
 
 h2,
@@ -67,11 +71,10 @@ h3 {
     opacity: 0.8;
 }
 
-.search-input,
 .genre-select,
 .people-select,
 .region-select,
-.description-textarea {
+.mate-cnt-select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -79,18 +82,40 @@ h3 {
     margin-bottom: 20px;
 }
 
-.description-textarea {
-    width: 100%;
+.search-input {
+    width: 90%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-bottom: 20px;
+}
+
+.mate-si-select,
+.mate-gu-select {
+    width: 50%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.open-map-button {
+    width: 70px;
+    height: 30px;
+    margin-left: 80px;
+    margin-top: 18px;
+    background-color: #3f3dbd;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
 }
 
 .submit-button {
     width: 100%;
+    margin-top: 20px;
     padding: 10px;
-    background-color: #6c63ff;
+    background-color: #3f3dbd;
     color: white;
     border: none;
     border-radius: 5px;
@@ -98,5 +123,82 @@ h3 {
 }
 
 .submit-button:hover {
-    background-color: #5a54e3;
+    background-color: #3f3dbd;
+}
+
+.next-button,
+.prev-button {
+    background-color: white; /* 배경색 */
+    border: 1px solid #3f3dbd; /* 테두리 색상 */
+    border-radius: 20px; /* 둥근 모서리 */
+    color: #3f3dbd; /* 글자 색상 */
+    padding: 5px 20px; /* 패딩 */
+    font-size: 13px; /* 글자 크기 */
+    cursor: pointer; /* 커서 변경 */
+    display: flex;
+    align-items: center; /* 중앙 정렬 */
+    justify-content: center; /* 중앙 정렬 */
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s; /* 변환 효과 */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+}
+
+.next-button:hover,
+.prev-button:hover {
+    background-color: #3f3dbd; /* 호버 시 배경색 */
+    color: white; /* 호버 시 글자 색상 */
+}
+
+.next-button:disabled {
+    background-color: #f0f0f0; /* 비활성화 배경색 */
+    color: #a0a0a0; /* 비활성화 글자 색상 */
+    border: 1px solid #d0d0d0; /* 비활성화 테두리 색상 */
+    cursor: not-allowed; /* 비활성화 상태의 커서 */
+    box-shadow: none; /* 비활성화 상태에서 그림자 제거 */
+}
+
+.select-button-box {
+    padding-top: 15px;
+    display: flex;
+    justify-content: flex-start; /* 버튼들을 오른쪽으로 정렬 */
+    gap: 20px; /* 버튼 간의 간격을 추가 */
+}
+
+.change-position {
+    padding-top: 120px;
+    display: flex;
+    justify-content: flex-start; /* 버튼들을 오른쪽으로 정렬 */
+    gap: 20px; /* 버튼 간의 간격을 추가 */
+}
+
+.game-input,
+.genre-input {
+    line-height: 2;
+    width: 100%; /* 너비를 원하는 비율로 설정 */
+    height: 40px; /* 높이 설정 (필요에 따라 조정) */
+    margin: 0; /* 마진 제거 */
+    padding: 10px; /* 패딩 추가 (선택 사항) */
+    box-sizing: border-box; /* 패딩과 보더를 포함하여 너비 계산 */
+
+    border: 1px solid #ccc; /* 테두리 색상 설정 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+    resize: none; /* 크기 조절 비활성화 */
+    font-size: 14px; /* 폰트 크기 설정 */
+    color: #101010; /* 텍스트 색상 설정 */
+}
+
+.description-area {
+    line-height: 2;
+    width: 90%; /* 너비를 원하는 비율로 설정 */
+    height: 160px; /* 높이 설정 (필요에 따라 조정) */
+    margin: 0; /* 마진 제거 */
+    padding: 10px; /* 패딩 추가 (선택 사항) */
+    box-sizing: border-box; /* 패딩과 보더를 포함하여 너비 계산 */
+
+    border: 1px solid #ccc; /* 테두리 색상 설정 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+    resize: none; /* 크기 조절 비활성화 */
+    font-size: 14px; /* 폰트 크기 설정 */
+    color: #101010; /* 텍스트 색상 설정 */
 }

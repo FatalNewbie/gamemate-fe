@@ -16,7 +16,7 @@
     padding: 20px;
     border-radius: 8px;
     width: 350px;
-    height: 100px;
+    height: 120px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     max-width: 90%; /* 화면 크기에 따라 최대 너비 조정 */
     margin: 0; /* 수평 중앙 정렬을 위한 마진 제거 */
@@ -25,8 +25,33 @@
     flex-direction: column; /* 세로 방향으로 정렬 */
 }
 
+.comment-update-area {
+    width: 90%;
+    padding: 10px;
+    height: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
 /* 모달 액션 버튼 스타일 */
 .modal-actions {
     display: flex;
     justify-content: space-between;
+}
+
+.modal-recomment-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 350px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 90%; /* 화면 크기에 따라 최대 너비 조정 */
+    margin: 0; /* 수평 중앙 정렬을 위한 마진 제거 */
+    margin-left: -43px; /* 왼쪽으로 이동할 값 설정 */
+    display: flex; /* Flexbox 사용 */
+    flex-direction: column; /* 세로 방향으로 정렬 */
+}
+
+.update-comment-box {
+    padding-top: 10px;
 }

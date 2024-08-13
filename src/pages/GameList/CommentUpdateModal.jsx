@@ -15,28 +15,31 @@ import axios from 'axios';
 import { useCookies } from 'react-cookie';
 
 const CommentUpdateModal = ({ open, onClose, game, commentId, existingComment, onConfirm }) => {
-    const [comment, setComment] = useState(existingComment);
+    const [comment, setComment] = useState('');
     const [cookies] = useCookies(['token']); // useCookies 사용
 
     useEffect(() => {
-        setComment(existingComment); // 모달이 열릴 때 기존 댓글 내용을 설정
-    }, [existingComment]);
+        if (open) {
+            // 모달이 열릴 때만 existingComment를 설정
+            setComment(existingComment);
+        }
+    }, [open, existingComment]);
 
     const handleConfirm = () => {
         const commentData = {
-            userId: 9, // 실제 사용자 ID로 변경
-            comment: comment, // 수정된 댓글 내용
+            content: comment, // 수정된 댓글 내용
         };
 
         axios
             .put(`http://localhost:8080/games/${game.id}/comments/${commentId}`, commentData, {
                 headers: {
                     Authorization: `${cookies.token}`, // 토큰을 헤더에 포함
+                    'Content-Type': 'application/json',
                 },
             })
             .then((response) => {
                 console.log('Comment updated successfully:', response.data);
-                onConfirm(comment);
+                onConfirm(response.data.data); // 수정된 댓글 데이터를 전달
                 onClose();
             })
             .catch((error) => {
