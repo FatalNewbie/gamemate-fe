@@ -45,7 +45,7 @@ const JoinAdditional = () => {
             const response = await axios.post('http://localhost:8080/join', postData);
 
             if (response.status === 200) {
-                navigate('/login');
+                navigate('/auth');
             }
         } catch (error) {
             console.error('회원가입 실패:', error);
@@ -134,7 +134,13 @@ const JoinAdditional = () => {
                     ))}
                 </Box>
             </Box>
-            <Button variant="contained" color="primary" fullWidth onClick={handleSubmit} sx={{ marginTop: '16px', background: '#0A088A', marginTop: '50px'}}>
+            <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={handleSubmit}
+                sx={{ marginTop: '16px', background: '#0A088A', '&:hover': { backgroundColor: '#5D5AE0' }, marginTop: '50px'}}
+            >
                 가입 완료
             </Button>
         </Box>

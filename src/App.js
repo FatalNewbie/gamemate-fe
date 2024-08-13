@@ -16,8 +16,8 @@ import Recommend from './pages/Recommend/Recommend';
 import ReceivedFriendRequests from './pages/Friend/ReceivedFriendRequests';
 import SentFriendRequests from './pages/Friend/SentFriendRequests';
 import FriendsList from './pages/Friend/FriendList';
-import Join from './pages/Auth/Join';
-import Login from './pages/Auth/Login';
+import Auth from './pages/Auth/Auth';
+//import Login from './pages/Auth/Login';
 import JoinAdditional from './pages/Auth/JoinAdditional';
 import ProfileImageEdit from './pages/MyPage/ProfileImageEdit';
 import ChatRoomTest from './pages/Chat/ChatRoomTest';
@@ -43,12 +43,12 @@ const App = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Navigate to={isLoggedIn ? '/home' : '/join'} replace />} />
+                <Route path="/" element={<Navigate to={isLoggedIn ? "/home" : "/auth"} replace />} />
                 <Route
-                    path="/join"
+                    path="/auth"
                     element={
                         <MainLayout headerTitle="게임메이트" showHeader={false} showFooter={false}>
-                            <Join />
+                            <Auth />
                         </MainLayout>
                     }
                 />
@@ -57,14 +57,6 @@ const App = () => {
                     element={
                         <MainLayout headerTitle="게임메이트" showHeader={false} showFooter={false}>
                             <JoinAdditional />
-                        </MainLayout>
-                    }
-                />
-                <Route
-                    path="/login"
-                    element={
-                        <MainLayout headerTitle="게임메이트" showHeader={false} showFooter={false}>
-                            <Login />
                         </MainLayout>
                     }
                 />

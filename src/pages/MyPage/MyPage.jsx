@@ -21,12 +21,13 @@ const MyPage = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [posts, setPosts] = useState([]); // 내가 쓴 글 목록 상태 추가
     const [friends, setFriends] = useState([]); // 친구 목록의 일부를 저장할 상태
+    const [games, setGames] = useState([]); // 선호 게임 목록을 저장할 상태
     const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 사용
 
     useEffect(() => {
         // 쿠키에 토큰이 없으면 로그인 페이지로 이동
         if (!cookies.token) {
-            navigate('/login');
+            navigate('/auth');
         }
 
         const fetchUserData = async () => {
@@ -130,11 +131,29 @@ const MyPage = () => {
             }
         };
 
+        // 선호 게임 목록 가져오기
+        const fetchUserGames = async () => {
+            try {
+                const response = await axios.get('/games/my-games', {
+                    headers: {
+                        Authorization: cookies.token,
+                    },
+                    params: { page: 0, size: 10 } // 페이지네이션 설정
+                });
+                if (response.status === 200) {
+                    setGames(response.data.content); // 게임 목록 저장
+                }
+            } catch (error) {
+                console.error('선호 게임 목록을 가져오는 데 실패했습니다:', error);
+            }
+        };
+
         fetchUserData(); // 데이터 가져오기
         fetchFriendsCount(); // 친구 수 가져오기
         fetchFriendRequests(); // 친구 요청 목록 가져오기
         fetchUserInfo(); // 선호 장르, 플레이 시간대 가져오기
-        fetchUserPosts(); // 데이터 가져오기
+        fetchUserPosts(); // 내가 쓴 글 목록 가져오기
+        fetchUserGames(); // 선호 게임 목록 가져오기
     }, [cookies.token, navigate]);
 
     const handleOpenEditModal = () => {
@@ -154,6 +173,11 @@ const MyPage = () => {
     };
 
     const handleSaveChanges = async () => {
+        if (!editedUser.password) {
+            alert('비밀번호를 입력해주세요.');
+            return;
+        }
+
         if (editedUser.password !== confirmPassword) {
             alert('비밀번호가 일치하지 않습니다.');
             return;
@@ -206,8 +230,17 @@ const MyPage = () => {
                         e.target.src = 'path/to/default/image.png'; // 대체 이미지 경로
                     }}
                 />
-                <Box sx={{ marginLeft: 2 }}>
-                    <Typography variant="h5">{user.nickname}</Typography>
+                <Box sx={{ marginLeft: 2, width: '140px', height: '65px' }}>
+                    <Typography
+                        sx={{
+                            fontFamily: 'Roboto, sans-serif',
+                            fontWeight: 700,
+                            fontSize: '14pt',
+                            letterSpacing: '-0.10px',
+                        }}
+                    >
+                    {user.nickname}
+                    </Typography>
                     {/* 선호 장르 및 플레이 시간대 태그 표시 */}
                     <Box sx={{ marginTop: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                         <Box sx={{display: 'flex', gap: 1, flexWrap: 'wrap'}}>
@@ -221,27 +254,14 @@ const MyPage = () => {
                                 }}/>
                             ))}
                         </Box>
-                        <Box sx={{display: 'flex', gap: 1, flexWrap: 'wrap'}}>
-                            {user.playTimes?.map((time, index) => (
-                                <Chip key={index}
-                                label={time}
-                                size="small"
-                                sx = {{fontSize: '8px',
-                                    backgroundColor: 'rgba(93, 90, 224, 0.8)',
-                                    color: 'white'
-                                }}/>
-                            ))}
-                        </Box>
                     </Box>
                 </Box>
                 {/* 수정 버튼 추가 */}
-                <Box sx={{ flexGrow: 1 }} />
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <Button
                         variant="contained"
                         onClick={handleOpenEditModal}
-                        sx={{ backgroundColor: '#0A088A', color: 'white', '&:hover': { backgroundColor: '#120EE8' } }}
-//                         onClick={() => navigate('/edit-profile')} // 버튼 클릭 시 프로필 수정 페이지로 이동
+                        sx={{ backgroundColor: '#0A088A', color: 'white', '&:hover': { backgroundColor: '#5D5AE0' } }}
                     >
                         정보 수정
                     </Button>
@@ -296,8 +316,9 @@ const MyPage = () => {
                     >
                     친구 목록
                 </Typography>
-                <Box sx={{ display: 'column', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 2}}>
-                    {friends.map((friend, index) => (
+                <Box sx={{ display: 'column', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 2 }}>
+                    {friends.length > 0 ? (  // 친구가 있을 경우
+                        friends.map((friend, index) => (
                         <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
                             <Avatar
                                 src={friend.userProfile || profilePlaceholder}  // 프로필 사진이 없을 경우 기본 이미지 사용
@@ -313,17 +334,69 @@ const MyPage = () => {
                                 }}
                             >{friend.nickname}</Typography>
                         </Box>
-                    ))}
+                        ))
+                    ) : (  // 친구가 없을 경우
+                        <Typography variant="body1">친구가 없습니다.</Typography>
+                    )}
 
-                    <Button onClick={() => navigate('/friends')} sx = {{
-                        color: 'rgba(10, 8, 138)',
-                    }}>
-                        더보기
-                    </Button>
-
+                    {friends.length > 0 && (  // 친구가 있을 때만 버튼 표시
+                        <Button onClick={() => navigate('/friends')} sx={{ color: 'rgba(10, 8, 138)' }}>
+                            더보기
+                        </Button>
+                    )}
                 </Box>
             </Box>
 
+            {/* 선호 게임 목록 */}
+{/*             <Box */}
+{/*                 sx={{ */}
+{/*                     bgcolor: '#fff', */}
+{/*                     paddingTop: 2, */}
+{/*                     paddingRight: 2, */}
+{/*                     paddingBottom: 0, */}
+{/*                     paddingLeft: 2, */}
+{/*                     borderRadius: 1, */}
+{/*                     minHeight: '100px', */}
+{/*                     marginBottom: 2, */}
+{/*                     boxShadow: 3, */}
+{/*                 }} */}
+{/*             > */}
+{/*                 <Typography */}
+{/*                     variant="h6" */}
+{/*                     sx={{ */}
+{/*                         fontFamily: 'Roboto, sans-serif', */}
+{/*                         fontWeight: 700, */}
+{/*                         fontSize: '14pt', */}
+{/*                         letterSpacing: '-0.5px', */}
+{/*                         marginBottom: '10px', */}
+{/*                     }} */}
+{/*                     gutterBottom */}
+{/*                 > */}
+{/*                 선호 게임 목록 */}
+{/*                 </Typography> */}
+
+{/*                  */}{/* 선호 게임 목록 공간 */}
+{/*                 {games.length > 0 ? ( */}
+{/*                     games.map((game, index) => ( */}
+{/*                         <Box */}
+{/*                             key={index} */}
+{/*                             sx={{ */}
+{/*                                 display: 'flex', */}
+{/*                                 alignItems: 'center', */}
+{/*                                 marginBottom: 2, */}
+{/*                                 boxShadow: 1, */}
+{/*                                 padding: 1, */}
+{/*                                 borderRadius: 1, */}
+{/*                             }} */}
+{/*                         > */}
+{/*                             <Avatar src={game.thumbnailUrl} alt={game.title} sx={{ marginRight: 2 }} /> */}
+{/*                             <Typography variant="body1">{game.title}</Typography> */}
+{/*                         </Box> */}
+{/*                     )) */}
+{/*                 ) : ( */}
+{/*                     <Typography>선호 게임이 없습니다.</Typography> */}
+{/*                 )} */}
+{/*             </Box> */}
             {/* 내가 쓴 글 목록 */}
             <Box
                 sx={{
@@ -338,11 +411,21 @@ const MyPage = () => {
                     boxShadow: 3,
                 }}
             >
-                <Typography variant="h6" gutterBottom>
-                    내가 쓴 글 목록
+                <Typography
+                    variant="h6"
+                    sx={{
+                        fontFamily: 'Roboto, sans-serif',
+                        fontWeight: 700,
+                        fontSize: '14pt',
+                        letterSpacing: '-0.5px',
+                        marginBottom: '10px',
+                    }}
+                    gutterBottom
+                >
+                내가 쓴 글 목록
                 </Typography>
+
                 {/* 내가 쓴 글 목록 공간 */}
-{/*                 내가 쓴 글 목록이 여기에 표시됩니다. */}
                 {posts.length > 0 ? (
                     <Box>
                         {posts.map(post => (
@@ -402,10 +485,20 @@ const MyPage = () => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" color="primary" onClick={handleSaveChanges}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSaveChanges}
+                        sx={{ backgroundColor: '#0A088A', color: 'white', '&:hover': { backgroundColor: '#5D5AE0' } }}
+                    >
                         저장
                     </Button>
-                    <Button variant="outlined" color="secondary" onClick={handleCloseEditModal}>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={handleCloseEditModal}
+                        sx={{ backgroundColor: '#5D5AE0', color: 'white', '&:hover': { backgroundColor: '#0A088A' } }}
+                    >
                         취소
                     </Button>
                 </DialogActions>
