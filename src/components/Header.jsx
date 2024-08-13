@@ -54,7 +54,7 @@ const Header = ({ title, showSearchIcon = true, onSearchClick, setActivePage, ac
         // 쿠키에서 토큰 삭제
         setCookie('token', '', { path: '/', expires: new Date(0) }); // 토큰 삭제
         setActivePage('/home') // 로그아웃 시 activePage 초기화
-        navigate('/login'); // 로그인 페이지로 이동
+        navigate('/auth'); // 로그인 페이지로 이동
         handleMenuClose();
     };
 
