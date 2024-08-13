@@ -22,6 +22,7 @@ import JoinAdditional from './pages/Auth/JoinAdditional';
 import ProfileImageEdit from './pages/MyPage/ProfileImageEdit';
 import ChatRoomTest from './pages/Chat/ChatRoomTest';
 import ChatWindow from './pages/Chat/ChatWindow';
+import SearchResults from './components/SearchResults';
 import { ImportExport } from '@mui/icons-material';
 
 const App = () => {
@@ -42,7 +43,7 @@ const App = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Navigate to={isLoggedIn ? "/home" : "/join"} replace />} />
+                <Route path="/" element={<Navigate to={isLoggedIn ? '/home' : '/join'} replace />} />
                 <Route
                     path="/join"
                     element={
@@ -88,6 +89,14 @@ const App = () => {
                     element={
                         <MainLayout headerTitle="게임리스트">
                             <GameList />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/search-results"
+                    element={
+                        <MainLayout headerTitle="검색 결과">
+                            <SearchResults />
                         </MainLayout>
                     }
                 />

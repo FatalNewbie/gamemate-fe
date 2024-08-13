@@ -6,7 +6,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LoginRequiredModal from './LoginRequiredModal';
 import CommentDeleteModal from './CommentDeleteModal';
-import CommentUpdateModal from './CommentUpdateModal'; // CommentUpdateModal import
+import CommentUpdateModal from './CommentUpdateModal';
+import profilePlaceholder from '../../assets/profile_placeholder.png';
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
 
@@ -41,9 +42,9 @@ const GameCommentsBox = ({
 }) => {
     const [openLoginModal, setOpenLoginModal] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
-    const [openDeleteModal, setOpenDeleteModal] = useState(false); // 삭제 모달 상태
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [commentToUpdate, setCommentToUpdate] = useState(null);
-    const [commentToDelete, setCommentToDelete] = useState(null); // 삭제할 댓글 상태
+    const [commentToDelete, setCommentToDelete] = useState(null);
     const [cookies] = useCookies(['token']);
     const isLoggedIn = !!cookies.token;
     const tokenPayload = cookies.token ? parseJwt(cookies.token.split(' ')[1]) : null;
@@ -127,7 +128,7 @@ const GameCommentsBox = ({
                         <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
                             <Avatar
                                 alt="avatar"
-                                src={`path_to_avatar/${comment.userId}`}
+                                src={comment.userProfile || profilePlaceholder} // Use userProfile from GameCommentDto
                                 sx={{ width: '54px', height: '54px', marginRight: '10px', ml: '8px' }}
                             />
                             <Box sx={{ flexGrow: 1 }}>
