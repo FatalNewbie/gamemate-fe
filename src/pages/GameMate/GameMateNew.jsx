@@ -206,16 +206,39 @@ const GameMateNew = () => {
                             />
                         </div>
                     )}
-                    {step === 2 && (
+                    {step === 2 && postData.status === 'OFF' && (
                         <div className="slide-in">
                             <h2>어떤 장르의 게임인가요?</h2>
-                            <input
-                                type="text"
-                                placeholder="ex) FPS"
-                                className="genre-input"
-                                value={postData.gameGenre || ''}
+                            <select
+                                className="genre-select"
+                                value={postData.gameGenre}
                                 onChange={(e) => setField('gameGenre', e.target.value)}
-                            />
+                            >
+                                <option>보드게임</option>
+                                <option>방탈출</option>
+                                <option>스포츠게임</option>
+                                <option>비디오게임(플레이스테이션 등)</option>
+                            </select>
+                        </div>
+                    )}
+                    {step === 2 && postData.status === 'ON' && (
+                        <div className="slide-in">
+                            <h2>어떤 장르의 게임인가요?</h2>
+                            <select
+                                className="genre-select"
+                                value={postData.gameGenre}
+                                onChange={(e) => setField('gameGenre', e.target.value)}
+                            >
+                                <option>RPG</option>
+                                <option>FPS/TPS</option>
+                                <option>액션</option>
+                                <option>크레인</option>
+                                <option>어드벤처</option>
+                                <option>시뮬레이션</option>
+                                <option>격투게임</option>
+                                <option>롤플레잉</option>
+                                <option>플레이스테이션</option>
+                            </select>
                         </div>
                     )}
                     {step === 3 && (
