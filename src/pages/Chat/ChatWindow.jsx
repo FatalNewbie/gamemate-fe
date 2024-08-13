@@ -33,6 +33,9 @@ const ChatWindow = () => {
     // 현재의 스크롤 위치 ref
     const chatContainerRef = useRef(null);
 
+    // 이전 스크롤 위치 ref
+    const prevScrollHeightRef = useRef(0); // 이전 스크롤 높이를 저장할 ref
+
     // 사용자 스크롤 상태 관리
     const [isUserScrolled, setIsUserScrolled] = useState(false);
 
@@ -44,6 +47,10 @@ const ChatWindow = () => {
 
     // 새로운 메시지 도착 알림 버튼의 display 속성값. 초기값 display=none
     const [newMessageArriveBtnDisplay, setNewMessageArriveBtnDisplay] = useState('none');
+
+    // 서버에서 일정수의 채팅을 가져오기 위해 필요한 변수. 클라이언트에서 받은 메시지들 중 마지막 메시지의 id
+    // const [lastMessageId, setLastMessageId] = useState(-1);
+    const lastMessageIdRef = useRef(-1);
 
     // 구독을 담당하는 useEffect
     useEffect(() => {
@@ -168,6 +175,12 @@ const ChatWindow = () => {
                 return 0; // 같으면 순서 유지
             });
         });
+
+        // 새로운 메시지 받았을때 스크롤이 최하단이 아니라면 새로운메시지버튼 보이게
+        console.log('isUserScrolled? : ' + isUserScrolled);
+        if (isUserScrolled) {
+            setNewMessageArriveBtnDisplay('block');
+        }
     };
 
     // 메시지 보내는 함수. 발행처리
@@ -206,12 +219,13 @@ const ChatWindow = () => {
     // DB에서 이전 채팅 메시지 가져오는 함수.
     const getPrevMessages = async () => {
         try {
-            const response = await api.get(`/message/${roomId}`, {
+            console.log('lastMessageIdRef is : ' + lastMessageIdRef.current);
+            const response = await api.get(`/message/${roomId}/${lastMessageIdRef.current}`, {
                 headers: {
                     Authorization: cookies.token,
                 },
             });
-            const data = response;
+            const data = response.reverse();
             console.log('message is');
             console.log(response);
             // 받아온 값이 배열이 아닐 경우 Message를 빈배열로 저장
@@ -224,7 +238,24 @@ const ChatWindow = () => {
                     if (a.type !== 'INVITE' && b.type === 'INVITE') return -1;
                     return 0; // 두 메시지 타입이 같으면 변화 없음
                 });
-                setMessages(sortedMessages);
+
+                // 이전 스크롤 높이 저장
+                prevScrollHeightRef.current = chatContainerRef.current.scrollHeight;
+
+                // 기존 메시지와 새 메시지를 병합
+                setMessages((prevMessages) => [...sortedMessages, ...prevMessages]);
+                // 마지막 메시지 ID 업데이트 (가장 오래된 메시지의 ID를 사용할 경우)
+                console.log('sortedMessages.length is : ' + sortedMessages.length);
+                if (sortedMessages.length > 0) {
+                    console.log('sortedMessages is');
+                    console.log(sortedMessages);
+                    lastMessageIdRef.current = sortedMessages[0].id;
+                    console.log('Updated lastMessageId to: ' + lastMessageIdRef.current); // 확인용 로그
+                }
+
+                // 메시지 업데이트 후 스크롤 위치 조정
+                // const newScrollHeight = chatContainerRef.current.scrollHeight; // 새 스크롤 높이
+                // chatContainerRef.current.scrollTop = newScrollHeight - prevScrollHeightRef.current; // 이전 위치로 스크롤 이
             } else {
                 setMessages([]);
             }
@@ -294,7 +325,16 @@ const ChatWindow = () => {
     // 스크롤 이벤트 핸들러, 스크롤의 현재위치를 받아와
     const handleScroll = () => {
         const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
-        console.log(`scoroll in bottom? : ${!(scrollTop + clientHeight < scrollHeight)}`);
+        // console.log(`scoroll in bottom? : ${!(scrollTop + clientHeight < scrollHeight)}`);
+
+        // 최상단에서 특정 높이(예: 50px) 아래로 스크롤했는지 확인
+        const threshold = 50; // 기준 높이 (픽셀)
+        const isAboveThreshold = scrollTop <= threshold;
+
+        // 기준 높이에 도달했을 때 추가 메시지 로드
+        if (isAboveThreshold) {
+            getPrevMessages();
+        }
 
         // 사용자가 스크롤을 올렸는지 체크 사용자가 스크롤을 올리면 true, 맨 아래로 내리면 false
         setIsUserScrolled(scrollTop + clientHeight < scrollHeight);
@@ -319,13 +359,24 @@ const ChatWindow = () => {
         };
     }, [chatContainerRef.current]);
 
-    // 메시지 추가시마다 스크롤이 맨 아래에 있다면 새로운 메시지 받고 스크롤 맨 아래로
+    // 새로운 메시지가 도착해서 그 메시지가 messages에 담겼을때
     useEffect(() => {
-        // 새로운 메시지가 도착할 때
+        // 스크롤이 최하단에 있다면 스크롤 최하단으로 내려 새로운 메시지 보임
         if (!isUserScrolled) {
             scrollToBottom();
-        } else {
-            setNewMessageArriveBtnDisplay('block');
+        }
+
+        if (chatContainerRef.current !== null) {
+            const newScrollHeight = chatContainerRef.current.scrollHeight;
+            chatContainerRef.current.scrollTop = newScrollHeight - prevScrollHeightRef.current;
+        }
+
+        // 메시지들이 차지하는 높이 확인
+        if (chatContainerRef.current) {
+            const totalHeight = Array.from(chatContainerRef.current.children).reduce((acc, child) => {
+                return acc + child.offsetHeight;
+            }, 0);
+            console.log('Total height of messages:', totalHeight); // 총 높이 출력
         }
     }, [messages]);
 
@@ -339,7 +390,27 @@ const ChatWindow = () => {
                 <Grid xs={12}>
                     <p>{title}</p>
                 </Grid>
-                <Grid xs={12} sx={{ height: 650, overflow: 'auto' }} ref={chatContainerRef}>
+                <Grid
+                    xs={12}
+                    sx={{
+                        height: 550,
+                        overflowY: 'scroll',
+
+                        border: '1px solid #ccc', // 선택적으로 경계선 추가
+                        padding: '10px', // 선택적으로 패딩 추가
+                        '&::-webkit-scrollbar': {
+                            width: '8px', // 스크롤바의 너비
+                        },
+                        '&::-webkit-scrollbar-thumb': {
+                            backgroundColor: '#888', // 스크롤바의 색상
+                            borderRadius: '4px', // 스크롤바의 모서리를 둥글게
+                        },
+                        '&::-webkit-scrollbar-thumb:hover': {
+                            backgroundColor: '#555', // 스크롤바를 호버했을 때의 색상
+                        },
+                    }}
+                    ref={chatContainerRef}
+                >
                     {messages.map((message) => (
                         <Box key={message.id}>
                             <ChatMessage
