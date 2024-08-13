@@ -1,20 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
-import {
-    Box,
-    Typography,
-    List,
-    ListItem,
-    Avatar,
-    Button,
-    Modal,
-    Snackbar,
-    Alert,
-    Paper,
-    Chip,
-} from '@mui/material';
+import { Box, Typography, List, ListItem, Avatar, Button, Modal, Snackbar, Alert, Paper, Chip } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import profilePlaceholder from '../../assets/profile_placeholder.png';
 import { useNavigate } from 'react-router-dom';
 
 const RecievedFriendRequests = () => {
@@ -65,16 +54,22 @@ const RecievedFriendRequests = () => {
     const handleFriendRequestAccept = async () => {
         try {
             const token = cookies.token;
-            const response2 = await axios.put('/friend/respond', {
-                requesterId: selectedRequest.requester.id,
-                status: 'ACCEPTED',
-            }, {
-                headers: {
-                    Authorization: `${token}`,
+            const response2 = await axios.put(
+                '/friend/respond',
+                {
+                    requesterId: selectedRequest.requester.id,
+                    status: 'ACCEPTED',
                 },
-            });
+                {
+                    headers: {
+                        Authorization: `${token}`,
+                    },
+                }
+            );
 
-            setFriendRequests(prevRequests => prevRequests.filter(request => request.requester.id !== selectedRequest.requester.id));
+            setFriendRequests((prevRequests) =>
+                prevRequests.filter((request) => request.requester.id !== selectedRequest.requester.id)
+            );
             setIsAcceptModalOpen(false);
             setSnackbarMessage(response2.data.data.message);
             setIsSnackbarOpen(true);
@@ -86,16 +81,22 @@ const RecievedFriendRequests = () => {
     const handleFriendRequestDecline = async () => {
         try {
             const token = cookies.token;
-            const response3 = await axios.put('/friend/respond', {
-                requesterId: selectedRequest.requester.id,
-                status: 'REJECTED',
-            }, {
-                headers: {
-                    Authorization: `${token}`,
+            const response3 = await axios.put(
+                '/friend/respond',
+                {
+                    requesterId: selectedRequest.requester.id,
+                    status: 'REJECTED',
                 },
-            });
+                {
+                    headers: {
+                        Authorization: `${token}`,
+                    },
+                }
+            );
 
-            setFriendRequests(prevRequests => prevRequests.filter(request => request.requester.id !== selectedRequest.requester.id));
+            setFriendRequests((prevRequests) =>
+                prevRequests.filter((request) => request.requester.id !== selectedRequest.requester.id)
+            );
             setIsDeclineModalOpen(false);
             setSnackbarMessage(response3.data.data.message);
             setIsSnackbarOpen(true);
@@ -129,10 +130,23 @@ const RecievedFriendRequests = () => {
             </Button>
             <List>
                 {friendRequests.map((request, index) => (
-                    <ListItem key={index} sx={{ display: 'flex', alignItems: 'center', padding: 2, marginBottom: '10px', borderRadius: '5                                                               %'}} component={Paper} elevation={3}>
-                        <Avatar sx={{ width: 50, height: 50, marginRight: 2 }}>
-                            {request.requester.nickname.charAt(0).toUpperCase()}
-                        </Avatar>
+                    <ListItem
+                        key={index}
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            padding: 2,
+                            marginBottom: '10px',
+                            borderRadius: '5%',
+                        }}
+                        component={Paper}
+                        elevation={3}
+                    >
+                        <Avatar
+                            src={request.requester.userProfile || profilePlaceholder} // 프로필 사진이 없을 경우 기본 이미지 사용
+                            alt={request.requester.nickname}
+                            sx={{ width: 50, height: 50, marginRight: 2 }}
+                        />
                         <Box sx={{ flexGrow: 1 }}>
                             <Typography variant="h6" fontWeight={700}>
                                 {request.requester.nickname}
@@ -141,28 +155,34 @@ const RecievedFriendRequests = () => {
                                 {request.requester.username}
                             </Typography>
                             <Box mt={1}>
-                                <Box sx={{display: 'flex', gap: 1, flexWrap: 'wrap'}}>
+                                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                                     {request.requester.preferredGenres.map((genre, idx) => (
-                                        <Chip key={index} 
-                                        label={genre} 
-                                        size="small" 
-                                        sx = {{fontSize: '8px',
-                                            backgroundColor: 'rgba(10, 8, 138, 0.8)',
-                                            color: 'white'
-                                        }}/>
+                                        <Chip
+                                            key={index}
+                                            label={genre}
+                                            size="small"
+                                            sx={{
+                                                fontSize: '8px',
+                                                backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                                                color: 'white',
+                                            }}
+                                        />
                                     ))}
                                 </Box>
                             </Box>
                             <Box mt={1}>
-                                <Box sx={{display: 'flex', gap: 1, flexWrap: 'wrap'}}>
+                                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                                     {request.requester.playTimes.map((time, idx) => (
-                                        <Chip key={index} 
-                                        label={time} 
-                                        size="small" 
-                                        sx = {{fontSize: '8px',
-                                            backgroundColor: 'rgba(93, 90, 224, 0.8)',
-                                            color: 'white'
-                                        }}/>
+                                        <Chip
+                                            key={index}
+                                            label={time}
+                                            size="small"
+                                            sx={{
+                                                fontSize: '8px',
+                                                backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                                                color: 'white',
+                                            }}
+                                        />
                                     ))}
                                 </Box>
                             </Box>
@@ -172,9 +192,7 @@ const RecievedFriendRequests = () => {
                                 variant="contained"
                                 color="primary"
                                 onClick={() => handleAcceptModalOpen(request)}
-                                sx={{textTransform: 'none', 
-                                    backgroundColor: 'rgba(10, 8, 138, 0.8)'
-                                }}
+                                sx={{ textTransform: 'none', backgroundColor: 'rgba(10, 8, 138, 0.8)' }}
                             >
                                 수락
                             </Button>
@@ -182,8 +200,7 @@ const RecievedFriendRequests = () => {
                                 variant="outlined"
                                 color="primary"
                                 onClick={() => handleDeclineModalOpen(request)}
-                                sx={{textTransform: 'none',
-                                }}
+                                sx={{ textTransform: 'none' }}
                             >
                                 거절
                             </Button>
@@ -193,30 +210,29 @@ const RecievedFriendRequests = () => {
             </List>
 
             {/* 수락 확인 모달 */}
-            <Modal
-                open={isAcceptModalOpen}
-                onClose={handleAcceptModalClose}
-            >
-                <Box sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: 300,
-                    bgcolor: 'background.paper',
-                    boxShadow: 24,
-                    p: 4,
-                    borderRadius: 1,
-                }}>
+            <Modal open={isAcceptModalOpen} onClose={handleAcceptModalClose}>
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 300,
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
+                        borderRadius: 1,
+                    }}
+                >
                     <Typography
                         id="cancel-request-modal"
                         variant="h6"
                         sx={{
-                        fontFamily: 'Roboto, sans-serif',
-                        fontWeight: 600,
-                        fontSize: '11pt',
-                        letterSpacing: '-0.5px',
-                        mb: 2,
+                            fontFamily: 'Roboto, sans-serif',
+                            fontWeight: 600,
+                            fontSize: '11pt',
+                            letterSpacing: '-0.5px',
+                            mb: 2,
                         }}
                     >
                         {selectedRequest?.requester.nickname}님을 친구로 수락하시겠습니까?
@@ -233,30 +249,29 @@ const RecievedFriendRequests = () => {
             </Modal>
 
             {/* 거절 확인 모달 */}
-            <Modal
-                open={isDeclineModalOpen}
-                onClose={handleDeclineModalClose}
-            >
-                <Box sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: 300,
-                    bgcolor: 'background.paper',
-                    boxShadow: 24,
-                    p: 4,
-                    borderRadius: 1,
-                }}>
+            <Modal open={isDeclineModalOpen} onClose={handleDeclineModalClose}>
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 300,
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
+                        borderRadius: 1,
+                    }}
+                >
                     <Typography
                         id="cancel-request-modal"
                         variant="h6"
                         sx={{
-                        fontFamily: 'Roboto, sans-serif',
-                        fontWeight: 600,
-                        fontSize: '11pt',
-                        letterSpacing: '-0.5px',
-                        mb: 2,
+                            fontFamily: 'Roboto, sans-serif',
+                            fontWeight: 600,
+                            fontSize: '11pt',
+                            letterSpacing: '-0.5px',
+                            mb: 2,
                         }}
                     >
                         {selectedRequest?.requester.nickname}님의 친구 요청을 거절하시겠습니까?
@@ -283,18 +298,22 @@ const RecievedFriendRequests = () => {
                 }}
                 sx={{
                     top: '50%',
-                    width: '80%', 
+                    width: '80%',
                     maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                 }}
             >
-                <Alert onClose={handleSnackbarClose} severity="success" sx={{ 
-                    width: '100%',
-                    backgroundColor: 'rgba(10, 8, 138, 0.8)', // 배경 색상
-                    color: '#ffffff', // 텍스트 색상
-                    fontSize: '11px',
-                    }}>
+                <Alert
+                    onClose={handleSnackbarClose}
+                    severity="success"
+                    sx={{
+                        width: '100%',
+                        backgroundColor: 'rgba(10, 8, 138, 0.8)', // 배경 색상
+                        color: '#ffffff', // 텍스트 색상
+                        fontSize: '11px',
+                    }}
+                >
                     {snackbarMessage}
                 </Alert>
             </Snackbar>

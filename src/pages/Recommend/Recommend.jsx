@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Typography, Paper, Chip, Divider, Grid, IconButton, Button, Modal, Snackbar, Alert, } from '@mui/material';
+import { Box, Typography, Paper, Chip, Divider, Grid, IconButton, Button, Modal, Snackbar, Alert, Avatar } from '@mui/material';
 import { ChatBubbleOutline, PersonAdd, PersonAddDisabled, ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import profilePlaceholder from '../../assets/profile_placeholder.png';
@@ -166,7 +166,17 @@ const Recommend = () => {
         <Paper key={index} className="user-card">
           <Grid container alignItems="center" spacing={2}>
             <Grid item>
-              <img src={profilePlaceholder} alt="Profile" className="profile-pic" />
+              <Avatar
+                  src={user.user_profile || profilePlaceholder}  // 프로필 사진이 없을 경우 기본 이미지 사용
+                  alt={user.nickname}
+                  sx={{
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '50%',
+                    marginRight: '16px',
+                    objectFit: 'contain',
+                  }}
+              />
             </Grid>
             <Grid item xs>
               <Box display={"flex"} justifyContent={"space-between"} alignContent={"center"} marginBottom={"7px"}>

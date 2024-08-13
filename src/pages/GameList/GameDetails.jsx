@@ -72,6 +72,12 @@ const GameDetails = () => {
     const handleOpenCommentModal = () => setOpenCommentModal(true);
     const handleCloseCommentModal = () => setOpenCommentModal(false);
 
+    const handleCommentSubmitted = (newComment) => {
+        // 새로운 댓글을 가장 앞에 추가하고 총 댓글 수를 증가시킵니다.
+        setComments((prevComments) => [newComment, ...prevComments]);
+        setTotalComments((prevTotal) => prevTotal + 1);
+    };
+
     const truncateText = (text, maxLength) => {
         if (text.length > maxLength) {
             return text.slice(0, maxLength) + '...';
@@ -179,12 +185,13 @@ const GameDetails = () => {
             />
             <GameCommentsBox
                 comments={comments}
+                setComments={setComments} // setComments 전달
                 totalComments={totalComments}
                 commentPage={commentPage}
                 loadMoreComments={loadMoreComments}
                 handleOpenCommentModal={handleOpenCommentModal}
+                game={game} // game 전달
             />
-
             {/* Rating Modal */}
             <RatingModal
                 open={openRatingModal}
@@ -202,6 +209,7 @@ const GameDetails = () => {
                 game={game}
                 onConfirm={(comment) => {
                     console.log(`Comment submitted: ${comment}`);
+                    handleCommentSubmitted(comment); // Update the comments list with the new comment
                 }}
             />
         </Box>

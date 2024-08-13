@@ -20,20 +20,21 @@ const CommentModal = ({ open, onClose, game, onConfirm }) => {
 
     const handleConfirm = () => {
         const commentData = {
-            userId: 9, // 실제 사용자 ID로 변경
-            comment: comment, // 작성된 댓글 내용
+            content: comment, // 작성된 댓글 내용
         };
 
         axios
             .post(`http://localhost:8080/games/${game.id}/comments`, commentData, {
                 headers: {
                     Authorization: `${cookies.token}`, // 토큰을 헤더에 포함
+                    'Content-Type': 'application/json',
                 },
             })
             .then((response) => {
                 console.log('Comment saved successfully:', response.data);
-                onConfirm(comment);
-                onClose();
+                onConfirm(response.data.data); // 새로운 댓글 데이터를 전달
+                setComment(''); // 상태 초기화
+                onClose(); // 모달 닫기
             })
             .catch((error) => {
                 console.error('There was an error saving the comment:', error);

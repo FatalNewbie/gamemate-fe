@@ -3,7 +3,7 @@ import { api } from '../../apis/customAxios';
 import { useCookies } from 'react-cookie';
 import './Modal.css';
 
-const EditCommentModal = ({ isOpen, onClose, comment, onUpdate, id }) => {
+const EditRecommentModal = ({ isOpen, onClose, comment, onUpdate, id }) => {
     const [cookies] = useCookies(['token']);
     const [newContent, setNewContent] = useState(comment.content);
 
@@ -48,7 +48,7 @@ const EditCommentModal = ({ isOpen, onClose, comment, onUpdate, id }) => {
 
     return (
         <div className="modal">
-            <div className="modal-content">
+            <div className="modal-recomment-content">
                 <h2>댓글 수정</h2>
                 <textarea
                     className="comment-update-area"
@@ -64,4 +64,4 @@ const EditCommentModal = ({ isOpen, onClose, comment, onUpdate, id }) => {
     );
 };
 
-export default EditCommentModal;
+export default EditRecommentModal;

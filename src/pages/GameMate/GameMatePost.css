@@ -118,6 +118,7 @@
 
 .post-content {
     line-height: 2; /* 줄간격 조정 (원하는 값으로 변경) */
+    color: #000000;
 }
 
 .map-placeholder {
@@ -258,15 +259,37 @@
 }
 
 .comment-submit-button {
-    height: 35px;
-    width: 80px;
+    height: 30px;
+    width: 60px;
     margin-top: 10px;
-    padding: 10px;
-    background-color: #3d3da3;
+    background-color: #8f8ec9;
     color: white;
     border: none;
     border-radius: 30px;
     cursor: pointer;
+    font-size: 12px;
+}
+
+.comment-submit-button:disabled {
+    background-color: #ccc; /* 비활성화 상태의 색상 */
+    color: #666; /* 비활성화 상태의 텍스트 색상 */
+}
+
+.recomment-submit-button {
+    height: 25px;
+    width: 40px;
+    margin-top: 10px;
+    background-color: #8f8ec9;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.recomment-submit-button:disabled {
+    background-color: #ccc; /* 비활성화 상태의 색상 */
+    color: #666; /* 비활성화 상태의 텍스트 색상 */
 }
 
 .apply-button {

@@ -139,12 +139,13 @@ const GameMatePost = () => {
                         )}
                     </div>
                 </div>
-                <p className="post-content">
+                <div className="post-content-container">
                     <textarea
+                        className="post-content-update"
                         value={updatedPostData.mateContent}
                         onChange={(e) => setField('mateContent', e.target.value)}
                     />
-                </p>
+                </div>
                 <div>
                     {post.mateLocation && (
                         <>

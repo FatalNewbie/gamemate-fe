@@ -3,6 +3,7 @@ import { Box, Typography, Avatar, Button, Chip, IconButton, Dialog, DialogTitle,
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import profilePlaceholder from '../../assets/profile_placeholder.png';
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -196,7 +197,7 @@ const MyPage = () => {
             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
                 {/* 프로필 이미지 공간 */}
                 <Avatar
-                    src={user.userProfile} // S3 URL
+                    src={user.userProfile || profilePlaceholder} // S3 URL
                     alt="User Profile"
                     style={{ width: '70px', height: '70px', cursor: 'pointer' }}
                     onClick={handleAvatarClick}
@@ -298,13 +299,24 @@ const MyPage = () => {
                 <Box sx={{ display: 'column', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 2}}>
                     {friends.map((friend, index) => (
                         <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
-                            <Avatar src={friend.profilePicture || ''} alt={friend.nickname} sx={{ width: 50, height: 50, marginRight: 2 }} />
-                            <Typography variant="body1">{friend.nickname}</Typography>
+                            <Avatar
+                                src={friend.userProfile || profilePlaceholder}  // 프로필 사진이 없을 경우 기본 이미지 사용
+                                alt={friend.nickname}
+                                sx={{ width: 50, height: 50, marginRight: 2 }}
+                            />
+                            <Typography variant="body1"
+                                sx={{
+                                    fontFamily: 'Roboto, sans-serif',
+                                    fontWeight: 600,
+                                    fontSize: '12pt',
+                                    letterSpacing: '-0.5px',
+                                }}
+                            >{friend.nickname}</Typography>
                         </Box>
                     ))}
 
                     <Button onClick={() => navigate('/friends')} sx = {{
-                        color: 'rgba(10, 8, 138)'
+                        color: 'rgba(10, 8, 138)',
                     }}>
                         더보기
                     </Button>

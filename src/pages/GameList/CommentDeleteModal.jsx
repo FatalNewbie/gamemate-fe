@@ -1,28 +1,8 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, Typography, Button, IconButton, Box } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Button, IconButton, Typography, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import axios from 'axios';
-import { useCookies } from 'react-cookie';
 
-const RatingDeleteModal = ({ open, onClose, gameId, onDelete }) => {
-    const [cookies] = useCookies(['token']);
-
-    const handleConfirm = () => {
-        axios
-            .delete(`http://localhost:8080/games/${gameId}/ratings`, {
-                headers: {
-                    Authorization: `${cookies.token}`,
-                },
-            })
-            .then((response) => {
-                onDelete(); // Call the onDelete function to update the state in parent component
-                onClose(); // Close the modal after deletion
-            })
-            .catch((error) => {
-                console.error('There was an error deleting the rating:', error);
-            });
-    };
-
+const CommentDeleteModal = ({ open, onClose, onConfirm }) => {
     return (
         <Dialog
             open={open}
@@ -43,7 +23,7 @@ const RatingDeleteModal = ({ open, onClose, gameId, onDelete }) => {
                     alignItems: 'center',
                 }}
             >
-                <Typography sx={{ fontSize: '1rem', fontWeight: 'bold', marginRight: 'auto' }}>⭐ 평점 삭제</Typography>
+                <Typography sx={{ fontSize: '1rem', fontWeight: 'bold', marginRight: 'auto' }}>💬 댓글 삭제</Typography>
                 <IconButton onClick={onClose}>
                     <CloseIcon />
                 </IconButton>
@@ -60,7 +40,7 @@ const RatingDeleteModal = ({ open, onClose, gameId, onDelete }) => {
                             fontWeight: 'bold',
                             padding: '8px 30px',
                         }}
-                        onClick={handleConfirm}
+                        onClick={onConfirm}
                     >
                         확인
                     </Button>
@@ -70,4 +50,4 @@ const RatingDeleteModal = ({ open, onClose, gameId, onDelete }) => {
     );
 };
 
-export default RatingDeleteModal;
+export default CommentDeleteModal;
