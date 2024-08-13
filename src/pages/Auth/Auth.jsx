@@ -165,7 +165,17 @@ const Join = () => {
         <Container maxWidth="xs" style={{ marginTop: '50px' }}>
             <Box display="flex" alignItems="center" mt={15} mb={15}>
                 <img src={logo} alt="Logo" style={{ width: 70, height: 70 }} />
-                <Typography variant="h3">게임메이트</Typography>
+                <Typography
+                    variant="h3"
+                    sx={{
+                        fontFamily: 'Roboto, sans-serif',
+                        fontWeight: 700,
+                        fontSize: '35pt',
+                        letterSpacing: '-0.5px',
+                    }}
+                >
+                게임메이트
+                </Typography>
             </Box>
 {/*             <Box mt={2}> */}
 {/*                 <Button */}
@@ -238,10 +248,22 @@ const Join = () => {
                     padding: 2,
                     boxShadow: 3,
                 }}>
-                    <Typography variant="h4" align="center">회원가입</Typography>
-                    <Typography variant="body2" align="center">
-                        이미 계정이 있으신가요? <Button onClick={() => navigate('/login')}>로그인</Button>
+                    <Typography
+                        variant="h4"
+                        align="center"
+                        sx={{
+                            fontFamily: 'Roboto, sans-serif',
+                            fontWeight: 700,
+                            fontSize: '25pt',
+                            letterSpacing: '-0.5px',
+                            marginBottom: '10px',
+                        }}
+                    >
+                    회원가입
                     </Typography>
+{/*                     <Typography variant="body2" align="center"> */}
+{/*                         이미 계정이 있으신가요? <Button onClick={() => navigate('/login')}>로그인</Button> */}
+{/*                     </Typography> */}
                     {error && <Typography color="error" align="center">{error}</Typography>}
                     <TextField
                         label="이메일 입력"
@@ -281,8 +303,14 @@ const Join = () => {
                         value={nickname}
                         onChange={(e) => setNickname(e.target.value)}
                     />
-                    <Button variant="contained" color="primary" fullWidth onClick={handleSubmit} sx={{ marginTop: '16px' }}>
-                        다음
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        onClick={handleSubmit}
+                        sx={{ marginTop: '16px', backgroundColor: '#0A088A', '&:hover': { backgroundColor: '#5D5AE0' } }}
+                    >
+                    다음
                     </Button>
                 </Box>
             </Dialog>
