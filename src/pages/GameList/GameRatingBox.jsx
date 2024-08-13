@@ -70,17 +70,14 @@ const GameRatingBox = ({ averageRating, totalRaters, userRating, setUserRating, 
     };
 
     const handleUpdateRating = (newRating) => {
-        // 유저의 기존 평점이 있는지 확인
         const hasExistingRating = userRating !== null && userRating !== 0;
 
-        // 새로운 평점을 적용한 평점 리스트 계산
         const updatedRatings = hasExistingRating
             ? game.ratings.map((rating) =>
                   rating.userId === cookies.userId ? { ...rating, rating: newRating } : rating
               )
             : [...game.ratings, { userId: cookies.userId, rating: newRating }];
 
-        // 인원수 및 평균 평점 업데이트
         const newTotalRaters = updatedRatings.length;
         const newAverageRating = updatedRatings.reduce((sum, rating) => sum + rating.rating, 0) / newTotalRaters;
 
@@ -91,17 +88,15 @@ const GameRatingBox = ({ averageRating, totalRaters, userRating, setUserRating, 
     };
 
     const handleDeleteRating = () => {
-        // 기존 평점 리스트에서 현재 사용자의 평점을 제외한 새로운 리스트 생성
         const updatedRatings = game.ratings.filter((rating) => rating.userId !== cookies.userId);
 
-        // 인원수 및 평균 평점 업데이트
         const newTotalRaters = updatedRatings.length;
         const newAverageRating =
             newTotalRaters > 0 ? updatedRatings.reduce((sum, rating) => sum + rating.rating, 0) / newTotalRaters : 0;
 
-        setUserRating(null); // 삭제 후 평점을 null로 설정
-        onRatingUpdate(null, newTotalRaters, newAverageRating); // 평점 삭제 후 상태 업데이트
-        handleCloseDeleteModal(); // 삭제 모달 닫기
+        setUserRating(null);
+        onRatingUpdate(null, newTotalRaters, newAverageRating);
+        handleCloseDeleteModal();
     };
 
     const handleOpenDeleteModal = () => {
@@ -167,10 +162,13 @@ const GameRatingBox = ({ averageRating, totalRaters, userRating, setUserRating, 
                     }}
                 >
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography variant="body2" sx={{ marginRight: '8px' }}>
+                        <Typography variant="body2" sx={{ marginLeft: '6px', marginRight: '8px', fontSize: '0.8rem' }}>
                             내 평점:
                         </Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 'bold', marginRight: '8px' }}>
+                        <Typography
+                            variant="body2"
+                            sx={{ fontWeight: 'bold', marginRight: '8px', fontSize: '0.85rem' }}
+                        >
                             {(userRating / 2).toFixed(1)}
                         </Typography>
                         <Box sx={{ display: 'flex' }}>
@@ -186,11 +184,11 @@ const GameRatingBox = ({ averageRating, totalRaters, userRating, setUserRating, 
                         </Box>
                     </Box>
                     <Box sx={{ display: 'flex' }}>
-                        <IconButton sx={{ color: '#0A088A' }} onClick={handleIconClick}>
-                            <EditIcon />
+                        <IconButton sx={{ color: '#0A088A', fontSize: '18px' }} onClick={handleIconClick}>
+                            <EditIcon fontSize="small" />
                         </IconButton>
-                        <IconButton sx={{ color: '#0A088A' }} onClick={handleOpenDeleteModal}>
-                            <DeleteIcon />
+                        <IconButton sx={{ color: '#0A088A', fontSize: '18px' }} onClick={handleOpenDeleteModal}>
+                            <DeleteIcon fontSize="small" />
                         </IconButton>
                     </Box>
                 </Box>

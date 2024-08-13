@@ -6,19 +6,19 @@ import CommentIcon from '@mui/icons-material/Comment';
 import { useNavigate } from 'react-router-dom';
 
 const GameList = () => {
-    const [allGames, setAllGames] = useState([]); // Store all fetched games
-    const [games, setGames] = useState([]); // Store filtered games to display
+    const [allGames, setAllGames] = useState([]);
+    const [games, setGames] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [selectedPlatform, setSelectedPlatform] = useState('All'); // State for filtering
-    const [sortOrder, setSortOrder] = useState('최신순'); // State for sorting
-    const [page, setPage] = useState(0); // 현재 페이지
-    const [size] = useState(10); // 한 번에 가져올 게임 개수
-    const [hasMore, setHasMore] = useState(true); // 더 많은 데이터가 있는지 확인
+    const [selectedPlatform, setSelectedPlatform] = useState('All');
+    const [sortOrder, setSortOrder] = useState('별점순');
+    const [page, setPage] = useState(0);
+    const [size] = useState(10);
+    const [hasMore, setHasMore] = useState(true);
 
     const navigate = useNavigate();
-    const observer = useRef(); // Observer ref for infinite scrolling
-    const lastGameElementRef = useRef(); // Ref for the last element in the list
+    const observer = useRef();
+    const lastGameElementRef = useRef();
 
     useEffect(() => {
         fetchGames();
@@ -33,9 +33,21 @@ const GameList = () => {
 
             const newGames = response.data.data.content;
 
-            // 중복을 제거하고 새로운 게임들만 추가
+            // Fetch totalComments for each game
+            const gamesWithComments = await Promise.all(
+                newGames.map(async (game) => {
+                    const commentsResponse = await axios.get(`http://localhost:8080/games/${game.id}/comments`, {
+                        params: { page: 0, size: 1 }, // Only fetching to get total count
+                    });
+                    return {
+                        ...game,
+                        totalComments: commentsResponse.data.data.totalElements,
+                    };
+                })
+            );
+
             setAllGames((prevGames) => {
-                const uniqueGames = [...prevGames, ...newGames].filter(
+                const uniqueGames = [...prevGames, ...gamesWithComments].filter(
                     (game, index, self) => index === self.findIndex((g) => g.id === game.id)
                 );
                 const filteredAndSortedGames = sortAndFilterGames(uniqueGames, selectedPlatform, sortOrder);
@@ -44,7 +56,7 @@ const GameList = () => {
             });
 
             if (newGames.length < size) {
-                setHasMore(false); // 더 이상 로드할 데이터가 없으면 hasMore를 false로 설정
+                setHasMore(false);
             }
 
             setLoading(false);
@@ -62,12 +74,12 @@ const GameList = () => {
 
     const sortGames = (gamesToSort, order) => {
         let sortedGames = [...gamesToSort];
-        if (order === '최신순') {
-            sortedGames = sortedGames.sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
-        } else if (order === '별점순') {
+        if (order === '별점순') {
             sortedGames = sortedGames.sort(
                 (a, b) => calculateAverageRating(b.ratings) - calculateAverageRating(a.ratings)
             );
+        } else if (order === '댓글순') {
+            sortedGames = sortedGames.sort((a, b) => b.totalComments - a.totalComments);
         }
         return sortedGames;
     };
@@ -93,7 +105,7 @@ const GameList = () => {
     const calculateAverageRating = (ratings) => {
         if (!ratings || ratings.length === 0) return 0;
         const total = ratings.reduce((sum, rating) => sum + rating.rating, 0);
-        return (total / ratings.length / 2).toFixed(1); // Convert to a 5-point scale
+        return (total / ratings.length / 2).toFixed(1);
     };
 
     const handleSortChange = (event) => {
@@ -230,13 +242,24 @@ const GameList = () => {
                         minWidth: '80px',
                         height: '24px',
                     }}
+                    MenuProps={{
+                        PaperProps: {
+                            sx: {
+                                maxHeight: 200,
+                                fontSize: '0.75rem', // 드롭다운 메뉴의 글자 크기 설정
+                            },
+                        },
+                    }}
                 >
-                    <MenuItem value="최신순">최신순</MenuItem>
-                    <MenuItem value="별점순">별점순</MenuItem>
+                    <MenuItem value="별점순" sx={{ fontSize: '0.75rem' }}>
+                        별점순
+                    </MenuItem>
+                    <MenuItem value="댓글순" sx={{ fontSize: '0.75rem' }}>
+                        댓글순
+                    </MenuItem>
                 </Select>
             </Box>
 
-            {/* Main Content Box */}
             <Box
                 sx={{
                     backgroundColor: '#fff',
@@ -252,7 +275,7 @@ const GameList = () => {
                     {games.map((game, index) => (
                         <ListItem
                             key={`list-item-${index}`}
-                            ref={games.length === index + 1 ? lastGameObserver : null} // 마지막 요소에 observer ref 할당
+                            ref={games.length === index + 1 ? lastGameObserver : null}
                             sx={{
                                 display: 'flex',
                                 flexDirection: 'column',
@@ -285,7 +308,7 @@ const GameList = () => {
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                     <CommentIcon fontSize="small" sx={{ marginRight: 0.5 }} />
                                     <Typography variant="body2" sx={{ marginRight: 2, fontSize: '0.75rem' }}>
-                                        {game.comments ? game.comments.length : 0}
+                                        {game.totalComments || 0}
                                     </Typography>
                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                         {[...Array(5)].map((_, index) => (
@@ -298,11 +321,6 @@ const GameList = () => {
                                                             ? '#F1C644'
                                                             : '#D4D4D4',
                                                 }}
-                                                color={
-                                                    index < Math.round(calculateAverageRating(game.ratings))
-                                                        ? 'primary'
-                                                        : 'disabled'
-                                                }
                                             />
                                         ))}
                                         <Typography variant="body2" sx={{ marginLeft: 0.5, fontSize: '0.75rem' }}>
