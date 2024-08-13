@@ -15,6 +15,7 @@ import {
     Chip,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import profilePlaceholder from '../../assets/profile_placeholder.png';
 import { useNavigate } from 'react-router-dom';
 
 const RecievedFriendRequests = () => {
@@ -129,10 +130,12 @@ const RecievedFriendRequests = () => {
             </Button>
             <List>
                 {friendRequests.map((request, index) => (
-                    <ListItem key={index} sx={{ display: 'flex', alignItems: 'center', padding: 2, marginBottom: '10px', borderRadius: '5                                                               %'}} component={Paper} elevation={3}>
-                        <Avatar sx={{ width: 50, height: 50, marginRight: 2 }}>
-                            {request.requester.userProfile}
-                        </Avatar>
+                    <ListItem key={index} sx={{ display: 'flex', alignItems: 'center', padding: 2, marginBottom: '10px', borderRadius: '5%'}} component={Paper} elevation={3}>
+                        <Avatar
+                                src={request.requester.userProfile || profilePlaceholder}  // 프로필 사진이 없을 경우 기본 이미지 사용
+                                alt={request.requester.nickname}
+                                sx={{ width: 50, height: 50, marginRight: 2 }}
+                            />
                         <Box sx={{ flexGrow: 1 }}>
                             <Typography variant="h6" fontWeight={700}>
                                 {request.requester.nickname}

@@ -16,6 +16,7 @@ import {
     IconButton,
 } from '@mui/material';
 import {PersonAddDisabled, ArrowBack } from '@mui/icons-material';
+import profilePlaceholder from '../../assets/profile_placeholder.png';
 import { useNavigate } from 'react-router-dom';
 
 const SentFriendRequests = () => {
@@ -109,9 +110,11 @@ const SentFriendRequests = () => {
             <List>
                 {friendRequests.map((request, index) => (
                     <ListItem key={index} sx={{ display: 'flex', alignItems: 'center', padding: 2, marginBottom: '10px', borderRadius: '5%'}} component={Paper} elevation={3}>
-                        <Avatar sx={{ width: 50, height: 50, marginRight: 2 }}>
-                            {request.receiver.userProfile}
-                        </Avatar>
+                        <Avatar
+                                src={request.receiver.userProfile || profilePlaceholder}  // 프로필 사진이 없을 경우 기본 이미지 사용
+                                alt={request.receiver.nickname}
+                                sx={{ width: 50, height: 50, marginRight: 2 }}
+                            />
                         <Box sx={{ flexGrow: 1 }}>
                             <Typography variant="h6" fontWeight={700}>
                                 {request.receiver.nickname}

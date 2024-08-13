@@ -297,7 +297,7 @@ const Home = () => {
                                         }}
                                     >
                                         <Avatar
-                                            src={user.userProfile} // S3 URL
+                                            src={user.user_profile || profilePlaceholder} // S3 URL
                                             alt="User Profile"
                                             style={{
                                                 width: '60px', height: '60px',
@@ -565,17 +565,17 @@ const Home = () => {
                     {selectedUser && (
                         <>
                             <Avatar
-                                            src={selectedUser.userProfile} // S3 URL
-                                            alt="Profile"
-                                            className="modal-profile-pic"
-                                            style={{
-                                                width: '80px', height: '80px',
-                                            }}
-                                            onError={(e) => {
-                                                e.target.onerror = null; // prevents looping
-                                                e.target.src = {profilePlaceholder}; // 대체 이미지 경로
-                                            }}
-                                        />
+                                src={selectedUser.user_profile || profilePlaceholder} // S3 URL
+                                alt="Profile"
+                                className="modal-profile-pic"
+                                style={{
+                                    width: '80px', height: '80px',
+                                }}
+                                onError={(e) => {
+                                    e.target.onerror = null; // prevents looping
+                                    e.target.src = {profilePlaceholder}; // 대체 이미지 경로
+                                }}
+                            />
 
                             <Typography
                                 id="user-info-modal"

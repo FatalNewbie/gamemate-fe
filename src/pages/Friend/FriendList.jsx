@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { Box, Typography, List, ListItem, Avatar, IconButton, Modal, Button, Snackbar, Alert, Divider } from '@mui/material';
 import { Delete, ArrowBack } from '@mui/icons-material';
+import profilePlaceholder from '../../assets/profile_placeholder.png';
 import { useNavigate } from 'react-router-dom';
 
 const FriendList = () => {
@@ -102,9 +103,11 @@ const FriendList = () => {
                     {friends.map(friend => (
                         <ListItem key={friend.id} sx={{ display: 'block', alignItems: 'center' }}>
                             <Box sx={{display: 'flex'}}>
-                                <Avatar sx={{ width: 50, height: 50, marginRight: 2 }}>
-                                    {friend.userProfile}
-                                </Avatar>
+                                <Avatar
+                                        src={friend.userProfile || profilePlaceholder}  // 프로필 사진이 없을 경우 기본 이미지 사용
+                                        alt={friend.nickname}
+                                        sx={{ width: 50, height: 50, marginRight: 2 }}
+                                    />
                                 <Box sx={{ flexGrow: 1 }}>
                                     <Typography variant="h6">{friend.nickname}</Typography>
                                     <Typography variant="body2">{friend.username}</Typography>
