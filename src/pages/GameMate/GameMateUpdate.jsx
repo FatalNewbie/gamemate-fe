@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom'; // useNavigate 추가
+import { Avatar } from '@mui/material';
 import '../GameMate/GameMateUpdate.css';
 import KakaoMap from './KakaoMap';
 import { api } from '../../apis/customAxios';
@@ -76,7 +77,15 @@ const GameMatePost = () => {
                 <div className="profile-box">
                     <div className="user-profile">
                         <div className="left-section">
-                            <img src="" alt="글쓰기" className="write-icon" />
+                            <Avatar
+                                src={post.userProfile} // S3 URL
+                                alt="User Profile"
+                                style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                                onError={(e) => {
+                                    e.target.onerror = null; // prevents looping
+                                    e.target.src = 'path/to/default/image.png'; // 대체 이미지 경로
+                                }}
+                            />
                             <span className="writer-nickname">{post.nickname}</span>
                         </div>
                         <DateDisplay dateString={post.createdDate} />
