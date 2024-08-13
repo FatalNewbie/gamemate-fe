@@ -3,8 +3,11 @@ import PostListCard from '../../components/GameMate/PostListCard';
 import '../../components/GameMate/PostListCard.css';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../apis/customAxios';
+import { useCookies } from 'react-cookie';
 
 const InfiniteScroll = ({ status, apiUrl }) => {
+    const [cookies] = useCookies(['token']);
+
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -18,7 +21,11 @@ const InfiniteScroll = ({ status, apiUrl }) => {
     const fetchGames = async (pageNumber) => {
         try {
             setLoading(true);
-            const response = await api.get(`${apiUrl}?page=${pageNumber}&size=${size}&status=${status}`);
+            const response = await api.get(`${apiUrl}?page=${pageNumber}&size=${size}&status=${status}`, {
+                headers: {
+                    Authorization: cookies.token,
+                },
+            });
             const newPosts = response.data.content; // "content" 배열을 가져옵니다.
             setPosts((prev) => [...prev, ...newPosts]);
             setHasMore(!response.data.last);

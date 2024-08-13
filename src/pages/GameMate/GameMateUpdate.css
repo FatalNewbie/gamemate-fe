@@ -22,3 +22,26 @@
     font-weight: bold;
     background-color: white;
 }
+
+.post-content-container {
+    display: flex;
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    padding-top: 10px;
+}
+
+.post-content-update {
+    line-height: 2;
+    width: 90%; /* 너비를 원하는 비율로 설정 */
+    height: 200px; /* 높이 설정 (필요에 따라 조정) */
+    margin: 0; /* 마진 제거 */
+    padding: 10px; /* 패딩 추가 (선택 사항) */
+    box-sizing: border-box; /* 패딩과 보더를 포함하여 너비 계산 */
+
+    border: 1px solid #ccc; /* 테두리 색상 설정 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+    resize: none; /* 크기 조절 비활성화 */
+    font-size: 14px; /* 폰트 크기 설정 */
+    color: #101010; /* 텍스트 색상 설정 */
+}
