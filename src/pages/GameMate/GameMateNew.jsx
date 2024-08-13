@@ -63,6 +63,22 @@ const GameMateNew = () => {
         });
     }, []);
 
+    // status가 변경될 때 나머지 값들을 초기 상태로 설정
+    useEffect(() => {
+        setPostData((prevData) => ({
+            status: prevData.status, // 현재 status 유지
+            gameTitle: '',
+            gameGenre: '',
+            mateCnt: 2,
+            mateContent: '',
+            mateLocation: null,
+            latitude: null,
+            longitude: null,
+            mateRegionSi: null,
+            mateRegionGu: null,
+        }));
+    }, [postData.status]);
+
     const openModal = () => {
         setModalIsOpen(true);
     };
@@ -86,11 +102,11 @@ const GameMateNew = () => {
         }
 
         if (step === 5 && postData.status === 'OFF') {
-            return !postData.mateContent;
+            return postData.mateContent.trim().length < 10; // 10자 이하일 경우 true 반환
         }
 
         if (step === 4 && postData.status === 'ON') {
-            return !postData.mateContent;
+            return postData.mateContent.trim().length < 10;
         }
         // 다른 단계에 대한 체크를 추가할 수 있습니다.
         return false; // 다른 단계에서는 비활성화 조건이 없다고 가정
@@ -131,14 +147,20 @@ const GameMateNew = () => {
 
     //데이터를 postData에 담아 전송
     const handleSubmit = async () => {
-        const response = await api.post(`/posts`, postData, {
-            headers: {
-                Authorization: cookies.token,
-            },
-        });
+        try {
+            const response = await api.post(`/posts`, postData, {
+                headers: {
+                    Authorization: cookies.token,
+                },
+            });
 
-        // 게시글 ID를 사용하여 상세 페이지로 이동
-        navigate(`/gamemate/posts/${response.data.id}`);
+            // 게시글 ID를 사용하여 상세 페이지로 이동
+            navigate(`/gamemate/posts/${response.data.id}`);
+        } catch (error) {
+            // 에러 메시지 처리
+            const errorMessage = '게시글을 전송하는 중 오류가 발생했습니다.';
+            alert(errorMessage);
+        }
     };
 
     const handleNext = () => {
@@ -199,6 +221,7 @@ const GameMateNew = () => {
                     {step === 3 && (
                         <div className="slide-in">
                             <h2>모임 인원을 선택해주세요</h2>
+                            <p>본인을 포함해서 선택해주세요</p>
                             <select
                                 className="mate-cnt-select"
                                 value={postData.mateCnt}
@@ -252,7 +275,7 @@ const GameMateNew = () => {
                         <div className="slide-in">
                             <h2>자세한 설명을 작성해주세요</h2>
                             <textarea
-                                placeholder="게임메이트에게 설명할 내용을 자유롭게 작성해주세요! ex) 방탈출만 끝나고 바로 헤어지실 분들로 구해요"
+                                placeholder="게임메이트에게 설명할 내용을 10자 이상으로    자유롭게 작성해주세요! ex) 방탈출만 끝나고 바로 헤어지실 분들로 구해요"
                                 className="description-area"
                                 value={postData.mateContent || ''}
                                 onChange={(e) => setField('mateContent', e.target.value)}
@@ -264,7 +287,7 @@ const GameMateNew = () => {
                         <div className="slide-in">
                             <h2>자세한 설명을 작성해주세요</h2>
                             <textarea
-                                placeholder="게임메이트에게 설명할 내용을 자유롭게 작성해주세요! ex) 저희는 디스코드 사용이 필수입니다!"
+                                placeholder="게임메이트에게 설명할 내용을 10자 이상으로    자유롭게 작성해주세요! ex) 저희는 디스코드 사용이 필수입니다!"
                                 className="description-area"
                                 value={postData.mateContent || ''}
                                 onChange={(e) => setField('mateContent', e.target.value)}

@@ -11,7 +11,7 @@ import EditRecommentModal from './EditRecommentModal';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
-import { Avatar, Snackbar, Alert } from '@mui/material';
+import { Avatar, Snackbar, Alert, useStepContext } from '@mui/material';
 
 const { kakao } = window;
 
@@ -53,6 +53,7 @@ const GameMatePost = () => {
     const [mateApplyBtnText, setMateApplyBtnText] = useState('메이트 신청하기'); // 버튼 텍스트 상태
     const [mateApplyBtnColor, setMateApplyBtnColor] = useState('#3d3da3'); // 버튼 색상 상태
     const [mateApplyBtnDisabled, setMateApplyBtnDisabled] = useState(false); // 버튼 비활성화 상태
+    const [mateRecruitCompleted, setMateRecruitCompleted] = useState(false);
 
     //댓글 수정하기
     const handleEditCommentClick = (comment) => {
@@ -471,10 +472,12 @@ const GameMatePost = () => {
                             <button
                                 className="apply-button"
                                 onClick={mateApplyBtnHandler}
-                                style={{ backgroundColor: mateApplyBtnColor }}
-                                disabled={mateApplyBtnDisabled}
+                                style={{
+                                    backgroundColor: post.mateCnt === post.memberCnt ? 'gray' : mateApplyBtnColor,
+                                }}
+                                disabled={post.mateCnt === post.memberCnt || mateApplyBtnDisabled}
                             >
-                                {mateApplyBtnText}
+                                {post.mateCnt === post.memberCnt ? '메이트 모집 완료' : mateApplyBtnText}
                             </button>
                         </div>
                     )}
@@ -526,12 +529,14 @@ const GameMatePost = () => {
                                     <div className="comment-content-box">
                                         <div className="comment-created-date">
                                             <DateDisplay dateString={post.createdDate} />
-                                            <div
-                                                className="recomment-button"
-                                                onClick={() => handleReplyClick(comment.id)}
-                                            >
-                                                답글
-                                            </div>
+                                            {post.deletedDate === null && (
+                                                <div
+                                                    className="recomment-button"
+                                                    onClick={() => handleReplyClick(comment.id)}
+                                                >
+                                                    답글
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="comment-content">{comment.content}</div>
                                     </div>

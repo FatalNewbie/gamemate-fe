@@ -1,7 +1,16 @@
 import React from 'react';
 import { detailDate } from '../../utils/detailDate';
 
-const PostListCard = ({ nickname, status, gameTitle, gameGenre, mateCnt, mateRegionSi, mateRegionGu, createdDate }) => {
+const PostListCard = ({
+    status,
+    gameTitle,
+    gameGenre,
+    mateCnt,
+    memberCnt,
+    mateRegionSi,
+    mateRegionGu,
+    createdDate,
+}) => {
     //api에 있는 detailPost.createdAt를 바꿔주는 것
     const nowDate = detailDate(new Date(createdDate));
 
@@ -22,7 +31,9 @@ const PostListCard = ({ nickname, status, gameTitle, gameGenre, mateCnt, mateReg
             </div>
             <div className="post-footer">
                 <span className="time-ago">{nowDate}</span>
-                <span className="participants">1 / {mateCnt}</span>
+                <span className={`participants ${memberCnt === mateCnt ? 'completed' : ''}`}>
+                    {memberCnt === mateCnt ? '모집완료' : `${memberCnt} / ${mateCnt}`}
+                </span>
             </div>
         </div>
     );

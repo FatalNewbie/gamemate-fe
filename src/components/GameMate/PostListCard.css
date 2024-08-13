@@ -68,3 +68,8 @@
     padding: 5px 10px;
     margin-right: 10px;
 }
+
+.completed {
+    background-color: gray; /* 모집완료일 때 적용될 색상 */
+    color: white;
+}

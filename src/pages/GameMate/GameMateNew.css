@@ -73,13 +73,20 @@ h3 {
 
 .genre-select,
 .people-select,
-.region-select,
-.mate-cnt-select {
+.region-select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-bottom: 20px;
+}
+
+.mate-cnt-select {
+    width: 100%;
+    padding: 10px;
+    margin-top: -10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 .search-input {

@@ -308,6 +308,15 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* 그림자 효과 */
 }
 
+.apply-button.recruit-completed {
+    background-color: gray; /* 모집 완료일 때의 배경색 */
+    cursor: not-allowed; /* 마우스 커서를 비활성화 상태로 변경 */
+}
+
+.apply-button.recruit-completed:hover {
+    background-color: gray;
+}
+
 .apply-button-box {
     display: flex; /* Flexbox 사용 */
     justify-content: center; /* 수평 중앙 정렬 */
