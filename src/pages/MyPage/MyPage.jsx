@@ -19,10 +19,16 @@ const MyPage = () => {
     const [editedUser, setEditedUser] = useState({ nickname: '', userProfile: '' }); // 수정할 사용자 정보
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [preferredGenres, setPreferredGenres] = useState([]);
+    const [playTimes, setPlayTimes] = useState([]);
     const [posts, setPosts] = useState([]); // 내가 쓴 글 목록 상태 추가
     const [friends, setFriends] = useState([]); // 친구 목록의 일부를 저장할 상태
     const [games, setGames] = useState([]); // 선호 게임 목록을 저장할 상태
     const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 사용
+
+    const genresList = ['FPS', 'RPG', '전략', '액션', '시뮬레이션'];
+    const timesList = ['AM 9:00 ~ AM 11:00', 'AM 11:00 ~ PM 2:00', 'PM 2:00 ~ PM 5:00', 'PM 5:00 ~ PM 8:00',
+        'PM 8:00 ~ PM 11:00', 'PM 11:00 ~ AM 3:00', 'AM 3:00 ~ AM 9:00'];
 
     useEffect(() => {
         // 쿠키에 토큰이 없으면 로그인 페이지로 이동
@@ -172,6 +178,26 @@ const MyPage = () => {
         }));
     };
 
+    const handleGenreChange = (index) => {
+        const newGenres = [...preferredGenres];
+        if (newGenres.includes(index + 1)) {
+            setPreferredGenres(newGenres.filter(g => g !== index + 1));
+        } else {
+            newGenres.push(index + 1);
+            setPreferredGenres(newGenres);
+        }
+    };
+
+    const handleTimeChange = (index) => {
+        const newTimes = [...playTimes];
+        if (newTimes.includes(index + 1)) {
+            setPlayTimes(newTimes.filter(t => t !== index + 1));
+        } else {
+            newTimes.push(index + 1);
+            setPlayTimes(newTimes);
+        }
+    };
+
     const handleSaveChanges = async () => {
         if (!editedUser.password) {
             alert('비밀번호를 입력해주세요.');
@@ -187,6 +213,8 @@ const MyPage = () => {
             const response = await axios.put('/update', {
                 ...editedUser,
                 password: editedUser.password, // 비밀번호 포함
+                preferredGenres,
+                playTimes
             }, {
                 headers: {
                     Authorization: cookies.token,
@@ -460,8 +488,8 @@ const MyPage = () => {
                         fullWidth
                         margin="normal"
                         name="nickname"
-                        value={editedUser.nickname || ''} // 기본 값 설정
-                        onChange={handleInputChange} // 입력 변경 시 상태 업데이트
+                        value={editedUser.nickname || ''}
+                        onChange={handleInputChange}
                     />
                     <TextField
                         label="비밀번호"
@@ -470,8 +498,8 @@ const MyPage = () => {
                         fullWidth
                         margin="normal"
                         name="password"
-                        value={editedUser.password || ''} // 기본 값 설정
-                        onChange={handleInputChange} // 입력 변경 시 상태 업데이트
+                        value={editedUser.password || ''}
+                        onChange={handleInputChange}
                     />
                     <TextField
                         label="비밀번호 확인"
@@ -480,9 +508,61 @@ const MyPage = () => {
                         fullWidth
                         margin="normal"
                         name="confirmPassword"
-                        value={confirmPassword} // confirmPassword 상태 값 설정
+                        value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                     />
+                    <Box sx={{ marginTop: 3 }}>
+                        <Typography variant="h6" sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 600, fontSize: '13pt' }}>
+                            👾 선호 장르
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
+                            {genresList.map((genre, index) => (
+                                <Box
+                                    key={genre}
+                                    onClick={() => handleGenreChange(index)}
+                                    sx={{
+                                        padding: '8px 14px',
+                                        borderRadius: '20px',
+                                        cursor: 'pointer',
+                                        backgroundColor: preferredGenres.includes(index + 1) ? '#0A088A' : '#5D5AE0',
+                                        color: 'white',
+                                        fontWeight: 'bold',
+                                        fontSize: '12px',
+                                        textAlign: 'center',
+                                        transition: 'background-color 0.3s',
+                                    }}
+                                >
+                                    {genre}
+                                </Box>
+                            ))}
+                        </Box>
+                    </Box>
+                    <Box sx={{ marginTop: 3 }}>
+                        <Typography variant="h6" sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 600, fontSize: '13pt' }}>
+                            🎮 플레이 시간대
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
+                            {timesList.map((time, index) => (
+                                <Box
+                                    key={time}
+                                    onClick={() => handleTimeChange(index)}
+                                    sx={{
+                                        padding: '8px 16px',
+                                        borderRadius: '20px',
+                                        cursor: 'pointer',
+                                        backgroundColor: playTimes.includes(index + 1) ? '#0A088A' : '#5D5AE0',
+                                        color: 'white',
+                                        fontWeight: 'bold',
+                                        fontSize: '12px',
+                                        textAlign: 'center',
+                                        transition: 'background-color 0.3s',
+                                    }}
+                                >
+                                    {time}
+                                </Box>
+                            ))}
+                        </Box>
+                    </Box>
                 </DialogContent>
                 <DialogActions>
                     <Button
