@@ -180,7 +180,12 @@ const SentFriendRequests = () => {
                     친구 요청을 취소하시겠습니까?
                 </Typography>
                 <Box display="flex" justifyContent="space-around">
-                    <Button variant="contained" color="primary" onClick={handleFriendRequestCancel}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleFriendRequestCancel}
+                        sx={{ backgroundColor: '#0A088A', '&:hover': { backgroundColor: '#5D5AE0' } }}
+                    >
                     예
                     </Button>
                     <Button variant="outlined" color="secondary" onClick={handleCancelModalClose}>

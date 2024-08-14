@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Avatar, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { Box, Typography, Avatar, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Divider } from '@mui/material';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import profilePlaceholder from '../../assets/profile_placeholder.png';
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
+import FavoriteGamesForMyPage from './FavoriteGamesForMyPage';
+import UserPosts from './UserPosts';
 import { useNavigate } from 'react-router-dom';
 
 axios.defaults.baseURL = 'http://localhost:8080'; // 백엔드 서버 주소
@@ -50,6 +50,8 @@ const MyPage = () => {
                         nickname: response.data.nickname,
                         password: '' // 비밀번호 초기화
                     });
+
+                    fetchUserPosts(response.data.id); // 사용자 ID를 인자로 전달하여 사용자가 작성한 글 목록을 가져옴
                 }
             } catch (error) {
                 console.error('사용자 정보를 가져오는 데 실패했습니다:', error);
@@ -118,19 +120,21 @@ const MyPage = () => {
             }
         };
 
-        const fetchUserPosts = async () => {
+        const fetchUserPosts = async (userId) => { // userId를 인자로 받음
             try {
-                const response = await axios.get('/posts', {
+                const response = await axios.get('/posts/user', {
                     headers: {
                         Authorization: cookies.token,
                     },
-                    params: { status: 'active', // 또는 필요한 상태 값
-                              page: 0, // 첫 페이지
-                              size: 10 // 페이지 크기
+                    params: {
+                        userId,  // userId 값 설정
+                        page: 0, // 첫 페이지
+                        size: 10 // 페이지 크기
                     }
                 });
-                if (response.status === 200) {
-                    setPosts(response.data.content); // 데이터 저장 (content는 CustomPage의 데이터)
+                console.log(response.data); // 응답 데이터 구조 확인
+                if (response.status === 200 && response.data.data.content) {
+                    setPosts(response.data.data.content); // 데이터 저장 (content는 CustomPage의 데이터)
                 }
             } catch (error) {
                 console.error('글 목록을 가져오는 데 실패했습니다:', error);
@@ -146,8 +150,11 @@ const MyPage = () => {
                     },
                     params: { page: 0, size: 10 } // 페이지네이션 설정
                 });
-                if (response.status === 200) {
-                    setGames(response.data.content); // 게임 목록 저장
+                console.log(response.data); // 응답 데이터 구조 확인
+                if (response.status === 200 && response.data.data.content) {
+                    setGames(response.data.data.content); // 게임 목록 저장
+                } else {
+                    console.error('Expected data not found in response', response.data);
                 }
             } catch (error) {
                 console.error('선호 게임 목록을 가져오는 데 실패했습니다:', error);
@@ -158,7 +165,6 @@ const MyPage = () => {
         fetchFriendsCount(); // 친구 수 가져오기
         fetchFriendRequests(); // 친구 요청 목록 가져오기
         fetchUserInfo(); // 선호 장르, 플레이 시간대 가져오기
-        fetchUserPosts(); // 내가 쓴 글 목록 가져오기
         fetchUserGames(); // 선호 게임 목록 가져오기
     }, [cookies.token, navigate]);
 
@@ -347,20 +353,23 @@ const MyPage = () => {
                 <Box sx={{ display: 'column', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 2 }}>
                     {friends.length > 0 ? (  // 친구가 있을 경우
                         friends.map((friend, index) => (
-                        <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
-                            <Avatar
-                                src={friend.userProfile || profilePlaceholder}  // 프로필 사진이 없을 경우 기본 이미지 사용
-                                alt={friend.nickname}
-                                sx={{ width: 50, height: 50, marginRight: 2 }}
-                            />
-                            <Typography variant="body1"
-                                sx={{
-                                    fontFamily: 'Roboto, sans-serif',
-                                    fontWeight: 600,
-                                    fontSize: '12pt',
-                                    letterSpacing: '-0.5px',
-                                }}
-                            >{friend.nickname}</Typography>
+                        <Box key={index}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
+                                <Avatar
+                                    src={friend.userProfile || profilePlaceholder}  // 프로필 사진이 없을 경우 기본 이미지 사용
+                                    alt={friend.nickname}
+                                    sx={{ width: 50, height: 50, marginRight: 2 }}
+                                />
+                                <Typography variant="body1"
+                                    sx={{
+                                        fontFamily: 'Roboto, sans-serif',
+                                        fontWeight: 600,
+                                        fontSize: '12pt',
+                                        letterSpacing: '-0.5px',
+                                    }}
+                                >{friend.nickname}</Typography>
+                            </Box>
+                            <Divider sx={{ backgroundColor: 'rgba(128, 128, 128, 0.3)', width: '100%', mb: 2, marginTop: '10px' }} />
                         </Box>
                         ))
                     ) : (  // 친구가 없을 경우
@@ -368,63 +377,18 @@ const MyPage = () => {
                     )}
 
                     {friends.length > 0 && (  // 친구가 있을 때만 버튼 표시
-                        <Button onClick={() => navigate('/friends')} sx={{ color: 'rgba(10, 8, 138)' }}>
-                            더보기
-                        </Button>
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button onClick={() => navigate('/friends')} sx={{ color: 'rgba(10, 8, 138)' }}>
+                                더보기
+                            </Button>
+                        </div>
                     )}
                 </Box>
             </Box>
 
-            {/* 선호 게임 목록 */}
-{/*             <Box */}
-{/*                 sx={{ */}
-{/*                     bgcolor: '#fff', */}
-{/*                     paddingTop: 2, */}
-{/*                     paddingRight: 2, */}
-{/*                     paddingBottom: 0, */}
-{/*                     paddingLeft: 2, */}
-{/*                     borderRadius: 1, */}
-{/*                     minHeight: '100px', */}
-{/*                     marginBottom: 2, */}
-{/*                     boxShadow: 3, */}
-{/*                 }} */}
-{/*             > */}
-{/*                 <Typography */}
-{/*                     variant="h6" */}
-{/*                     sx={{ */}
-{/*                         fontFamily: 'Roboto, sans-serif', */}
-{/*                         fontWeight: 700, */}
-{/*                         fontSize: '14pt', */}
-{/*                         letterSpacing: '-0.5px', */}
-{/*                         marginBottom: '10px', */}
-{/*                     }} */}
-{/*                     gutterBottom */}
-{/*                 > */}
-{/*                 선호 게임 목록 */}
-{/*                 </Typography> */}
+            {/* FavoriteGamesForMyPage 컴포넌트 사용 */}
+            <FavoriteGamesForMyPage games={games} />
 
-{/*                  */}{/* 선호 게임 목록 공간 */}
-{/*                 {games.length > 0 ? ( */}
-{/*                     games.map((game, index) => ( */}
-{/*                         <Box */}
-{/*                             key={index} */}
-{/*                             sx={{ */}
-{/*                                 display: 'flex', */}
-{/*                                 alignItems: 'center', */}
-{/*                                 marginBottom: 2, */}
-{/*                                 boxShadow: 1, */}
-{/*                                 padding: 1, */}
-{/*                                 borderRadius: 1, */}
-{/*                             }} */}
-{/*                         > */}
-{/*                             <Avatar src={game.thumbnailUrl} alt={game.title} sx={{ marginRight: 2 }} /> */}
-{/*                             <Typography variant="body1">{game.title}</Typography> */}
-{/*                         </Box> */}
-{/*                     )) */}
-{/*                 ) : ( */}
-{/*                     <Typography>선호 게임이 없습니다.</Typography> */}
-{/*                 )} */}
-{/*             </Box> */}
             {/* 내가 쓴 글 목록 */}
             <Box
                 sx={{
@@ -456,21 +420,21 @@ const MyPage = () => {
                 {/* 내가 쓴 글 목록 공간 */}
                 {posts.length > 0 ? (
                     <Box>
-                        {posts.map(post => (
-                            <Box key={post.id} sx={{ marginBottom: 1 }}>
-                                <Typography variant="body1">{post.title}</Typography>
-                                <Typography variant="body2" color="textSecondary">{post.content}</Typography>
+                        {posts.slice(0, 3).map((post, index) => (
+                            <Box key={index} sx={{ marginBottom: 1 }}>
+                                <Typography>{post.title}</Typography>
+                                <Typography variant="body2" color="textSecondary">
+                                    {post.createdAt}
+                                </Typography>
                             </Box>
                         ))}
+                        <Button onClick={() => navigate('/posts/user')} sx={{ color: 'rgba(10, 8, 138)' }}>
+                            더보기
+                        </Button>
                     </Box>
                 ) : (
-                    <Typography>내가 쓴 글이 없습니다.</Typography>
+                    <Typography>글이 없습니다.</Typography>
                 )}
-                <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-                    <Button>
-                        <ArrowDropDownIcon />
-                    </Button>
-                </Box>
             </Box>
 
             {/* 사용자 정보 수정 모달 */}
