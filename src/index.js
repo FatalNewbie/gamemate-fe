@@ -4,6 +4,10 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { CookiesProvider } from 'react-cookie';
+import ReactGA from 'react-ga4';
+
+//Measurement Id 설정
+ReactGA.initialize('G-3HDE4GZJ48');
 
 // ReactDOM.createRoot 사용
 const root = ReactDOM.createRoot(document.getElementById('root'));
