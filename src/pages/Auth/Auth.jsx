@@ -55,49 +55,49 @@ const Join = () => {
         navigate('/join-additional', { state: { username, password, nickname } });
     };
 
-//     const handleGoogleLogin = () => {
-//         window.location.href = "http://localhost:8080/oauth2/authorization/google"
-//     };
+    //     const handleGoogleLogin = () => {
+    //         window.location.href = "http://localhost:8080/oauth2/authorization/google"
+    //     };
 
-//     const onNaverLogin = () => {
-//         fetch("/naver-login", {
-//             method: "GET",
-//             redirect: "follow"
-//         }).then(response => {
-//             if (response.redirected) {
-//                 window.location.href = response.url; // 서버에서 생성한 Naver 로그인 URL로 리디렉션
-//             }
-//         }).catch(error => console.error('Error:', error));
-//     };
+    //     const onNaverLogin = () => {
+    //         fetch("/naver-login", {
+    //             method: "GET",
+    //             redirect: "follow"
+    //         }).then(response => {
+    //             if (response.redirected) {
+    //                 window.location.href = response.url; // 서버에서 생성한 Naver 로그인 URL로 리디렉션
+    //             }
+    //         }).catch(error => console.error('Error:', error));
+    //     };
 
-//     const onNaverLogin = () => {
-//         window.location.href = "http://localhost:8080/oauth2/authorization/naver"
-//     };
-//
-//     useEffect(() => {
-//         const fetchJwtToken = async () => {
-//             try {
-//                 const dataResponse = await axios.get("/token", { withCredentials: true });
-//                 const jwtToken = dataResponse.headers['Authorization'];
-//
-//                 if (jwtToken) {
-//                     const tokenValue = jwtToken.replace(`Bearer `, ``);
-//                     localStorage.setItem('token', tokenValue);
-//                     alert('로그인 성공');
-//                     navigate('/'); // JWT 저장 후 대시보드로 리디렉션
-//                 } else {
-//                     alert('토큰을 받아오지 못했습니다.');
-//                 }
-//             } catch (error) {
-//                 console.error('로그인 중 오류 발생:', error);
-//                 alert('로그인 실패. 다시 시도해 주세요.');
-//             }
-//         };
-//
-//         if (isLoggedIn) {
-//             fetchJwtToken(); // 로그인 상태가 true일 때만 JWT 요청
-//         }
-//     }, [isLoggedIn, navigate]); // 로그인 상태에 따라 호출
+    //     const onNaverLogin = () => {
+    //         window.location.href = "http://localhost:8080/oauth2/authorization/naver"
+    //     };
+    //
+    //     useEffect(() => {
+    //         const fetchJwtToken = async () => {
+    //             try {
+    //                 const dataResponse = await axios.get("/token", { withCredentials: true });
+    //                 const jwtToken = dataResponse.headers['Authorization'];
+    //
+    //                 if (jwtToken) {
+    //                     const tokenValue = jwtToken.replace(`Bearer `, ``);
+    //                     localStorage.setItem('token', tokenValue);
+    //                     alert('로그인 성공');
+    //                     navigate('/'); // JWT 저장 후 대시보드로 리디렉션
+    //                 } else {
+    //                     alert('토큰을 받아오지 못했습니다.');
+    //                 }
+    //             } catch (error) {
+    //                 console.error('로그인 중 오류 발생:', error);
+    //                 alert('로그인 실패. 다시 시도해 주세요.');
+    //             }
+    //         };
+    //
+    //         if (isLoggedIn) {
+    //             fetchJwtToken(); // 로그인 상태가 true일 때만 JWT 요청
+    //         }
+    //     }, [isLoggedIn, navigate]); // 로그인 상태에 따라 호출
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -127,6 +127,10 @@ const Join = () => {
                 const token = response.headers['authorization'];
 
                 console.log('로그인 성공, 쿠키 설정 전');
+
+                // 쿠키에서 토큰 삭제
+                setCookie('token', '', { path: '/', expires: new Date(0) }); // 토큰 삭제
+
                 setCookie('token', token);
 
                 const updatedCookies = { ...cookies, token }; // 직접 업데이트된 쿠키 객체 생성
@@ -174,29 +178,29 @@ const Join = () => {
                         letterSpacing: '-0.5px',
                     }}
                 >
-                게임메이트
+                    게임메이트
                 </Typography>
             </Box>
-{/*             <Box mt={2}> */}
-{/*                 <Button */}
-{/*                     variant="outlined" */}
-{/*                     startIcon={<img src={process.env.PUBLIC_URL + '/googleLogo.png'} alt="Google Icon" style={{ width: 20, height: 20, marginRight: 10 }} />} */}
-{/*                     fullWidth */}
-{/*                     onClick={handleGoogleLogin} */}
-{/*                 > */}
-{/*                     구&nbsp;&nbsp;글&nbsp;&nbsp;계정으로&nbsp;&nbsp;회원가입 */}
-{/*                 </Button> */}
-{/*             </Box> */}
-{/*             <Box mt={2}> */}
-{/*                 <Button */}
-{/*                     variant="outlined" */}
-{/*                     startIcon={<img src={process.env.PUBLIC_URL + '/naverLogo.png'} alt="Naver Icon" style={{ width: 23, height: 23, marginRight: 10 }} />} */}
-{/*                     fullWidth */}
-{/*                     onClick={onNaverLogin} */}
-{/*                 > */}
-{/*                     네이버 계정으로 회원가입 */}
-{/*                 </Button> */}
-{/*             </Box> */}
+            {/*             <Box mt={2}> */}
+            {/*                 <Button */}
+            {/*                     variant="outlined" */}
+            {/*                     startIcon={<img src={process.env.PUBLIC_URL + '/googleLogo.png'} alt="Google Icon" style={{ width: 20, height: 20, marginRight: 10 }} />} */}
+            {/*                     fullWidth */}
+            {/*                     onClick={handleGoogleLogin} */}
+            {/*                 > */}
+            {/*                     구&nbsp;&nbsp;글&nbsp;&nbsp;계정으로&nbsp;&nbsp;회원가입 */}
+            {/*                 </Button> */}
+            {/*             </Box> */}
+            {/*             <Box mt={2}> */}
+            {/*                 <Button */}
+            {/*                     variant="outlined" */}
+            {/*                     startIcon={<img src={process.env.PUBLIC_URL + '/naverLogo.png'} alt="Naver Icon" style={{ width: 23, height: 23, marginRight: 10 }} />} */}
+            {/*                     fullWidth */}
+            {/*                     onClick={onNaverLogin} */}
+            {/*                 > */}
+            {/*                     네이버 계정으로 회원가입 */}
+            {/*                 </Button> */}
+            {/*             </Box> */}
             <form onSubmit={handleLogin}>
                 <TextField
                     label="이메일 입력"
@@ -222,7 +226,7 @@ const Join = () => {
                     variant="contained"
                     color="primary"
                     type="submit"
-                    sx={{ backgroundColor: '#0A088A', '&:hover': { backgroundColor: '#5D5AE0' }, marginTop: '16px'}}
+                    sx={{ backgroundColor: '#0A088A', '&:hover': { backgroundColor: '#5D5AE0' }, marginTop: '16px' }}
                 >
                     로그인
                 </Button>
@@ -233,21 +237,18 @@ const Join = () => {
                     variant="contained"
                     onClick={handleClickOpen}
                     fullWidth
-                    sx={{ backgroundColor: '#0A088A', '&:hover': { backgroundColor: '#5D5AE0' }}}
+                    sx={{ backgroundColor: '#0A088A', '&:hover': { backgroundColor: '#5D5AE0' } }}
                 >
                     회원가입
                 </Button>
             </Box>
-            <Dialog
-                open={open}
-                onClose={handleClose}
-                fullWidth
-                PaperProps={{ style: { maxWidth: '370px' } }}
-            >
-                <Box sx={{
-                    padding: 2,
-                    boxShadow: 3,
-                }}>
+            <Dialog open={open} onClose={handleClose} fullWidth PaperProps={{ style: { maxWidth: '370px' } }}>
+                <Box
+                    sx={{
+                        padding: 2,
+                        boxShadow: 3,
+                    }}
+                >
                     <Typography
                         variant="h4"
                         align="center"
@@ -259,12 +260,16 @@ const Join = () => {
                             marginBottom: '10px',
                         }}
                     >
-                    회원가입
+                        회원가입
                     </Typography>
-{/*                     <Typography variant="body2" align="center"> */}
-{/*                         이미 계정이 있으신가요? <Button onClick={() => navigate('/login')}>로그인</Button> */}
-{/*                     </Typography> */}
-                    {error && <Typography color="error" align="center">{error}</Typography>}
+                    {/*                     <Typography variant="body2" align="center"> */}
+                    {/*                         이미 계정이 있으신가요? <Button onClick={() => navigate('/login')}>로그인</Button> */}
+                    {/*                     </Typography> */}
+                    {error && (
+                        <Typography color="error" align="center">
+                            {error}
+                        </Typography>
+                    )}
                     <TextField
                         label="이메일 입력"
                         variant="outlined"
@@ -308,9 +313,13 @@ const Join = () => {
                         color="primary"
                         fullWidth
                         onClick={handleSubmit}
-                        sx={{ marginTop: '16px', backgroundColor: '#0A088A', '&:hover': { backgroundColor: '#5D5AE0' } }}
+                        sx={{
+                            marginTop: '16px',
+                            backgroundColor: '#0A088A',
+                            '&:hover': { backgroundColor: '#5D5AE0' },
+                        }}
                     >
-                    다음
+                        다음
                     </Button>
                 </Box>
             </Dialog>

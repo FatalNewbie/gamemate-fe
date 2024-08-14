@@ -4,6 +4,10 @@
     padding: 8px;
 }
 
+.gamemate-container {
+    overflow: hidden; /* 스크롤 숨기기 */
+}
+
 .online-posts,
 .offline-posts {
     margin-left: 10px;

@@ -551,7 +551,7 @@ const GameMatePost = () => {
                                     <div className="comment-content-box">
                                         <div className="comment-created-date">
                                             <DateDisplay dateString={post.createdDate} />
-                                            {post.deletedDate === null && (
+                                            {!post.deletedDate && (
                                                 <div
                                                     className="recomment-button"
                                                     onClick={() => handleReplyClick(comment.id)}
