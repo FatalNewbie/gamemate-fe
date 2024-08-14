@@ -7,23 +7,51 @@ function ProfileImageEdit() {
     const [cookies] = useCookies(['token']);
     const [imageList, setImageList] = useState([]); // S3 이미지 리스트
     const [selectedImageUrl, setSelectedImageUrl] = useState(''); // 선택한 이미지 URL
+    const [user, setUser] = useState(null); // 사용자 정보를 저장할 상태
     const navigate = useNavigate();
 
-    // S3 이미지 리스트 가져오기
-    const fetchImageList = async () => {
-        try {
-            const response = await axios.get('/s3/images', {
-                headers: {
-                    Authorization: cookies.token,
-                },
-            });
-            setImageList(response.data); // S3 이미지 리스트 저장
-        } catch (error) {
-            console.error('이미지 리스트를 가져오는 데 실패했습니다:', error);
-        }
-    };
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await axios.get('/mypage', {
+                    headers: {
+                        Authorization: cookies.token,
+                    },
+                });
 
-    // 이미지 선택 및 프로필 업데이트
+                if (response.status === 200) {
+                    setUser(response.data); // 사용자 정보를 상태에 저장
+                } else {
+                    navigate('/login'); // 로그인 페이지로 리다이렉트
+                }
+            } catch (error) {
+                console.error('사용자 정보를 가져오는 데 실패했습니다:', error);
+                navigate('/login'); // 로그인 페이지로 리다이렉트
+            }
+        };
+
+        fetchUserData(); // 데이터 가져오기
+    }, [cookies.token, navigate]);
+
+    useEffect(() => {
+        const fetchImageList = async () => {
+            try {
+                const response = await axios.get('/s3/images', {
+                    headers: {
+                        Authorization: cookies.token,
+                    },
+                });
+                setImageList(response.data); // S3 이미지 리스트 저장
+            } catch (error) {
+                console.error('이미지 리스트를 가져오는 데 실패했습니다:', error);
+            }
+        };
+
+        if (user) {
+            fetchImageList(); // 사용자 정보가 있을 때만 S3 이미지 리스트 가져오기
+        }
+    }, [user, cookies.token]);
+
     const handleImageSelect = async (url) => {
         setSelectedImageUrl(url); // 선택한 이미지 URL 설정
 
@@ -32,6 +60,7 @@ function ProfileImageEdit() {
             const response = await axios.post(
                 '/profile/update',
                 {
+                    username: user.username,
                     userProfile: url,
                 },
                 {
@@ -43,17 +72,13 @@ function ProfileImageEdit() {
 
             if (response.status === 200) {
                 alert('프로필 이미지가 업데이트되었습니다.');
+                navigate('/mypage'); // mypage로 이동
             }
-            navigate('/mypage');
         } catch (error) {
             console.error('프로필 이미지를 업데이트하는 데 실패했습니다:', error);
             alert('프로필 이미지 업데이트 실패');
         }
     };
-
-    useEffect(() => {
-        fetchImageList(); // 컴포넌트가 마운트될 때 이미지 리스트 가져오기
-    }, [cookies.token]);
 
     return (
         <div>
@@ -78,7 +103,6 @@ function ProfileImageEdit() {
                     <p>이미지를 불러오는 중입니다...</p>
                 )}
             </div>
-
             {selectedImageUrl && (
                 <div>
                     <h3>선택한 이미지:</h3>
