@@ -149,7 +149,7 @@ const RecievedFriendRequests = () => {
                             alt={request.requester.nickname}
                             sx={{ width: 50, height: 50, marginRight: 2 }}
                         />
-                        <Box sx={{ flexGrow: 1 }}>
+                        <Box sx={{ flexGrow: 1 , width: '30%'}}>
                             <Typography variant="h6" fontWeight={700}>
                                 {request.requester.nickname}
                             </Typography>
