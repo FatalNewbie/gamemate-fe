@@ -56,7 +56,7 @@ const Chat = () => {
     }
 
     return (
-        <Container sx={{ padding: 0, margin: 0 }}>
+        <Box sx={{ padding: 0, margin: 0 }}>
             <Grid container sx={{ padding: 0, margin: 0 }}>
                 <Grid xs={12}>
                     {chatRooms.map((chatRoom) => (
@@ -73,7 +73,7 @@ const Chat = () => {
                     ))}
                 </Grid>
             </Grid>
-        </Container>
+        </Box>
     );
 };
 

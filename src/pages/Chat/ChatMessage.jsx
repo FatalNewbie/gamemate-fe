@@ -3,9 +3,11 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { api } from '../../apis/customAxios';
 import { useCookies } from 'react-cookie';
+import profilePlaceholder from '../../assets/profile_placeholder.png';
+import Avatar from '@mui/material/Avatar';
 
 function ChatMessage({
     chatRoomId,
@@ -18,9 +20,13 @@ function ChatMessage({
     leaderNickname,
     reloadMessage,
     writerId,
+    writerProfile,
+    reRenderingMessages,
 }) {
     // 쿠키
     const [cookies] = useCookies(['token']);
+    // 컴포넌트 제거 상태 추가
+    const isRemovedRef = useRef(false);
 
     useEffect(() => {
         // console.log(`writer is ${writer}`);
@@ -29,6 +35,7 @@ function ChatMessage({
     }, []);
 
     const rejectButtonHandler = async (event) => {
+        isRemovedRef.current = true;
         try {
             const response = await api.delete(`/message/${id}`, {
                 headers: {
@@ -40,11 +47,12 @@ function ChatMessage({
         } catch (error) {
             console.error('Error deleting message:', error);
         } finally {
-            reloadMessage();
+            reRenderingMessages();
         }
     };
 
     const acceptButtonHandler = async (event) => {
+        isRemovedRef.current = true;
         try {
             const response = await api.post(
                 `/chat/addmember`,
@@ -74,35 +82,99 @@ function ChatMessage({
             } catch (error) {
                 console.error('Error deleting message:', error);
             } finally {
-                reloadMessage();
+                reRenderingMessages();
             }
         }
     };
 
+    // 컴포넌트가 제거된 경우 null 반환
+    if (isRemovedRef.current) return null;
+
+    // --------------------------------------------------------------------상대방 메시지--------------------------------------------------------------------------
     if (type === 'CHAT' && writer !== userNickname) {
         return (
             <Box>
-                <Grid container sx={{ mb: 1.2 }}>
-                    <Grid xs={12} sx={{ mb: 0.3 }}>
-                        <Typography sx={{ fontSize: 18, fontWeight: 'bold' }}>{writer}</Typography>
+                <Grid container>
+                    <Grid
+                        xs={2}
+                        justifyContent="center" // 가로 중앙 정렬
+                        alignItems="center" // 세로 중앙 정렬
+                        style={{ height: '100%' }} // Grid의 높이를 100%로 설정
+                    >
+                        <Avatar
+                            alt="profile"
+                            src={writerProfile || profilePlaceholder}
+                            sx={{
+                                width: 45, // 원하는 크기로 설정
+                                height: 45,
+                                border: '2px solid white', // 테두리 추가
+                                mt: 1.5,
+                            }}
+                        />
                     </Grid>
-                    <Grid xs={12}>
-                        <Typography sx={{ fonstSize: 25 }}>{content}</Typography>
-                    </Grid>
-                    <Grid xs={12}>
-                        <Typography sx={{ fontSize: 13, color: 'gray' }}>{time}</Typography>
+
+                    <Grid xs={10}>
+                        <Box>
+                            <Grid container sx={{ mb: 1.2 }}>
+                                <Grid xs={12} sx={{ mb: 0.3 }}>
+                                    <Typography
+                                        sx={{ fontSize: 20, fontWeight: 600, fontFamily: '"Gamja Flower", sans-serif' }}
+                                    >
+                                        {writer}
+                                    </Typography>
+                                </Grid>
+                                <Grid xs={12}>
+                                    <Typography
+                                        sx={{
+                                            fontSize: '18px', //채팅 글씨 크기 이거임----------------------------------------상대방 메시지내용 글씨 크기
+                                            backgroundColor: 'RGB(227,254,147)',
+                                            display: 'inline-block', // 텍스트 길이만큼만 배경색 적용
+                                            borderRadius: '5px', // 모서리 둥글게
+                                            pr: 1,
+                                            pl: 1,
+                                            pt: 0,
+                                            pb: 0,
+                                            fontWeight: 400,
+                                            fontFamily: '"Noto Sans KR", sans-serif',
+                                        }}
+                                    >
+                                        {content}
+                                    </Typography>
+                                </Grid>
+                                <Grid xs={12}>
+                                    <Typography sx={{ fontSize: 13, color: 'gray' }}>{time}</Typography>
+                                </Grid>
+                            </Grid>
+                        </Box>
                     </Grid>
                 </Grid>
             </Box>
         );
     }
 
+    // --------------------------------------------------------------------내 메시지--------------------------------------------------------------------------
     if (type === 'CHAT' && writer === userNickname) {
         return (
             <Box>
                 <Grid container sx={{ mb: 1.2 }}>
-                    <Grid xs={12}>
-                        <Typography sx={{ fonstSize: 25, textAlign: 'right' }}>{content}</Typography>
+                    <Grid xs={12} sx={{ textAlign: 'right' }}>
+                        <Typography
+                            sx={{
+                                fontSize: '18px', //채팅 글씨 크기 이거임---------------------------------------- 상대방 메시지내용 글씨 크기
+                                textAlign: 'right',
+                                backgroundColor: 'RGB(210,207,254)',
+                                display: 'inline-block', // 텍스트 길이만큼만 배경색 적용
+                                pr: 1,
+                                pl: 1,
+                                pt: 0,
+                                pb: 0,
+                                borderRadius: '5px', // 모서리 둥글게
+                                fontWeight: 400,
+                                fontFamily: '"Noto Sans KR", sans-serif',
+                            }}
+                        >
+                            {content}
+                        </Typography>
                     </Grid>
                     <Grid xs={12}>
                         <Typography sx={{ fontSize: 13, color: 'gray', textAlign: 'right' }}>{time}</Typography>
@@ -112,6 +184,7 @@ function ChatMessage({
         );
     }
 
+    // --------------------------------------------------------------------입장신청 메시지--------------------------------------------------------------------------
     if (type === 'INVITE' && userNickname === leaderNickname)
         return (
             <Box>
