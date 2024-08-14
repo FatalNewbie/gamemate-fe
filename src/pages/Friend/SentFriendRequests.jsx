@@ -184,11 +184,27 @@ const SentFriendRequests = () => {
                         variant="contained"
                         color="primary"
                         onClick={handleFriendRequestCancel}
-                        sx={{ backgroundColor: '#0A088A', '&:hover': { backgroundColor: '#5D5AE0' } }}
+                        sx={{
+                            backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                            '&:hover': {
+                                backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                            },
+                        }}
                     >
                     예
                     </Button>
-                    <Button variant="outlined" color="secondary" onClick={handleCancelModalClose}>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={handleCancelModalClose}
+                        sx={{
+                            backgroundColor: '#DB5024',
+                            color: '#fff',
+                            '&:hover': {
+                                backgroundColor: '#FF6347',
+                            },
+                        }}
+                    >
                     아니오
                     </Button>
                 </Box>

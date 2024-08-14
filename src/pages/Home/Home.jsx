@@ -595,16 +595,23 @@ const Home = () => {
                                     sx={{
                                         fontFamily: 'Roboto, sans-serif',
                                         fontWeight: 600,
-                                        fontSize: '10pt',
+                                        fontSize: '13pt',
                                         letterSpacing: '-0.5px',
                                     }}
                                 >
                                     공통 장르
                                 </Typography>
                                 {selectedUser.common_genre.map((genre, index) => (
-                                    <span key={index} className="tag1">
-                                        {genre}
-                                    </span>
+                                    <Chip
+                                        key={index}
+                                        label={genre}
+                                        size="small"
+                                        sx={{
+                                            fontSize: '10px',
+                                            backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                                            color: 'white',
+                                        }}
+                                    />
                                 ))}
                             </Box>
                             <Box className="modal-tags">
@@ -613,23 +620,50 @@ const Home = () => {
                                     sx={{
                                         fontFamily: 'Roboto, sans-serif',
                                         fontWeight: 600,
-                                        fontSize: '10pt',
+                                        fontSize: '13pt',
                                         letterSpacing: '-0.5px',
                                     }}
                                 >
                                     공통 시간대
                                 </Typography>
                                 {selectedUser.common_play_time.map((time, index) => (
-                                    <span key={index} className="tag2">
-                                        {time}
-                                    </span>
+                                    <Chip
+                                        key={index}
+                                        label={time}
+                                        size="small"
+                                        sx={{
+                                            fontSize: '10px',
+                                            backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                                            color: 'white',
+                                        }}
+                                    />
                                 ))}
                             </Box>
                             <Box mt={2}>
-                                <Button variant="outlined" onClick={handleFriendRequest}>
+                                <Button
+                                    variant="contained"
+                                    onClick={handleFriendRequest}
+                                    sx={{
+                                        backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                                        '&:hover': {
+                                            backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                                        },
+                                    }}
+                                >
                                     친구 요청
                                 </Button>
-                                <Button variant="contained" onClick={handleClose} style={{ marginLeft: '8px' }}>
+                                <Button
+                                variant="contained"
+                                onClick={handleClose}
+                                style={{ marginLeft: '8px' }}
+                                sx={{
+                                    backgroundColor: '#DB5024',
+                                    color: '#fff',
+                                    '&:hover': {
+                                        backgroundColor: '#FF6347',
+                                    },
+                                }}
+                                >
                                     닫기
                                 </Button>
                             </Box>

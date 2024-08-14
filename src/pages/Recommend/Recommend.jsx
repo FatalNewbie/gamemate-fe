@@ -145,6 +145,9 @@ const Recommend = () => {
         sx = {{fontSize: '13px',
           backgroundColor: 'rgba(10, 8, 138, 0.8)',
           color: 'white',
+          '&:hover': {
+              backgroundColor: 'rgba(93, 90, 224, 0.8)',
+          },
           marginBottom: '20px' 
       }}
       >
@@ -249,10 +252,36 @@ const Recommend = () => {
             {selectedUser?.recommend_user}님께 친구 요청을 보내시겠습니까?
           </Typography>
           <Box display="flex" justifyContent="space-around">
-            <Button variant="contained" color="primary" onClick={handleFriendRequest}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleFriendRequest}
+              sx={{
+                backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                color: 'white',
+                borderRadius: '30px',
+                fontWeight: 'bold',
+                '&:hover': {
+                    backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                },
+              }}
+            >
               예
             </Button>
-            <Button variant="outlined" color="secondary" onClick={handleFriendModalClose}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleFriendModalClose}
+              sx={{
+                backgroundColor: '#DB5024',
+                color: '#fff',
+                borderRadius: '30px',
+                fontWeight: 'bold',
+                '&:hover': {
+                    backgroundColor: '#FF6347',
+                },
+              }}
+            >
               아니오
             </Button>
           </Box>
@@ -280,10 +309,36 @@ const Recommend = () => {
             {selectedUser?.recommend_user}님께 보낸 친구 요청을 취소하시겠습니까?
           </Typography>
           <Box display="flex" justifyContent="space-around">
-            <Button variant="contained" color="primary" onClick={handleFriendRequestCancel}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleFriendRequestCancel}
+              sx={{
+                backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                color: 'white',
+                borderRadius: '30px',
+                fontWeight: 'bold',
+                '&:hover': {
+                    backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                },
+              }}
+            >
               예
             </Button>
-            <Button variant="outlined" color="secondary" onClick={handleCancelModalClose}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleCancelModalClose}
+              sx={{
+                backgroundColor: '#DB5024',
+                color: '#fff',
+                borderRadius: '30px',
+                fontWeight: 'bold',
+                '&:hover': {
+                    backgroundColor: '#FF6347',
+                },
+              }}
+            >
               아니오
             </Button>
           </Box>

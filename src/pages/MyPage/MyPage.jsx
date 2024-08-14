@@ -264,7 +264,7 @@ const MyPage = () => {
                         e.target.src = 'path/to/default/image.png'; // 대체 이미지 경로
                     }}
                 />
-                <Box sx={{ marginLeft: 2, width: '140px', height: '65px' }}>
+                <Box sx={{ marginLeft: 0.5, width: '140px', height: '65px' }}>
                     <Typography
                         sx={{
                             fontFamily: 'Roboto, sans-serif',
@@ -295,7 +295,12 @@ const MyPage = () => {
                     <Button
                         variant="contained"
                         onClick={handleOpenEditModal}
-                        sx={{ backgroundColor: '#0A088A', color: 'white', '&:hover': { backgroundColor: '#5D5AE0' } }}
+                        sx={{
+                            backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                            '&:hover': {
+                                backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                            },
+                        }}
                     >
                         정보 수정
                     </Button>
@@ -422,7 +427,7 @@ const MyPage = () => {
                     <Box>
                         {posts.slice(0, 3).map((post, index) => (
                             <Box key={index} sx={{ marginBottom: 1 }}>
-                                <Typography>{post.title}</Typography>
+                                <Typography>{posts.title}</Typography>
                                 <Typography variant="body2" color="textSecondary">
                                     {post.createdAt}
                                 </Typography>
@@ -533,15 +538,27 @@ const MyPage = () => {
                         variant="contained"
                         color="primary"
                         onClick={handleSaveChanges}
-                        sx={{ backgroundColor: '#0A088A', color: 'white', '&:hover': { backgroundColor: '#5D5AE0' } }}
+                        sx={{
+                            backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                            color: 'white',
+                            '&:hover': {
+                                backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                            },
+                        }}
                     >
                         저장
                     </Button>
                     <Button
-                        variant="outlined"
+                        variant="contained"
                         color="primary"
                         onClick={handleCloseEditModal}
-                        sx={{ backgroundColor: '#5D5AE0', color: 'white', '&:hover': { backgroundColor: '#0A088A' } }}
+                        sx={{
+                            backgroundColor: '#DB5024',
+                            color: '#fff',
+                            '&:hover': {
+                                backgroundColor: '#FF6347',
+                            },
+                        }}
                     >
                         취소
                     </Button>
