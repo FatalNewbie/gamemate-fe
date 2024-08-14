@@ -39,7 +39,7 @@ const ChatRoom = ({ roomId, title, leaderNickName, memberCnt }) => {
     }, []);
 
     return (
-        <Container>
+        <Box>
             <Grid container sx={{ padding: 0, margin: 0 }}>
                 <Grid xs={12} sx={{ padding: 0, margin: 0 }} display="flex" justifyContent="center">
                     <Box sx={{ padding: 0, margin: 0 }}>
@@ -70,7 +70,7 @@ const ChatRoom = ({ roomId, title, leaderNickName, memberCnt }) => {
                     </Box>
                 </Grid>
             </Grid>
-        </Container>
+        </Box>
     );
 };
 export default ChatRoom;
