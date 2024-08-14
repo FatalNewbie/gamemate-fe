@@ -6,6 +6,7 @@ import { useCookies } from 'react-cookie';
 import { regions } from './regions';
 import { loadKakaoMap, displayMarker, handlePlaceClick } from './mapUtils'; // 유틸리티 함수 가져오기
 import Modal from 'react-modal';
+import ReactGA from 'react-ga4';
 
 const { kakao } = window;
 
@@ -152,6 +153,14 @@ const GameMateNew = () => {
                 headers: {
                     Authorization: cookies.token,
                 },
+            });
+
+            //google analytics에 추가..
+            ReactGA.send({
+                hitType: 'event',
+                eventCategory: 'Post',
+                eventAction: 'Create',
+                eventLabel: postData.gameTitle, // 게시글 제목을 라벨로 사용
             });
 
             // 게시글 ID를 사용하여 상세 페이지로 이동
