@@ -165,7 +165,7 @@ const GameDetails = () => {
     return (
         <Box
             sx={{
-                padding: '24px',
+                padding: '16px',
                 maxWidth: '800px',
                 margin: '0 auto',
                 border: '1px solid #e0e0e0',
