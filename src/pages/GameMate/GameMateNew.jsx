@@ -223,6 +223,7 @@ const GameMateNew = () => {
                                 value={postData.gameGenre}
                                 onChange={(e) => setField('gameGenre', e.target.value)}
                             >
+                                <option value="">장르를 선택하세요</option>
                                 <option>보드게임</option>
                                 <option>방탈출</option>
                                 <option>스포츠게임</option>
@@ -238,6 +239,7 @@ const GameMateNew = () => {
                                 value={postData.gameGenre}
                                 onChange={(e) => setField('gameGenre', e.target.value)}
                             >
+                                <option value="">장르를 선택하세요</option>
                                 <option>RPG</option>
                                 <option>FPS/TPS</option>
                                 <option>액션</option>

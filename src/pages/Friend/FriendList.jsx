@@ -121,6 +121,8 @@ const FriendList = () => {
                                             backgroundColor: '#e0e0e0',  // 호버 시 배경 색상
                                         },
                                         borderRadius: '30%',  // 둥근 버튼 모양
+                                        marginTop: 'auto',
+                                        height: '40px',
                                         padding: '8px',  // 버튼 패딩
                                         color: '#ff1744',  // 아이콘 색상
                                     }}
@@ -164,10 +166,26 @@ const FriendList = () => {
                         {selectedFriend?.nickname}님과의 친구 관계를 삭제하시겠습니까?
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-                        <Button variant="contained" color="primary" onClick={handleDeleteFriend}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleDeleteFriend}
+                            sx={{ backgroundColor: '#0A088A', color: 'white', '&:hover': { backgroundColor: '#5D5AE0' } }}
+                        >
                             예
                         </Button>
-                        <Button variant="outlined" color="primary" onClick={handleDeleteModalClose}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleDeleteModalClose}
+                            sx={{
+                                backgroundColor: '#DB5024',
+                                color: '#fff',
+                                '&:hover': {
+                                    backgroundColor: '#FF6347',
+                                },
+                            }}
+                        >
                             아니오
                         </Button>
                     </Box>

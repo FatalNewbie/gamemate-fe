@@ -119,10 +119,12 @@ const RecievedFriendRequests = () => {
                 sx={{
                     marginBottom: 2,
                     backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                    color: '#fff',
+                    borderRadius: '30px',
+                    fontWeight: 'bold',
                     '&:hover': {
                         backgroundColor: 'rgba(93, 90, 224, 0.8)',
                     },
-                    borderRadius: 2,
                     textTransform: 'none',
                 }}
             >
@@ -192,15 +194,34 @@ const RecievedFriendRequests = () => {
                                 variant="contained"
                                 color="primary"
                                 onClick={() => handleAcceptModalOpen(request)}
-                                sx={{ textTransform: 'none', backgroundColor: 'rgba(10, 8, 138, 0.8)' }}
+                                sx={{
+                                    textTransform: 'none',
+                                    backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                                    color: '#fff',
+                                    borderRadius: '30px',
+                                    fontWeight: 'bold',
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                                    },
+                                }}
                             >
                                 수락
                             </Button>
                             <Button
-                                variant="outlined"
+                                variant="contained"
                                 color="primary"
                                 onClick={() => handleDeclineModalOpen(request)}
-                                sx={{ textTransform: 'none' }}
+                                sx={{
+                                    textTransform: 'none',
+                                    backgroundColor: '#DB5024',
+                                    color: '#fff',
+                                    borderRadius: '30px',
+                                    fontWeight: 'bold',
+                                    color: '#fff',
+                                    '&:hover': {
+                                        backgroundColor: '#FF6347',
+                                    },
+                                }}
                             >
                                 거절
                             </Button>
@@ -238,10 +259,37 @@ const RecievedFriendRequests = () => {
                         {selectedRequest?.requester.nickname}님을 친구로 수락하시겠습니까?
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-                        <Button variant="contained" color="primary" onClick={handleFriendRequestAccept}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleFriendRequestAccept}
+                            sx={{
+                                textTransform: 'none',
+                                backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                                color: '#fff',
+                                borderRadius: '30px',
+                                fontWeight: 'bold',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                                },
+                            }}
+                        >
                             예
                         </Button>
-                        <Button variant="outlined" color="primary" onClick={handleAcceptModalClose}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleAcceptModalClose}
+                            sx={{
+                                backgroundColor: '#DB5024',
+                                color: '#fff',
+                                borderRadius: '30px',
+                                fontWeight: 'bold',
+                                '&:hover': {
+                                    backgroundColor: '#FF6347',
+                                },
+                            }}
+                        >
                             아니오
                         </Button>
                     </Box>
@@ -277,10 +325,37 @@ const RecievedFriendRequests = () => {
                         {selectedRequest?.requester.nickname}님의 친구 요청을 거절하시겠습니까?
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-                        <Button variant="contained" color="primary" onClick={handleFriendRequestDecline}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleFriendRequestDecline}
+                            sx={{
+                                textTransform: 'none',
+                                backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                                color: '#fff',
+                                borderRadius: '30px',
+                                fontWeight: 'bold',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                                },
+                            }}
+                        >
                             예
                         </Button>
-                        <Button variant="outlined" color="secondary" onClick={handleDeclineModalClose}>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={handleDeclineModalClose}
+                            sx={{
+                                backgroundColor: '#DB5024',
+                                color: '#fff',
+                                borderRadius: '30px',
+                                fontWeight: 'bold',
+                                '&:hover': {
+                                    backgroundColor: '#FF6347',
+                                },
+                            }}
+                        >
                             아니오
                         </Button>
                     </Box>

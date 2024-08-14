@@ -144,7 +144,12 @@ const Recommend = () => {
         onClick={() => navigate('/')}
         sx = {{fontSize: '13px',
           backgroundColor: 'rgba(10, 8, 138, 0.8)',
-          color: 'white',
+          color: '#fff',
+          borderRadius: '30px',
+          fontWeight: 'bold',
+          '&:hover': {
+              backgroundColor: 'rgba(93, 90, 224, 0.8)',
+          },
           marginBottom: '20px' 
       }}
       >
@@ -249,10 +254,36 @@ const Recommend = () => {
             {selectedUser?.recommend_user}님께 친구 요청을 보내시겠습니까?
           </Typography>
           <Box display="flex" justifyContent="space-around">
-            <Button variant="contained" color="primary" onClick={handleFriendRequest}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleFriendRequest}
+              sx={{
+                backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                color: 'white',
+                borderRadius: '30px',
+                fontWeight: 'bold',
+                '&:hover': {
+                    backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                },
+              }}
+            >
               예
             </Button>
-            <Button variant="outlined" color="secondary" onClick={handleFriendModalClose}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleFriendModalClose}
+              sx={{
+                backgroundColor: '#DB5024',
+                color: '#fff',
+                borderRadius: '30px',
+                fontWeight: 'bold',
+                '&:hover': {
+                    backgroundColor: '#FF6347',
+                },
+              }}
+            >
               아니오
             </Button>
           </Box>
@@ -280,10 +311,36 @@ const Recommend = () => {
             {selectedUser?.recommend_user}님께 보낸 친구 요청을 취소하시겠습니까?
           </Typography>
           <Box display="flex" justifyContent="space-around">
-            <Button variant="contained" color="primary" onClick={handleFriendRequestCancel}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleFriendRequestCancel}
+              sx={{
+                backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                color: 'white',
+                borderRadius: '30px',
+                fontWeight: 'bold',
+                '&:hover': {
+                    backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                },
+              }}
+            >
               예
             </Button>
-            <Button variant="outlined" color="secondary" onClick={handleCancelModalClose}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleCancelModalClose}
+              sx={{
+                backgroundColor: '#DB5024',
+                color: '#fff',
+                borderRadius: '30px',
+                fontWeight: 'bold',
+                '&:hover': {
+                    backgroundColor: '#FF6347',
+                },
+              }}
+            >
               아니오
             </Button>
           </Box>
@@ -292,29 +349,29 @@ const Recommend = () => {
 
       {/* 친구 요청 완료 및 취소 알림 */}
       <Snackbar
-          open={isSnackbarOpen}
-          autoHideDuration={1000}
-          onClose={handleSnackbarClose}
-          anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
-          }}
-          sx={{
-              top: '50%',
-              width: '80%', 
-              maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-          }}
+        open={isSnackbarOpen}
+        autoHideDuration={1000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+        }}
+        sx={{
+            top: '50%',
+            width: '80%',
+            maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+        }}
       >
-          <Alert onClose={handleSnackbarClose} severity="success" sx={{ 
-            width: '100%',
-            backgroundColor: 'rgba(10, 8, 138, 0.8)', // 배경 색상
-            color: '#ffffff', // 텍스트 색상
-            fontSize: '11px',
-            }}>
-              {snackbarMessage}
-          </Alert>
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{
+          width: '100%',
+          backgroundColor: 'rgba(10, 8, 138, 0.8)', // 배경 색상
+          color: '#ffffff', // 텍스트 색상
+          fontSize: '11px',
+          }}>
+            {snackbarMessage}
+        </Alert>
       </Snackbar>
     </Box>
   );
