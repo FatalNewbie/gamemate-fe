@@ -38,7 +38,7 @@ const AddGameModal = ({ open, onClose, gameId, onGameAdded }) => {
             </DialogTitle>
             <DialogContent sx={{ textAlign: 'center', padding: '8px 16px', maxWidth: '400px' }}>
                 <Typography variant="body1" sx={{ marginTop: '20px', marginBottom: '20px' }}>
-                    내 게임 목록에 추가 완료!
+                    선호 게임에 추가하시겠습니까?
                 </Typography>
                 <Button
                     variant="contained"

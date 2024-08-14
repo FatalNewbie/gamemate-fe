@@ -259,7 +259,7 @@ const GameDescriptionBox = ({ game, chipStyle, cleanDeveloperName, cleanGenre })
                 onClick={handleAddGameClick}
             >
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <SportsEsportsIcon sx={{ marginRight: '8px' }} /> 내 게임 목록에 추가
+                    <SportsEsportsIcon sx={{ marginRight: '8px' }} /> 선호 게임 목록에 추가
                 </Box>
             </Button>
 

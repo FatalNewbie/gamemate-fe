@@ -48,13 +48,14 @@ const GameDetails = () => {
         const fetchComments = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/games/${id}/comments`, {
-                    params: { page: commentPage - 1, size: 10 },
+                    params: { page: commentPage - 1, size: 10, sortBy: 'createdDate', sortDir: 'desc' },
                 });
                 const fetchedComments = response.data.data.content || [];
 
                 if (commentPage === 1) {
                     setComments(fetchedComments);
                 } else {
+                    // 기존 댓글에 최신 댓글을 병합 후 정렬
                     setComments((prevComments) => [...prevComments, ...fetchedComments]);
                 }
 
@@ -76,6 +77,12 @@ const GameDetails = () => {
         // 새로운 댓글을 가장 앞에 추가하고 총 댓글 수를 증가시킵니다.
         setComments((prevComments) => [newComment, ...prevComments]);
         setTotalComments((prevTotal) => prevTotal + 1);
+    };
+
+    const handleCommentDeleted = (deletedCommentId) => {
+        // 댓글이 삭제되면 해당 댓글을 제외한 새로운 댓글 배열로 업데이트하고, 총 댓글 수를 감소시킵니다.
+        setComments((prevComments) => prevComments.filter((comment) => comment.id !== deletedCommentId));
+        setTotalComments((prevTotal) => prevTotal - 1);
     };
 
     const truncateText = (text, maxLength) => {
@@ -191,6 +198,7 @@ const GameDetails = () => {
                 loadMoreComments={loadMoreComments}
                 handleOpenCommentModal={handleOpenCommentModal}
                 game={game} // game 전달
+                onDeleteComment={handleCommentDeleted}
             />
             {/* Rating Modal */}
             <RatingModal

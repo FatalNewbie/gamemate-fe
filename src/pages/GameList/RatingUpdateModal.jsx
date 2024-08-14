@@ -24,12 +24,12 @@ const cleanGenre = (genre, maxLength = 20) => {
 };
 
 const RatingUpdateModal = ({ open, onClose, game, currentRating, onUpdate }) => {
-    const [selectedRating, setSelectedRating] = useState(currentRating || 0);
+    const [selectedRating, setSelectedRating] = useState(currentRating ? currentRating / 2 : 0);
     const [hoverRating, setHoverRating] = useState(0);
-    const [cookies] = useCookies(['token']); // Fetch token from cookies
+    const [cookies] = useCookies(['token']);
 
     useEffect(() => {
-        setSelectedRating((currentRating || 0) / 2);
+        setSelectedRating(currentRating ? currentRating / 2 : 0);
     }, [currentRating]);
 
     const handleMouseMove = (index, event) => {
@@ -43,8 +43,11 @@ const RatingUpdateModal = ({ open, onClose, game, currentRating, onUpdate }) => 
         setHoverRating(0);
     };
 
-    const handleRating = (rating) => {
-        setSelectedRating(rating);
+    const handleRating = (index, event) => {
+        const { left, width } = event.currentTarget.getBoundingClientRect();
+        const x = event.clientX - left;
+        const newRating = index + (x / width >= 0.5 ? 1 : 0.5);
+        setSelectedRating(newRating);
     };
 
     const handleConfirm = () => {
@@ -150,16 +153,55 @@ const RatingUpdateModal = ({ open, onClose, game, currentRating, onUpdate }) => 
                     {[...Array(5)].map((_, index) => (
                         <Box
                             key={index}
-                            sx={{ display: 'inline-block', cursor: 'pointer' }}
+                            sx={{ display: 'inline-block', cursor: 'pointer', position: 'relative' }}
                             onMouseMove={(event) => handleMouseMove(index, event)}
-                            onClick={() => handleRating(hoverRating)}
+                            onClick={(event) => handleRating(index, event)}
                         >
+                            {/* 빈 별 */}
                             <StarIcon
                                 sx={{
                                     fontSize: '52px',
-                                    color: (hoverRating || selectedRating) > index ? '#F1C644' : '#D4D4D4',
+                                    color: '#D4D4D4',
                                 }}
                             />
+                            {/* 반 별 (왼쪽) */}
+                            {hoverRating >= index + 0.5 && hoverRating < index + 1 && selectedRating < index + 0.5 && (
+                                <StarIcon
+                                    sx={{
+                                        fontSize: '52px',
+                                        color: '#F1C644',
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        clipPath: 'inset(0 50% 0 0)', // 오른쪽 절반을 잘라냄
+                                    }}
+                                />
+                            )}
+                            {/* 반 별 (왼쪽) - 마우스 오버 또는 클릭 시 반 별로 채워짐 */}
+                            {selectedRating >= index + 0.5 && selectedRating < index + 1 && (
+                                <StarIcon
+                                    sx={{
+                                        fontSize: '52px',
+                                        color: '#F1C644',
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        clipPath: 'inset(0 50% 0 0)', // 오른쪽 절반을 잘라냄
+                                    }}
+                                />
+                            )}
+                            {/* 전체 별 - 마우스 오버 또는 클릭 시 전체 별로 채워짐 */}
+                            {hoverRating >= index + 1 || selectedRating >= index + 1 ? (
+                                <StarIcon
+                                    sx={{
+                                        fontSize: '52px',
+                                        color: '#F1C644',
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                    }}
+                                />
+                            ) : null}
                         </Box>
                     ))}
                 </Box>

@@ -41,6 +41,7 @@ const GameCommentsBox = ({
     loadMoreComments,
     handleOpenCommentModal,
     game,
+    onDeleteComment,
 }) => {
     const [openLoginModal, setOpenLoginModal] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
@@ -86,13 +87,13 @@ const GameCommentsBox = ({
             })
             .then(() => {
                 setComments((prevComments) => prevComments.filter((comment) => comment.id !== commentId));
+                onDeleteComment(commentId); // 삭제된 댓글 처리 함수 호출
                 setOpenDeleteModal(false);
             })
             .catch((error) => {
                 console.error('There was an error deleting the comment:', error);
             });
     };
-
     const handleUpdateConfirm = (updatedComment) => {
         setComments((prevComments) =>
             prevComments.map((comment) => (comment.id === updatedComment.id ? updatedComment : comment))

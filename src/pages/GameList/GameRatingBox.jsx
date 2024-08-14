@@ -132,9 +132,6 @@ const GameRatingBox = ({ averageRating, totalRaters, userRating, setUserRating, 
             <Typography variant="h3" sx={{ fontWeight: 'bold', marginTop: '8px' }}>
                 {averageRating}
             </Typography>
-            <Typography variant="body2" sx={{ color: '#666' }}>
-                ({totalRaters}명)
-            </Typography>
 
             <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '8px' }}>
                 {[...Array(5)].map((_, index) => (

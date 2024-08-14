@@ -14,43 +14,50 @@ import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
 
+const truncateText = (text, maxLength) => {
+    if (text.length > maxLength) {
+        return text.slice(0, maxLength) + '...';
+    }
+    return text;
+};
+
+const cleanDeveloperName = (name, maxLength = 20) => {
+    if (!name) return '';
+    let cleanedName = name.replace(/^(주식회사 |\(주\))/g, '');
+    cleanedName = cleanedName.replace(/( 주식회사| Inc\.?| \(유\)| \(주\)|\(주\))$/g, '');
+    return truncateText(cleanedName, maxLength);
+};
+
+const cleanGenre = (genre, maxLength = 20) => {
+    if (!genre) return '';
+    return truncateText(genre.replace(/\(베팅성\)$/, ''), maxLength);
+};
+
 const CommentModal = ({ open, onClose, game, onConfirm }) => {
     const [comment, setComment] = useState('');
-    const [cookies] = useCookies(['token']); // useCookies 사용
+    const [cookies] = useCookies(['token']);
 
     const handleConfirm = () => {
         const commentData = {
-            content: comment, // 작성된 댓글 내용
+            content: comment,
         };
 
         axios
             .post(`http://localhost:8080/games/${game.id}/comments`, commentData, {
                 headers: {
-                    Authorization: `${cookies.token}`, // 토큰을 헤더에 포함
+                    Authorization: `${cookies.token}`,
                     'Content-Type': 'application/json',
                 },
             })
             .then((response) => {
                 console.log('Comment saved successfully:', response.data);
-                onConfirm(response.data.data); // 새로운 댓글 데이터를 전달
-                setComment(''); // 상태 초기화
-                onClose(); // 모달 닫기
+                onConfirm(response.data.data);
+                setComment('');
+                onClose();
             })
             .catch((error) => {
                 console.error('There was an error saving the comment:', error);
             });
-    };
-
-    const cleanDeveloperName = (name) => {
-        if (!name) return '';
-        let cleanedName = name.replace(/^(주식회사 |\(주\))/g, '');
-        cleanedName = cleanedName.replace(/( 주식회사| Inc\.?| \(유\)| \(주\)|\(주\))$/g, '');
-        return cleanedName;
-    };
-
-    const cleanGenre = (genre) => {
-        if (!genre) return '';
-        return genre.replace(/\(베팅성\)$/, '');
     };
 
     return (
@@ -63,11 +70,11 @@ const CommentModal = ({ open, onClose, game, onConfirm }) => {
             </DialogTitle>
             <DialogContent sx={{ textAlign: 'center', padding: '8px 16px' }}>
                 <Typography variant="h6" sx={{ marginTop: '20px', marginBottom: '10px', fontSize: '1rem' }}>
-                    {game.title}
+                    {truncateText(game.title, 30)}
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
                     <Chip
-                        label={game.platform || 'Unknown Platform'}
+                        label={truncateText(game.platform, 20) || 'Unknown Platform'}
                         sx={{
                             backgroundColor: '#0A088A',
                             color: '#fff',
@@ -75,10 +82,14 @@ const CommentModal = ({ open, onClose, game, onConfirm }) => {
                             fontSize: '0.65rem',
                             fontWeight: 'bold',
                             height: '24px',
+                            maxWidth: '150px',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
                         }}
                     />
                     <Chip
-                        label={cleanGenre(game.genre) || 'Unknown Genre'}
+                        label={cleanGenre(game.genre, 20) || 'Unknown Genre'}
                         sx={{
                             backgroundColor: '#5D5AE0',
                             color: '#fff',
@@ -86,16 +97,24 @@ const CommentModal = ({ open, onClose, game, onConfirm }) => {
                             fontSize: '0.65rem',
                             fontWeight: 'bold',
                             height: '24px',
+                            maxWidth: '150px',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
                         }}
                     />
                     <Chip
-                        label={cleanDeveloperName(game.developer) || 'Unknown Developer'}
+                        label={cleanDeveloperName(game.developer, 20) || 'Unknown Developer'}
                         sx={{
                             backgroundColor: '#8F8EC9',
                             color: '#fff',
                             fontSize: '0.65rem',
                             fontWeight: 'bold',
                             height: '24px',
+                            maxWidth: '150px',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
                         }}
                     />
                 </Box>
