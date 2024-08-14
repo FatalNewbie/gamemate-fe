@@ -68,6 +68,7 @@ const Chat = () => {
                                 title={chatRoom.title}
                                 leaderNickName={chatRoom.leaderNickname}
                                 memberCnt={chatRoom.memberCnt}
+                                leaderProfile={chatRoom.leaderProfile}
                             />
                         </Box>
                     ))}
