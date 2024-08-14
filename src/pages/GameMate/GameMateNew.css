@@ -2,17 +2,14 @@
     margin: auto;
 }
 
-/*
- .post-new-card {
+/* .post-new-card {
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px;
     display: flex;
-    flex-direction: column; 
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); 
-} 
-
-*/
+    flex-direction: column;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+} */
 
 @keyframes slide-in {
     0% {
@@ -27,6 +24,7 @@
 
 .slide-in {
     animation: slide-in 0.5s ease-out; /* 애니메이션 적용 */
+    height: 150px;
 }
 
 .gamemate-new-box {
@@ -94,7 +92,6 @@ h3 {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    margin-bottom: 20px;
 }
 
 .mate-si-select,
@@ -108,8 +105,7 @@ h3 {
 
 .open-map-button {
     width: 70px;
-    height: 30px;
-    margin-left: 80px;
+    height: 25px;
     margin-top: 18px;
     background-color: #3f3dbd;
     color: white;
@@ -164,7 +160,7 @@ h3 {
 }
 
 .select-button-box {
-    padding-top: 15px;
+    padding-top: 30px;
     display: flex;
     justify-content: flex-start; /* 버튼들을 오른쪽으로 정렬 */
     gap: 20px; /* 버튼 간의 간격을 추가 */
