@@ -282,6 +282,8 @@ const GameMatePost = () => {
                 },
             })
                 .then((response) => {
+                    // 방삭제 메시지 발행
+                    publishDestroyMessage();
                     // 삭제 후 댓글 목록 업데이트
                     navigate('/gamemate');
                 })
@@ -357,8 +359,6 @@ const GameMatePost = () => {
 
     // 메이트신청버튼 핸들러
     const mateApplyBtnHandler = (event) => {
-        console.log('버튼 클릭');
-
         // 채팅방참가신청메시지 발행
         if (stompClientRef.current) {
             let chatMessage = {
@@ -381,6 +381,28 @@ const GameMatePost = () => {
         setMateApplyBtnText('신청 완료');
         setMateApplyBtnColor('#A9A9A9');
         setMateApplyBtnDisabled(true);
+    };
+
+    //
+    const publishDestroyMessage = () => {
+        // 방 폭파메시지 발행
+        if (stompClientRef.current) {
+            let chatMessage = {
+                writer: post.nickname,
+                content: 'DESTROY',
+                chatRoomId: chatRoomId,
+                type: 'DESTROY',
+            };
+
+            stompClientRef.current.publish({
+                destination: '/app/message/send/' + chatRoomId,
+                headers: {},
+                body: JSON.stringify(chatMessage),
+            });
+        } else {
+            console.error('STOMP client is not connected.');
+            console.log(stompClientRef.current);
+        }
     };
 
     if (!post) {

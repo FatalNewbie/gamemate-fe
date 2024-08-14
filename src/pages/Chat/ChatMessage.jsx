@@ -1,13 +1,13 @@
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState, useRef } from 'react';
 import { api } from '../../apis/customAxios';
 import { useCookies } from 'react-cookie';
 import profilePlaceholder from '../../assets/profile_placeholder.png';
 import Avatar from '@mui/material/Avatar';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
 
 function ChatMessage({
     chatRoomId,
@@ -28,12 +28,27 @@ function ChatMessage({
     // 컴포넌트 제거 상태 추가
     const isRemovedRef = useRef(false);
 
+    const [open, setOpen] = useState(false);
+
+    // 폭파 메시지가 오면 모달 오픈.
+    useEffect(() => {
+        if (type === 'DESTROY') {
+            console.log('if문들어옴');
+            setOpen(true);
+        }
+    }, [type]); // type이 변경될 때만 실행
+
+    const handleExit = () => {
+        window.history.back(); // 이전 페이지로 이동
+    };
+
     useEffect(() => {
         // console.log(`writer is ${writer}`);
         //console.log(`userNickName is ${userNickname}`);
         //console.log(`writer id is ${writerId}`);
     }, []);
 
+    // 거절버튼 핸들러
     const rejectButtonHandler = async (event) => {
         isRemovedRef.current = true;
         try {
@@ -51,6 +66,7 @@ function ChatMessage({
         }
     };
 
+    // 수락버튼 핸들러
     const acceptButtonHandler = async (event) => {
         isRemovedRef.current = true;
         try {
@@ -185,7 +201,7 @@ function ChatMessage({
     }
 
     // --------------------------------------------------------------------입장신청 메시지--------------------------------------------------------------------------
-    if (type === 'INVITE' && userNickname === leaderNickname)
+    if (type === 'INVITE' && userNickname === leaderNickname) {
         return (
             <Box>
                 <Grid container>
@@ -255,5 +271,25 @@ function ChatMessage({
                 </Grid>
             </Box>
         );
+    }
+
+    // --------------------------------------------------------------------방 폭파 메시지--------------------------------------------------------------------------
+
+    if (type === 'DESTROY') {
+        return (
+            <Box>
+                <Dialog open={open}>
+                    <DialogContent>
+                        <div>채팅방이 삭제되었습니다.</div>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleExit} color="primary">
+                            나가기
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </Box>
+        );
+    }
 }
 export default ChatMessage;
