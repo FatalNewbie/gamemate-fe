@@ -39,14 +39,17 @@ const RatingModal = ({ open, onClose, game, onUpdate, userId }) => {
         setHoverRating(0);
     };
 
-    const handleRating = (rating) => {
-        setSelectedRating(rating);
+    const handleRating = (index, event) => {
+        const { left, width } = event.currentTarget.getBoundingClientRect();
+        const x = event.clientX - left;
+        const newRating = index + (x / width >= 0.5 ? 1 : 0.5);
+        setSelectedRating(newRating);
     };
 
     const handleConfirm = () => {
         const ratingData = {
             userId: userId,
-            rating: selectedRating * 2,
+            rating: selectedRating * 2, // 0.5점 단위로 설정했으므로 실제로 저장할 때는 2배로 저장
         };
 
         axios
@@ -142,16 +145,55 @@ const RatingModal = ({ open, onClose, game, onUpdate, userId }) => {
                     {[...Array(5)].map((_, index) => (
                         <Box
                             key={index}
-                            sx={{ display: 'inline-block', cursor: 'pointer' }}
+                            sx={{ display: 'inline-block', cursor: 'pointer', position: 'relative' }}
                             onMouseMove={(event) => handleMouseMove(index, event)}
-                            onClick={() => handleRating(hoverRating)}
+                            onClick={(event) => handleRating(index, event)}
                         >
+                            {/* 빈 별 */}
                             <StarIcon
                                 sx={{
                                     fontSize: '52px',
-                                    color: (hoverRating || selectedRating) > index ? '#F1C644' : '#D4D4D4',
+                                    color: '#D4D4D4',
                                 }}
                             />
+                            {/* 반 별 (왼쪽) */}
+                            {hoverRating >= index + 0.5 && hoverRating < index + 1 && selectedRating < index + 0.5 && (
+                                <StarIcon
+                                    sx={{
+                                        fontSize: '52px',
+                                        color: '#F1C644',
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        clipPath: 'inset(0 50% 0 0)', // 오른쪽 절반을 잘라냄
+                                    }}
+                                />
+                            )}
+                            {/* 반 별 (왼쪽) - 마우스 오버 또는 클릭 시 반 별로 채워짐 */}
+                            {selectedRating >= index + 0.5 && selectedRating < index + 1 && (
+                                <StarIcon
+                                    sx={{
+                                        fontSize: '52px',
+                                        color: '#F1C644',
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        clipPath: 'inset(0 50% 0 0)', // 오른쪽 절반을 잘라냄
+                                    }}
+                                />
+                            )}
+                            {/* 전체 별 - 마우스 오버 또는 클릭 시 전체 별로 채워짐 */}
+                            {hoverRating >= index + 1 || selectedRating >= index + 1 ? (
+                                <StarIcon
+                                    sx={{
+                                        fontSize: '52px',
+                                        color: '#F1C644',
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                    }}
+                                />
+                            ) : null}
                         </Box>
                     ))}
                 </Box>

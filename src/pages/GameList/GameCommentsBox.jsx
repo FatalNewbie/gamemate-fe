@@ -41,6 +41,7 @@ const GameCommentsBox = ({
     loadMoreComments,
     handleOpenCommentModal,
     game,
+    onDeleteComment,
 }) => {
     const [openLoginModal, setOpenLoginModal] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
@@ -51,8 +52,6 @@ const GameCommentsBox = ({
     const isLoggedIn = !!cookies.token;
     const tokenPayload = cookies.token ? parseJwt(cookies.token.split(' ')[1]) : null;
     const loggedInUsername = tokenPayload ? tokenPayload.username : '';
-
-    const sortedComments = [...comments].sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
 
     const handleIconClick = () => {
         if (isLoggedIn) {
@@ -86,13 +85,13 @@ const GameCommentsBox = ({
             })
             .then(() => {
                 setComments((prevComments) => prevComments.filter((comment) => comment.id !== commentId));
+                onDeleteComment(commentId); // 삭제된 댓글 처리 함수 호출
                 setOpenDeleteModal(false);
             })
             .catch((error) => {
                 console.error('There was an error deleting the comment:', error);
             });
     };
-
     const handleUpdateConfirm = (updatedComment) => {
         setComments((prevComments) =>
             prevComments.map((comment) => (comment.id === updatedComment.id ? updatedComment : comment))
@@ -151,12 +150,12 @@ const GameCommentsBox = ({
             </Box>
             <Divider sx={{ marginY: '16px' }} />
 
-            {sortedComments.length === 0 ? (
+            {comments.length === 0 ? (
                 <Typography variant="body2" sx={{ textAlign: 'center', color: '#999', marginTop: '16px' }}>
                     첫 댓글을 달아보세요!
                 </Typography>
             ) : (
-                sortedComments.map((comment, index) => (
+                comments.map((comment, index) => (
                     <Box key={comment.id} sx={{ marginBottom: '16px' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
                             <Avatar
@@ -167,15 +166,17 @@ const GameCommentsBox = ({
                             <Box sx={{ flexGrow: 1 }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <Box>
-                                        <Typography variant="body1" sx={{ fontWeight: 'bold', mr: 1 }}>
-                                            {comment.nickname}
-                                        </Typography>
-                                        {comment.username !== loggedInUsername && (
-                                            <PersonAddAltIcon
-                                                onClick={() => handleFriendRequest(comment.userId)}
-                                                sx={{ fontSize: 'medium', pl: '7px' }}
-                                            />
-                                        )}
+                                        <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
+                                            <Typography variant="body1" sx={{ fontWeight: 'bold', mr: 1 }}>
+                                                {comment.nickname}
+                                            </Typography>
+                                            {comment.username !== loggedInUsername && (
+                                                <PersonAddAltIcon
+                                                    onClick={() => handleFriendRequest(comment.userId)}
+                                                    sx={{ fontSize: 'medium', pl: '7px' }}
+                                                />
+                                            )}
+                                        </Box>
                                         <Typography variant="body2" sx={{ color: '#666' }}>
                                             {new Date(comment.createdDate).toLocaleDateString()}
                                         </Typography>
@@ -183,13 +184,13 @@ const GameCommentsBox = ({
                                     {comment.username === loggedInUsername && (
                                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                             <IconButton
-                                                sx={{ color: '#0A088A', fontSize: '18px' }}
+                                                sx={{ color: '#0A088A', fontSize: '9px' }}
                                                 onClick={() => handleEditClick(comment)}
                                             >
                                                 <EditIcon fontSize="small" />
                                             </IconButton>
                                             <IconButton
-                                                sx={{ color: '#0A088A', fontSize: '18px' }}
+                                                sx={{ color: '#0A088A', fontSize: '9px' }}
                                                 onClick={() => handleDeleteClick(comment)}
                                             >
                                                 <DeleteIcon fontSize="small" />
@@ -203,7 +204,7 @@ const GameCommentsBox = ({
                             </Box>
                         </Box>
 
-                        {index < sortedComments.length - 1 && <Divider sx={{ marginY: '16px' }} />}
+                        {index < comments.length - 1 && <Divider sx={{ marginY: '16px' }} />}
                     </Box>
                 ))
             )}

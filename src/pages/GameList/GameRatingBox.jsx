@@ -107,6 +107,31 @@ const GameRatingBox = ({ averageRating, totalRaters, userRating, setUserRating, 
         setOpenDeleteModal(false);
     };
 
+    const renderHalfStars = (rating, size) => {
+        return [...Array(5)].map((_, index) => (
+            <Box key={index} sx={{ position: 'relative', display: 'inline-block', width: size }}>
+                <StarIcon
+                    sx={{
+                        fontSize: size,
+                        color: rating >= index + 1 ? '#F1C644' : '#D4D4D4',
+                    }}
+                />
+                {rating >= index + 0.5 && rating < index + 1 && (
+                    <StarIcon
+                        sx={{
+                            fontSize: size,
+                            color: '#F1C644',
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            clipPath: 'inset(0 50% 0 0)',
+                        }}
+                    />
+                )}
+            </Box>
+        ));
+    };
+
     return (
         <Box
             sx={{
@@ -131,9 +156,6 @@ const GameRatingBox = ({ averageRating, totalRaters, userRating, setUserRating, 
 
             <Typography variant="h3" sx={{ fontWeight: 'bold', marginTop: '8px' }}>
                 {averageRating}
-            </Typography>
-            <Typography variant="body2" sx={{ color: '#666' }}>
-                ({totalRaters}명)
             </Typography>
 
             <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '8px' }}>
@@ -171,23 +193,13 @@ const GameRatingBox = ({ averageRating, totalRaters, userRating, setUserRating, 
                         >
                             {(userRating / 2).toFixed(1)}
                         </Typography>
-                        <Box sx={{ display: 'flex' }}>
-                            {[...Array(5)].map((_, index) => (
-                                <StarIcon
-                                    key={index}
-                                    sx={{
-                                        fontSize: '20px',
-                                        color: index < userRating / 2 ? '#F1C644' : '#D4D4D4',
-                                    }}
-                                />
-                            ))}
-                        </Box>
+                        <Box sx={{ display: 'flex' }}>{renderHalfStars(userRating / 2, '20px')}</Box>
                     </Box>
                     <Box sx={{ display: 'flex' }}>
-                        <IconButton sx={{ color: '#0A088A', fontSize: '18px' }} onClick={handleIconClick}>
+                        <IconButton sx={{ color: '#0A088A', fontSize: '9px' }} onClick={handleIconClick}>
                             <EditIcon fontSize="small" />
                         </IconButton>
-                        <IconButton sx={{ color: '#0A088A', fontSize: '18px' }} onClick={handleOpenDeleteModal}>
+                        <IconButton sx={{ color: '#0A088A', fontSize: '9px' }} onClick={handleOpenDeleteModal}>
                             <DeleteIcon fontSize="small" />
                         </IconButton>
                     </Box>

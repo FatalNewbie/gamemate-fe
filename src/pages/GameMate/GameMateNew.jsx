@@ -316,34 +316,38 @@ const GameMateNew = () => {
                             ></textarea>
                         </div>
                     )}
-
-                    {step === 4 && postData.status === 'ON' && (
-                        <div className="slide-in">
-                            <h2>자세한 설명을 작성해주세요</h2>
-                            <textarea
-                                placeholder="게임메이트에게 설명할 내용을 10자 이상으로    자유롭게 작성해주세요! ex) 저희는 디스코드 사용이 필수입니다!"
-                                className="description-area"
-                                value={postData.mateContent || ''}
-                                onChange={(e) => setField('mateContent', e.target.value)}
-                            ></textarea>
-                        </div>
-                    )}
-
                     {step === 6 && postData.status === 'OFF' && (
                         <div className="slide-in">
                             <h2>구체적인 장소가 있다면 알려주세요!</h2>
 
-                            <input
-                                type="text"
-                                placeholder="장소 입력"
-                                className="search-input"
-                                value={selectedPlace}
-                                onChange={handleInputChange}
-                                disabled
-                            ></input>
-                            <button className="open-map-button" onClick={openModal}>
-                                지도 열기
-                            </button>
+                            {/* 장소 입력창과 검색 버튼을 같은 행에 배치 */}
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    flexDirection: 'row',
+                                    marginBottom: '20px',
+                                }}
+                            >
+                                <input
+                                    type="text"
+                                    placeholder="장소 입력"
+                                    className="search-input"
+                                    value={selectedPlace}
+                                    onChange={handleInputChange}
+                                    disabled
+                                    style={{ flex: 1 }} // 입력 필드를 차지하는 공간의 비율을 늘리고, 버튼과의 간격을 조정
+                                />
+
+                                <button
+                                    className="open-map-button"
+                                    onClick={openModal}
+                                    style={{ width: '40px' }} // 버튼의 가로 길이를 35px로 줄임
+                                >
+                                    검색
+                                </button>
+                            </div>
+
                             <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
                                 <h2>장소 검색</h2>
                                 <input

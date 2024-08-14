@@ -100,7 +100,6 @@ h3 {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    margin-bottom: 20px;
 }
 
 .open-map-button {
@@ -111,7 +110,10 @@ h3 {
     color: white;
     border: none;
     border-radius: 50px;
+    margin-bottom: 20px;
     cursor: pointer;
+    margin-bottom: 20px;
+    margin-left: 20px; /* 이전 버튼 옆에 위치시키기 위해 여백 추가 */
 }
 
 .submit-button {
