@@ -297,6 +297,9 @@ const MyPage = () => {
                         onClick={handleOpenEditModal}
                         sx={{
                             backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                            color: '#fff',
+                            borderRadius: '30px',
+                            fontWeight: 'bold',
                             '&:hover': {
                                 backgroundColor: 'rgba(93, 90, 224, 0.8)',
                             },
@@ -540,7 +543,9 @@ const MyPage = () => {
                         onClick={handleSaveChanges}
                         sx={{
                             backgroundColor: 'rgba(10, 8, 138, 0.8)',
-                            color: 'white',
+                            color: '#fff',
+                            borderRadius: '30px',
+                            fontWeight: 'bold',
                             '&:hover': {
                                 backgroundColor: 'rgba(93, 90, 224, 0.8)',
                             },
@@ -555,6 +560,8 @@ const MyPage = () => {
                         sx={{
                             backgroundColor: '#DB5024',
                             color: '#fff',
+                            borderRadius: '30px',
+                            fontWeight: 'bold',
                             '&:hover': {
                                 backgroundColor: '#FF6347',
                             },

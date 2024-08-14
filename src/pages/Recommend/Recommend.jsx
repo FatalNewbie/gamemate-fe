@@ -144,7 +144,9 @@ const Recommend = () => {
         onClick={() => navigate('/')}
         sx = {{fontSize: '13px',
           backgroundColor: 'rgba(10, 8, 138, 0.8)',
-          color: 'white',
+          color: '#fff',
+          borderRadius: '30px',
+          fontWeight: 'bold',
           '&:hover': {
               backgroundColor: 'rgba(93, 90, 224, 0.8)',
           },
@@ -347,29 +349,29 @@ const Recommend = () => {
 
       {/* 친구 요청 완료 및 취소 알림 */}
       <Snackbar
-          open={isSnackbarOpen}
-          autoHideDuration={1000}
-          onClose={handleSnackbarClose}
-          anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
-          }}
-          sx={{
-              top: '50%',
-              width: '80%', 
-              maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-          }}
+        open={isSnackbarOpen}
+        autoHideDuration={1000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+        }}
+        sx={{
+            top: '50%',
+            width: '80%',
+            maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+        }}
       >
-          <Alert onClose={handleSnackbarClose} severity="success" sx={{ 
-            width: '100%',
-            backgroundColor: 'rgba(10, 8, 138, 0.8)', // 배경 색상
-            color: '#ffffff', // 텍스트 색상
-            fontSize: '11px',
-            }}>
-              {snackbarMessage}
-          </Alert>
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{
+          width: '100%',
+          backgroundColor: 'rgba(10, 8, 138, 0.8)', // 배경 색상
+          color: '#ffffff', // 텍스트 색상
+          fontSize: '11px',
+          }}>
+            {snackbarMessage}
+        </Alert>
       </Snackbar>
     </Box>
   );

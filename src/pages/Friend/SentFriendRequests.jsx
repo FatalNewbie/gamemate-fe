@@ -98,10 +98,12 @@ const SentFriendRequests = () => {
                 sx={{
                     marginBottom: 2,
                     backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                    color: '#fff',
+                    borderRadius: '30px',
+                    fontWeight: 'bold',
                     '&:hover': {
                         backgroundColor: 'rgba(93, 90, 224, 0.8)',
                     },
-                    borderRadius: 2,
                     textTransform: 'none',
                 }}
             >
@@ -186,6 +188,9 @@ const SentFriendRequests = () => {
                         onClick={handleFriendRequestCancel}
                         sx={{
                             backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                            color: '#fff',
+                            borderRadius: '30px',
+                            fontWeight: 'bold',
                             '&:hover': {
                                 backgroundColor: 'rgba(93, 90, 224, 0.8)',
                             },
@@ -200,6 +205,8 @@ const SentFriendRequests = () => {
                         sx={{
                             backgroundColor: '#DB5024',
                             color: '#fff',
+                            borderRadius: '30px',
+                            fontWeight: 'bold',
                             '&:hover': {
                                 backgroundColor: '#FF6347',
                             },
