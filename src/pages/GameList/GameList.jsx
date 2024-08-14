@@ -16,60 +16,68 @@ const GameList = () => {
     const [size] = useState(10);
     const [hasMore, setHasMore] = useState(true);
 
+    //yeonji
+    const [filter, setFilter] = useState('');
+
     const navigate = useNavigate();
     const observer = useRef();
     const lastGameElementRef = useRef();
 
     useEffect(() => {
-        fetchGames();
-    }, [page]);
+        if (page > 0) {
+            fetchGames(page);
+        }
+    }, [page]); // page가 변경될 때마다 실행
 
-    const fetchGames = async () => {
+    const fetchGames = async (page) => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:8080/games', {
-                params: { page, size },
+            const response = await axios.get('http://localhost:8080/games/search', {
+                params: { page, size, filter },
             });
 
             const newGames = response.data.data.content;
 
-            // Fetch totalComments for each game
-            const gamesWithComments = await Promise.all(
-                newGames.map(async (game) => {
-                    const commentsResponse = await axios.get(`http://localhost:8080/games/${game.id}/comments`, {
-                        params: { page: 0, size: 1 }, // Only fetching to get total count
-                    });
-                    return {
-                        ...game,
-                        totalComments: commentsResponse.data.data.totalElements,
-                    };
-                })
-            );
+            setGames((prev) => [...prev, ...newGames]);
 
-            setAllGames((prevGames) => {
-                const uniqueGames = [...prevGames, ...gamesWithComments].filter(
-                    (game, index, self) => index === self.findIndex((g) => g.id === game.id)
-                );
-                const filteredAndSortedGames = sortAndFilterGames(uniqueGames, selectedPlatform, sortOrder);
-                setGames(filteredAndSortedGames);
-                return uniqueGames;
-            });
+            // let sortedGames = [...games];
+            // if (sortOrder === '별점순') {
+            //     sortedGames = sortedGames.sort(
+            //         (a, b) => calculateAverageRating(b.ratings) - calculateAverageRating(a.ratings)
+            //     );
+            // } else if (sortOrder === '댓글순') {
+            //     sortedGames = sortedGames.sort((a, b) => b.totalComments - a.totalComments);
+            // }
 
-            if (newGames.length < size) {
-                setHasMore(false);
-            }
+            // console.log(sortedGames);
+            // setGames(sortedGames);
 
-            setLoading(false);
-        } catch (err) {
-            setError(err);
+            setHasMore(!response.data.data.last);
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+            setError(error);
+        } finally {
             setLoading(false);
         }
     };
 
+    useEffect(() => {
+        setGames([]);
+        setPage(0);
+        setHasMore(true);
+
+        // 새로운 status에 따라 첫 페이지 데이터 가져오기
+        fetchGames(0);
+    }, [filter]); // status가 변경될 때마다 실행
+
     const filterGamesByPlatform = (platform) => {
         setSelectedPlatform(platform);
-        const filteredAndSortedGames = sortAndFilterGames(allGames, platform, sortOrder);
-        setGames(filteredAndSortedGames);
+        if (platform !== 'All') {
+            setFilter(platform);
+        }
+        if (platform === 'All') {
+            setFilter('');
+        }
     };
 
     const sortGames = (gamesToSort, order) => {
@@ -123,13 +131,14 @@ const GameList = () => {
             if (loading) return;
             if (observer.current) observer.current.disconnect();
             observer.current = new IntersectionObserver((entries) => {
+                console.log(entries[0].isIntersecting); // true인지 확인
                 if (entries[0].isIntersecting && hasMore) {
                     setPage((prevPage) => prevPage + 1);
                 }
             });
             if (node) observer.current.observe(node);
         },
-        [loading, hasMore]
+        [loading, hasMore, filter]
     );
 
     if (loading && page === 0) {
@@ -171,9 +180,9 @@ const GameList = () => {
                     ALL
                 </Button>
                 <Button
-                    onClick={() => filterGamesByPlatform('아케이드')}
+                    onClick={() => filterGamesByPlatform('아케이드 게임')}
                     sx={{
-                        backgroundColor: selectedPlatform === '아케이드' ? '#3F3DBD' : '#B4B3F6',
+                        backgroundColor: selectedPlatform === '아케이드 게임' ? '#3F3DBD' : '#B4B3F6',
                         color: '#fff',
                         fontSize: '0.65rem',
                         fontWeight: 'bold',
@@ -186,9 +195,9 @@ const GameList = () => {
                     아케이드
                 </Button>
                 <Button
-                    onClick={() => filterGamesByPlatform('PC/온라인')}
+                    onClick={() => filterGamesByPlatform('PC/온라인 게임')}
                     sx={{
-                        backgroundColor: selectedPlatform === 'PC/온라인' ? '#3F3DBD' : '#B4B3F6',
+                        backgroundColor: selectedPlatform === 'PC/온라인 게임' ? '#3F3DBD' : '#B4B3F6',
                         color: '#fff',
                         fontSize: '0.65rem',
                         fontWeight: 'bold',
@@ -201,9 +210,9 @@ const GameList = () => {
                     PC/온라인
                 </Button>
                 <Button
-                    onClick={() => filterGamesByPlatform('비디오')}
+                    onClick={() => filterGamesByPlatform('비디오 게임')}
                     sx={{
-                        backgroundColor: selectedPlatform === '비디오' ? '#3F3DBD' : '#B4B3F6',
+                        backgroundColor: selectedPlatform === '비디오 게임' ? '#3F3DBD' : '#B4B3F6',
                         color: '#fff',
                         fontSize: '0.65rem',
                         fontWeight: 'bold',
@@ -216,9 +225,9 @@ const GameList = () => {
                     비디오
                 </Button>
                 <Button
-                    onClick={() => filterGamesByPlatform('모바일')}
+                    onClick={() => filterGamesByPlatform('모바일 게임')}
                     sx={{
-                        backgroundColor: selectedPlatform === '모바일' ? '#3F3DBD' : '#B4B3F6',
+                        backgroundColor: selectedPlatform === '모바일 게임' ? '#3F3DBD' : '#B4B3F6',
                         color: '#fff',
                         fontSize: '0.65rem',
                         fontWeight: 'bold',
@@ -308,7 +317,7 @@ const GameList = () => {
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                     <CommentIcon fontSize="small" sx={{ marginRight: 0.5 }} />
                                     <Typography variant="body2" sx={{ marginRight: 2, fontSize: '0.75rem' }}>
-                                        {game.totalComments || 0}
+                                        {game.comments.filter((comment) => comment.deletedDate === null).length || 0}
                                     </Typography>
                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                         {[...Array(5)].map((_, index) => (
