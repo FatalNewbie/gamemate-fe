@@ -544,197 +544,199 @@ const ChatWindow = () => {
 
     return (
         <Box>
-            <Grid
-                container
-                sx={{
-                    borderTop: '1px solid #ccc', // 위쪽 테두리
-                }}
-            >
+            <div style={{ '&::WebkitScrollbar': { display: 'block !important' } }}>
                 <Grid
-                    xs={9}
+                    container
                     sx={{
-                        borderLeft: '1px solid #ccc', // 왼쪽 테두리
+                        borderTop: '1px solid #ccc', // 위쪽 테두리
                     }}
                 >
-                    <Box
-                        display="flex"
-                        justifyContent="left" // 수평 중앙 정렬
-                        alignItems="center" // 수직 중앙 정렬
-                        sx={{ height: '100%', pl: 1, pb: 1.5 }} // Box의 높이를 100%로 설정
-                    >
-                        <Typography sx={{ fontSize: 23, fontWeight: 600, fontFamily: '"Sunflower", sans-serif' }}>
-                            {title}
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid
-                    xs={3}
-                    sx={{
-                        borderRight: '1px solid #ccc', // 오른쪽 테두리
-                    }}
-                >
-                    <Box
-                        display="flex"
-                        justifyContent="center" // 수평 중앙 정렬
-                        alignItems="center" // 수직 중앙 정렬
-                        sx={{ height: '100%' }} // Box의 높이를 100%로 설정
-                    >
-                        {showExitButton && (
-                            <Button onClick={exitBtnHandler}>
-                                <LogoutIcon sx={{ ml: 7 }} />
-                            </Button>
-                        )}
-                    </Box>
-                </Grid>
-                <Grid
-                    xs={12}
-                    sx={{
-                        height: 630, // -------------------------------------------------채팅 입력창 높이
-                        overflowY: 'scroll',
-                        borderLeft: '1px solid #ccc', // 왼쪽 테두리
-                        borderRight: '1px solid #ccc', // 오른쪽 테두리
-                        borderBottom: '1px solid #ccc', // 아래쪽 테두리
-                        padding: '10px',
-                    }}
-                    ref={chatContainerRef}
-                >
-                    {messages.map((message) => (
-                        <Box key={message.id}>
-                            <ChatMessage
-                                chatRoomId={message.chatRoomId}
-                                content={message.content}
-                                id={message.id}
-                                time={message.time}
-                                type={message.type}
-                                writer={message.writer}
-                                writerId={message.writerId}
-                                writerProfile={message.writerProfile}
-                                userNickname={userNickname}
-                                leaderNickname={leaderNickname}
-                                reloadMessage={getPrevMessages}
-                                reRenderingMessages={reRenderingMessages}
-                            ></ChatMessage>
-                        </Box>
-                    ))}
-
-                    <div ref={messagesEndRef} />
-                </Grid>
-                <Grid xs={12} sx={{ position: 'relative' }}>
-                    <Button
-                        variant="contained"
-                        color="primary"
+                    <Grid
+                        xs={9}
                         sx={{
-                            position: 'absolute',
-                            bottom: '0px',
-                            display: newMessageArriveBtnDisplay,
-                            zIndex: 1000,
-                            left: '50%', // 수평 중앙 정렬
-                            transform: 'translateX(-50%)', // 버튼의 가로 중앙을 맞춤
-                            width: '100%',
-                            borderRadius: '8px 8px 0 0', // 왼쪽 위, 오른쪽 위 모서리만 둥글게 설정,
-                            pb: 0.1,
-                            mb: 0.2,
-                            opacity: 0.8, // 투명도를 80%로 설정
-                            transition: 'opacity 0.3s ease', // 부드러운 전환 효과
-                            '&:hover': {
-                                opacity: 1, // 호버 시 투명도를 100%로 설정
-                            },
+                            borderLeft: '1px solid #ccc', // 왼쪽 테두리
                         }}
-                        onClick={newMessageArriveBtnHandler}
                     >
-                        새로운 메시지가 도착했습니다!
-                    </Button>
-                    <Button
-                        variant="contained"
-                        sx={{
-                            position: 'absolute',
-                            borderRadius: '50%', // 동그란 모양
-                            display: scrollToBottomBtnDisplay,
-                            minWidth: '0', // 최소 너비 제거
-                            minHeight: '0', // 최소 높이 제거
-                            width: '50px', // 버튼의 너비
-                            height: '50px', // 버튼의 높이
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            right: '15px', // 오른쪽에서 20px 떨어진 위치
-                            bottom: '15px', // 첫 번째 버튼 위에 위치하도록 조정
-                            padding: 0, // 패딩을 없애서 내용이 찌그러지지 않게
-                        }}
-                        onClick={scrollToBottomBtnHandler}
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="35" // 아이콘 크기 조정
-                            height="35" // 아이콘 크기 조정
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            style={{ color: 'white', marginTop: '8px' }} // 아이콘 색상 조정
+                        <Box
+                            display="flex"
+                            justifyContent="left" // 수평 중앙 정렬
+                            alignItems="center" // 수직 중앙 정렬
+                            sx={{ height: '100%', pl: 1, pb: 1.5 }} // Box의 높이를 100%로 설정
                         >
-                            <polyline points="6 9 12 15 18 9" />
-                        </svg>
-                    </Button>
-                </Grid>
-                <Grid xs={9} sx={{ height: 90 }}>
-                    <TextField
-                        id="outlined-basic"
-                        variant="outlined"
-                        value={inputMessage}
-                        onChange={inputMessageHandler}
-                        onKeyDown={handleKeyDownHandler}
-                        multiline
-                        rows={3} // 기본 줄 수
-                        maxRows={4} // 최대 줄 수
+                            <Typography sx={{ fontSize: 23, fontWeight: 600, fontFamily: '"Sunflower", sans-serif' }}>
+                                {title}
+                            </Typography>
+                        </Box>
+                    </Grid>
+                    <Grid
+                        xs={3}
                         sx={{
-                            width: 280,
-                            mt: 1,
-                            '& .MuiInputBase-root': {
-                                height: '85px', // 고정 높이 설정
-                                overflowY: 'auto', // 세로 스크롤 추가
-                                display: 'flex', // flexbox로 설정
-                                alignItems: 'flex-start', // 내용이 상단에 위치
-                                padding: '3px 0px 0px 6px', // 좌우 패딩 설정
-                                boxSizing: 'border-box', // 박스 모델 설정
-                                fontFamily: '"Noto Sans KR", sans-serif', // 글씨체 설정
-                            },
-                            '& textarea': {
-                                overflowY: 'auto', // textarea에 스크롤 추가
-                                height: 'auto', // 자동 높이 조정
-                                resize: 'none', // 크기 조정 비활성화
-                                padding: '0', // 패딩 제거
-                                boxSizing: 'border-box', // 박스 모델 설정
-                            },
+                            borderRight: '1px solid #ccc', // 위쪽 테두리
                         }}
-                    />
-                </Grid>
-                <Grid xs={3}>
-                    <Button
-                        variant="contained"
-                        onClick={sendMessageBtnHandler}
-                        sx={{ height: 40, width: 40, ml: 2, mt: 1, padding: 0 }}
                     >
-                        전송
-                    </Button>
+                        <Box
+                            display="flex"
+                            justifyContent="center" // 수평 중앙 정렬
+                            alignItems="center" // 수직 중앙 정렬
+                            sx={{ height: '100%' }} // Box의 높이를 100%로 설정
+                        >
+                            {showExitButton && (
+                                <Button onClick={exitBtnHandler}>
+                                    <LogoutIcon sx={{ ml: 7 }} />
+                                </Button>
+                            )}
+                        </Box>
+                    </Grid>
+                    <Grid
+                        xs={12}
+                        sx={{
+                            height: 630, // -------------------------------------------------채팅 입력창 높이
+                            overflowY: 'scroll',
+                            borderLeft: '1px solid #ccc', // 왼쪽 테두리
+                            borderRight: '1px solid #ccc', // 오른쪽 테두리
+                            borderBottom: '1px solid #ccc', // 아래쪽 테두리
+                            padding: '10px',
+                        }}
+                        ref={chatContainerRef}
+                    >
+                        {messages.map((message) => (
+                            <Box key={message.id}>
+                                <ChatMessage
+                                    chatRoomId={message.chatRoomId}
+                                    content={message.content}
+                                    id={message.id}
+                                    time={message.time}
+                                    type={message.type}
+                                    writer={message.writer}
+                                    writerId={message.writerId}
+                                    writerProfile={message.writerProfile}
+                                    userNickname={userNickname}
+                                    leaderNickname={leaderNickname}
+                                    reloadMessage={getPrevMessages}
+                                    reRenderingMessages={reRenderingMessages}
+                                ></ChatMessage>
+                            </Box>
+                        ))}
+
+                        <div ref={messagesEndRef} />
+                    </Grid>
+                    <Grid xs={12} sx={{ position: 'relative' }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            sx={{
+                                position: 'absolute',
+                                bottom: '0px',
+                                display: newMessageArriveBtnDisplay,
+                                zIndex: 1000,
+                                left: '50%', // 수평 중앙 정렬
+                                transform: 'translateX(-50%)', // 버튼의 가로 중앙을 맞춤
+                                width: '100%',
+                                borderRadius: '8px 8px 0 0', // 왼쪽 위, 오른쪽 위 모서리만 둥글게 설정,
+                                pb: 0.1,
+                                mb: 0.2,
+                                opacity: 0.8, // 투명도를 80%로 설정
+                                transition: 'opacity 0.3s ease', // 부드러운 전환 효과
+                                '&:hover': {
+                                    opacity: 1, // 호버 시 투명도를 100%로 설정
+                                },
+                            }}
+                            onClick={newMessageArriveBtnHandler}
+                        >
+                            새로운 메시지가 도착했습니다!
+                        </Button>
+                        <Button
+                            variant="contained"
+                            sx={{
+                                position: 'absolute',
+                                borderRadius: '50%', // 동그란 모양
+                                display: scrollToBottomBtnDisplay,
+                                minWidth: '0', // 최소 너비 제거
+                                minHeight: '0', // 최소 높이 제거
+                                width: '50px', // 버튼의 너비
+                                height: '50px', // 버튼의 높이
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                right: '15px', // 오른쪽에서 20px 떨어진 위치
+                                bottom: '15px', // 첫 번째 버튼 위에 위치하도록 조정
+                                padding: 0, // 패딩을 없애서 내용이 찌그러지지 않게
+                            }}
+                            onClick={scrollToBottomBtnHandler}
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="35" // 아이콘 크기 조정
+                                height="35" // 아이콘 크기 조정
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                style={{ color: 'white', marginTop: '8px' }} // 아이콘 색상 조정
+                            >
+                                <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                        </Button>
+                    </Grid>
+                    <Grid xs={9} sx={{ height: 90 }}>
+                        <TextField
+                            id="outlined-basic"
+                            variant="outlined"
+                            value={inputMessage}
+                            onChange={inputMessageHandler}
+                            onKeyDown={handleKeyDownHandler}
+                            multiline
+                            rows={3} // 기본 줄 수
+                            maxRows={4} // 최대 줄 수
+                            sx={{
+                                width: 280,
+                                mt: 1,
+                                '& .MuiInputBase-root': {
+                                    height: '85px', // 고정 높이 설정
+                                    overflowY: 'auto', // 세로 스크롤 추가
+                                    display: 'flex', // flexbox로 설정
+                                    alignItems: 'flex-start', // 내용이 상단에 위치
+                                    padding: '3px 0px 0px 6px', // 좌우 패딩 설정
+                                    boxSizing: 'border-box', // 박스 모델 설정
+                                    fontFamily: '"Noto Sans KR", sans-serif', // 글씨체 설정
+                                },
+                                '& textarea': {
+                                    overflowY: 'auto', // textarea에 스크롤 추가
+                                    height: 'auto', // 자동 높이 조정
+                                    resize: 'none', // 크기 조정 비활성화
+                                    padding: '0', // 패딩 제거
+                                    boxSizing: 'border-box', // 박스 모델 설정
+                                },
+                            }}
+                        />
+                    </Grid>
+                    <Grid xs={3}>
+                        <Button
+                            variant="contained"
+                            onClick={sendMessageBtnHandler}
+                            sx={{ height: 40, width: 40, ml: 2, mt: 1, padding: 0 }}
+                        >
+                            전송
+                        </Button>
+                    </Grid>
                 </Grid>
-            </Grid>
-            {/* 모달 */}
-            <Dialog open={exitModalOpen} onClose={exitModalCancelBtnHandler}>
-                <DialogTitle></DialogTitle>
-                <DialogContent>
-                    <DialogContentText>정말 나가시겠습니까?</DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={exitModalAcceptBtnHandler} color="primary">
-                        확인
-                    </Button>
-                    <Button onClick={exitModalCancelBtnHandler} color="primary">
-                        취소
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                {/* 모달 */}
+                <Dialog open={exitModalOpen} onClose={exitModalCancelBtnHandler}>
+                    <DialogTitle></DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>정말 나가시겠습니까?</DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={exitModalAcceptBtnHandler} color="primary">
+                            확인
+                        </Button>
+                        <Button onClick={exitModalCancelBtnHandler} color="primary">
+                            취소
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
         </Box>
     );
 };
