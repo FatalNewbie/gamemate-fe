@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
 
 function ProfileImageEdit() {
     const [cookies] = useCookies(['token']);
     const [imageList, setImageList] = useState([]); // S3 이미지 리스트
     const [selectedImageUrl, setSelectedImageUrl] = useState(''); // 선택한 이미지 URL
     const [user, setUser] = useState(null); // 사용자 정보를 저장할 상태
+    const [open, setOpen] = useState(false); // 모달 열기 상태
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -54,14 +56,21 @@ function ProfileImageEdit() {
 
     const handleImageSelect = async (url) => {
         setSelectedImageUrl(url); // 선택한 이미지 URL 설정
+        setOpen(true); // 모달 열기
+    };
 
+    const handleClose = () => {
+        setOpen(false); // 모달 닫기
+    };
+
+    const handleImageUpdate = async () => {
         try {
             // 선택한 이미지 URL을 사용자 프로필에 저장
             const response = await axios.post(
                 '/profile/update',
                 {
                     username: user.username,
-                    userProfile: url,
+                    userProfile: selectedImageUrl,
                 },
                 {
                     headers: {
@@ -78,41 +87,127 @@ function ProfileImageEdit() {
             console.error('프로필 이미지를 업데이트하는 데 실패했습니다:', error);
             alert('프로필 이미지 업데이트 실패');
         }
+        setOpen(false); // 모달 닫기
     };
 
     return (
         <div>
-            <h2>S3 이미지 선택 및 프로필 업데이트</h2>
+            <h2>프로필 바꾸기</h2>
 
-            <div>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'flex-start',
+                    gap: '10px',
+                }}
+            >
                 {imageList.length > 0 ? (
                     imageList.map((imageUrl, index) => (
-                        <div
+                        <Box
                             key={index}
                             onClick={() => handleImageSelect(imageUrl)}
-                            style={{ cursor: 'pointer', margin: '10px' }}
+                            sx={{
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                            }}
                         >
                             <img
                                 src={imageUrl}
                                 alt={`Image ${index}`}
-                                style={{ width: 100, height: 100, borderRadius: '8px' }}
+                                style={{
+                                    width: '100px',
+                                    height: 'auto',
+                                    borderRadius: '8px',
+                                    border: '1px solid #D3D3D3',
+                                }}
                             />
-                        </div>
+                        </Box>
                     ))
                 ) : (
                     <p>이미지를 불러오는 중입니다...</p>
                 )}
-            </div>
-            {selectedImageUrl && (
-                <div>
-                    <h3>선택한 이미지:</h3>
+            </Box>
+
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                maxWidth="sm"
+                fullWidth
+            >
+                <DialogTitle
+                    sx={{
+                        paddingLeft: 2,
+                        paddingBottom: 1,
+                        fontFamily: 'Roboto, sans-serif',
+                        fontWeight: 700,
+                        fontSize: '20pt',
+                        textAlign: 'center',
+                        letterSpacing: '-0.5px',
+                    }}
+                >
+                    선택한 이미지
+                </DialogTitle>
+                <DialogContent
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        padding: '16px',
+                    }}
+                >
                     <img
                         src={selectedImageUrl}
                         alt="Selected"
-                        style={{ width: 150, height: 150, borderRadius: '50%' }}
+                        style={{
+                            width: '100%',
+                            height: 'auto',
+                            borderRadius: '50%',
+                        }}
                     />
-                </div>
-            )}
+                </DialogContent>
+                <DialogActions
+                    sx={{
+                        padding: '8px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Button
+                        onClick={handleImageUpdate}
+                        color="primary"
+                        variant="contained"
+                        sx={{
+                            backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                            color: '#fff',
+                            borderRadius: '30px',
+                            fontWeight: 'bold',
+                            '&:hover': {
+                                backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                            },
+                        }}
+                    >
+                        설정
+                    </Button>
+                    <Button
+                        onClick={handleClose}
+                        color="primary"
+                        variant="contained"
+                        sx={{
+                            backgroundColor: '#DB5024',
+                            color: '#fff',
+                            borderRadius: '30px',
+                            fontWeight: 'bold',
+                            '&:hover': {
+                                backgroundColor: '#FF6347',
+                            },
+                        }}
+                    >
+                        취소
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 }

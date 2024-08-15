@@ -204,7 +204,15 @@ const FriendList = () => {
                                 variant="contained"
                                 color="primary"
                                 onClick={handleDeleteFriend}
-                                sx={{ backgroundColor: '#0A088A', color: 'white', '&:hover': { backgroundColor: '#5D5AE0' } }}
+                                sx={{
+                                    backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                                    color: '#fff',
+                                    borderRadius: '30px',
+                                    fontWeight: 'bold',
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(93, 90, 224, 0.8)',
+                                    },
+                                }}
                             >
                                 예
                             </Button>
@@ -215,6 +223,8 @@ const FriendList = () => {
                                 sx={{
                                     backgroundColor: '#DB5024',
                                     color: '#fff',
+                                    borderRadius: '30px',
+                                    fontWeight: 'bold',
                                     '&:hover': {
                                         backgroundColor: '#FF6347',
                                     },
