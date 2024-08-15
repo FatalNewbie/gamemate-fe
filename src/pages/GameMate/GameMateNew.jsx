@@ -305,7 +305,7 @@ const GameMateNew = () => {
                         </div>
                     )}
 
-                    {step === 5 && postData.status === 'OFF' && (
+                    {(step === 5 && postData.status === 'OFF') && (
                         <div className="slide-in">
                             <h2>자세한 설명을 작성해주세요</h2>
                             <textarea
@@ -316,6 +316,19 @@ const GameMateNew = () => {
                             ></textarea>
                         </div>
                     )}
+
+                    {step === 4 && postData.status === 'ON' && (
+                        <div className="slide-in">
+                            <h2>자세한 설명을 작성해주세요</h2>
+                            <textarea
+                                placeholder="게임메이트에게 설명할 내용을 10자 이상으로    자유롭게 작성해주세요! ex) 저희는 디스코드 사용이 필수입니다!"
+                                className="description-area"
+                                value={postData.mateContent || ''}
+                                onChange={(e) => setField('mateContent', e.target.value)}
+                            ></textarea>
+                        </div>
+                    )}
+
                     {step === 6 && postData.status === 'OFF' && (
                         <div className="slide-in">
                             <h2>구체적인 장소가 있다면 알려주세요!</h2>

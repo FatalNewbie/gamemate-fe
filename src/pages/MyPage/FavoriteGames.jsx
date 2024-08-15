@@ -30,10 +30,12 @@ const FavoriteGames = ({ games }) => {
                 sx={{
                     marginBottom: 2,
                     backgroundColor: 'rgba(10, 8, 138, 0.8)',
+                    color: '#fff',
+                    borderRadius: '30px',
+                    fontWeight: 'bold',
                     '&:hover': {
                         backgroundColor: 'rgba(93, 90, 224, 0.8)',
                     },
-                    borderRadius: 2,
                     textTransform: 'none',
                 }}
             >
@@ -43,9 +45,7 @@ const FavoriteGames = ({ games }) => {
                 sx={{
                     bgcolor: '#fff',
                     paddingTop: 2,
-                    paddingRight: 2,
                     paddingBottom: 0,
-                    paddingLeft: 2,
                     borderRadius: 1,
                     minHeight: '100px',
                     marginBottom: 2,
@@ -53,76 +53,90 @@ const FavoriteGames = ({ games }) => {
                     boxShadow: 3,
                 }}
             >
-                <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
+                <Typography
+                    variant="h6"
+                    sx={{
+                        paddingLeft: 2,
+                        paddingBottom: 1,
+                        fontFamily: 'Roboto, sans-serif',
+                        fontWeight: 700,
+                        fontSize: '14pt',
+                        letterSpacing: '-0.5px',
+                        borderBottom: '1px solid #e0e0e0'
+                    }}
+                >
                     선호 게임 목록
                 </Typography>
                 <List>
                     {games.map((gameData, index) => {
                         const game = gameData.game;
                         return (
-                            <ListItem
-                                key={`list-item-${index}`}
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center', // 중앙 정렬
-                                    padding: 2,
-                                    marginBottom: 4,
-                                    borderBottom: '1px solid #e0e0e0',
-                                    wordWrap: 'break-word',
-                                    width: '100%',
-                                    cursor: 'pointer',
-                                }}
-                                onClick={() => handleGameClick(game.id)}
-                            >
-                                <Typography
-                                    variant="subtitle2"
+                            <ListItem>
+                                <Box
+                                    key={`list-item-${index}`}
                                     sx={{
-                                        fontWeight: 'bold',
-                                        textAlign: 'center', // 텍스트 중앙 정렬
-                                        fontSize: '0.8rem',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center', // 중앙 정렬
+                                        paddingRight: 2,
+                                        paddingLeft: 2,
+                                        borderRadius: 1,
+                                        borderBottom: '1px solid #e0e0e0',
+                                        wordWrap: 'break-word',
+                                        width: '100%',
+                                        cursor: 'pointer',
                                     }}
+                                    onClick={() => handleGameClick(game.id)}
                                 >
-                                    {game.title}
-                                </Typography>
-                                <Box sx={{ display: 'flex', gap: 1, marginTop: 2, marginBottom: 2 }}>
-                                    <Chip
-                                        label={game.platform.replace(' 게임', '')}
+                                    <Typography
+                                        variant="subtitle2"
                                         sx={{
-                                            backgroundColor: '#0A088A',
-                                            color: '#fff',
-                                            fontSize: '0.65rem',
                                             fontWeight: 'bold',
-                                            height: '22px',
+                                            textAlign: 'center', // 텍스트 중앙 정렬
+                                            fontSize: '0.8rem',
                                         }}
-                                    />
-                                    <Chip
-                                        label={cleanGenre(game.genre)}
-                                        sx={{
-                                            backgroundColor: '#5D5AE0',
-                                            color: '#fff',
-                                            fontSize: '0.65rem',
-                                            fontWeight: 'bold',
-                                            maxWidth: '90px',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            height: '22px',
-                                        }}
-                                    />
-                                    <Chip
-                                        label={cleanDeveloperName(game.developer)}
-                                        sx={{
-                                            backgroundColor: '#8F8EC9',
-                                            color: '#fff',
-                                            fontSize: '0.65rem',
-                                            fontWeight: 'bold',
-                                            maxWidth: '100px',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            whiteSpace: 'nowrap',
-                                            height: '22px',
-                                        }}
-                                    />
+                                    >
+                                        {game.title}
+                                    </Typography>
+                                    <Box sx={{ display: 'flex', gap: 1, marginTop: 2, marginBottom: 2 }}>
+                                        <Chip
+                                            label={game.platform.replace(' 게임', '')}
+                                            sx={{
+                                                backgroundColor: '#0A088A',
+                                                color: '#fff',
+                                                fontSize: '0.65rem',
+                                                fontWeight: 'bold',
+                                                height: '22px',
+                                            }}
+                                        />
+                                        <Chip
+                                            label={cleanGenre(game.genre)}
+                                            sx={{
+                                                backgroundColor: '#5D5AE0',
+                                                color: '#fff',
+                                                fontSize: '0.65rem',
+                                                fontWeight: 'bold',
+                                                maxWidth: '90px',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                height: '22px',
+                                            }}
+                                        />
+                                        <Chip
+                                            label={cleanDeveloperName(game.developer)}
+                                            sx={{
+                                                backgroundColor: '#8F8EC9',
+                                                color: '#fff',
+                                                fontSize: '0.65rem',
+                                                fontWeight: 'bold',
+                                                maxWidth: '100px',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                                height: '22px',
+                                            }}
+                                        />
+                                    </Box>
                                 </Box>
                             </ListItem>
                         );

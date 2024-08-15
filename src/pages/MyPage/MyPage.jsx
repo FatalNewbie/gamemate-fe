@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Avatar, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Divider } from '@mui/material';
+import { Box, Typography, Avatar, Button, Chip, List, ListItem, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Divider } from '@mui/material';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import profilePlaceholder from '../../assets/profile_placeholder.png';
+import InfiniteScroll from '../GameMate/InfiniteScroll';
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import FavoriteGamesForMyPage from './FavoriteGamesForMyPage';
-import UserPosts from './UserPosts';
 import { useNavigate } from 'react-router-dom';
 
 axios.defaults.baseURL = 'http://localhost:8080'; // 백엔드 서버 주소
@@ -21,8 +21,8 @@ const MyPage = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [preferredGenres, setPreferredGenres] = useState([]);
     const [playTimes, setPlayTimes] = useState([]);
-    const [posts, setPosts] = useState([]); // 내가 쓴 글 목록 상태 추가
     const [friends, setFriends] = useState([]); // 친구 목록의 일부를 저장할 상태
+    const [posts, setPosts] = useState([]); // 내가 쓴 글 목록 상태 추가
     const [games, setGames] = useState([]); // 선호 게임 목록을 저장할 상태
     const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 사용
 
@@ -121,6 +121,7 @@ const MyPage = () => {
         };
 
         const fetchUserPosts = async (userId) => { // userId를 인자로 받음
+//             console.log("userId : " + user.id);
             try {
                 const response = await axios.get('/posts/user', {
                     headers: {
@@ -132,9 +133,10 @@ const MyPage = () => {
                         size: 10 // 페이지 크기
                     }
                 });
-                console.log(response.data); // 응답 데이터 구조 확인
+                console.log("fetchUserPosts : " + response.data); // 응답 데이터 구조 확인
                 if (response.status === 200 && response.data.data.content) {
                     setPosts(response.data.data.content); // 데이터 저장 (content는 CustomPage의 데이터)
+                    console.log("PostsDataContent : " + response.data.data.content);
                 }
             } catch (error) {
                 console.error('글 목록을 가져오는 데 실패했습니다:', error);
@@ -153,6 +155,7 @@ const MyPage = () => {
                 console.log(response.data); // 응답 데이터 구조 확인
                 if (response.status === 200 && response.data.data.content) {
                     setGames(response.data.data.content); // 게임 목록 저장
+                    console.log("GamesDataContent : " + response.data.data.content);
                 } else {
                     console.error('Expected data not found in response', response.data);
                 }
@@ -242,6 +245,10 @@ const MyPage = () => {
 
     const handleAvatarClick = () => {
         navigate('/edit-profile'); // 프로필 수정 페이지로 이동
+    };
+
+    const handlePostClick = (id) => {
+        navigate(`/gamemate/posts/${id}`);
     };
 
     // user 데이터가 로드된 후에만 usePageTime 훅을 호출
@@ -336,29 +343,35 @@ const MyPage = () => {
                 sx={{
                     bgcolor: '#fff',
                     paddingTop: 2,
-                    paddingRight: 2,
                     paddingBottom: 0,
-                    paddingLeft: 2,
                     borderRadius: 1,
                     minHeight: '100px',
                     marginBottom: 2,
-                    marginTop: 2,
                     boxShadow: 3,
                 }}
             >
                 <Typography
                         variant="h6"
                         sx={{
-                            fontFamily: 'Roboto, sans-serif',
-                            fontWeight: 700,
-                            fontSize: '14pt',
-                            letterSpacing: '-0.5px',
-                            marginBottom: '10px',
+                        paddingLeft: 2,
+                        paddingBottom: 1,
+                        fontFamily: 'Roboto, sans-serif',
+                        fontWeight: 700,
+                        fontSize: '14pt',
+                        letterSpacing: '-0.5px',
+                        borderBottom: '1px solid #e0e0e0'
                         }}
                     >
                     친구 목록
                 </Typography>
-                <Box sx={{ display: 'column', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 2 }}>
+                <Box
+                    sx={{
+                        display: 'column',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        paddingBottom: 2
+                    }}
+                >
                     {friends.length > 0 ? (  // 친구가 있을 경우
                         friends.map((friend, index) => (
                         <Box key={index}>
@@ -381,7 +394,21 @@ const MyPage = () => {
                         </Box>
                         ))
                     ) : (  // 친구가 없을 경우
-                        <Typography variant="body1">친구가 없습니다.</Typography>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center', // 중앙 정렬
+                                marginTop: 2,
+                                borderRadius: 1,
+                                wordWrap: 'break-word',
+                                width: '100%',
+                            }}
+                        >
+                            <Typography variant="body1">
+                                친구가 없습니다.
+                            </Typography>
+                        </Box>
                     )}
 
                     {friends.length > 0 && (  // 친구가 있을 때만 버튼 표시
@@ -402,9 +429,7 @@ const MyPage = () => {
                 sx={{
                     bgcolor: '#fff',
                     paddingTop: 2,
-                    paddingRight: 2,
                     paddingBottom: 0,
-                    paddingLeft: 2,
                     borderRadius: 1,
                     minHeight: '100px',
                     marginBottom: 2,
@@ -414,34 +439,73 @@ const MyPage = () => {
                 <Typography
                     variant="h6"
                     sx={{
+                        paddingLeft: 2,
+                        paddingBottom: 1,
                         fontFamily: 'Roboto, sans-serif',
                         fontWeight: 700,
                         fontSize: '14pt',
                         letterSpacing: '-0.5px',
-                        marginBottom: '10px',
+                        borderBottom: '1px solid #e0e0e0'
                     }}
-                    gutterBottom
                 >
                 내가 쓴 글 목록
                 </Typography>
 
                 {/* 내가 쓴 글 목록 공간 */}
                 {posts.length > 0 ? (
-                    <Box>
-                        {posts.slice(0, 3).map((post, index) => (
-                            <Box key={index} sx={{ marginBottom: 1 }}>
-                                <Typography>{posts.title}</Typography>
-                                <Typography variant="body2" color="textSecondary">
-                                    {post.createdAt}
-                                </Typography>
-                            </Box>
-                        ))}
-                        <Button onClick={() => navigate('/posts/user')} sx={{ color: 'rgba(10, 8, 138)' }}>
-                            더보기
-                        </Button>
-                    </Box>
+                    <List>
+                        <Box>
+                            {posts.slice(0, 3).map((post, index) => (
+                                <ListItem>
+                                    <Box
+                                        key={index}
+                                        sx={{
+                                            display: 'flex',
+                                            bgcolor: '#fff',
+                                            paddingTop: 1,
+                                            paddingRight: 2,
+                                            paddingLeft: 2,
+                                            borderRadius: 1,
+                                            minHeight: 50,
+                                            width: "100%",
+                                            borderBottom: '1px solid #e0e0e0',
+                                            cursor: 'pointer',
+                                            justifyContent: 'space-between', // 제목과 날짜 사이에 공간을 벌림
+                                        }}
+                                        onClick={() => handlePostClick(post.id)}
+                                    >
+                                        <Typography>{post.gameTitle}</Typography>  {/* 글의 제목 부분 */}
+                                        <Typography variant="body2" color="textSecondary">
+                                            {new Date(post.createdDate).toLocaleDateString()} {/* 생성일을 올바르게 표시 */}
+                                        </Typography>
+                                    </Box>
+                                </ListItem>
+                            ))}
+                            {posts.length > 3 && (
+                                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                    <Button onClick={() => navigate('/posts/user/list')} sx={{ color: 'rgba(10, 8, 138)' }}>
+                                        더보기
+                                    </Button>
+                                </div>
+                            )}
+                        </Box>
+                    </List>
                 ) : (
-                    <Typography>글이 없습니다.</Typography>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center', // 중앙 정렬
+                            marginTop: 2,
+                            borderRadius: 1,
+                            wordWrap: 'break-word',
+                            width: '100%',
+                        }}
+                    >
+                        <Typography>
+                            글이 없습니다.
+                        </Typography>
+                    </Box>
                 )}
             </Box>
 

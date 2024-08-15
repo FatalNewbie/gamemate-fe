@@ -12,6 +12,7 @@ import GamteMateUpdate from './pages/GameMate/GameMateUpdate';
 import KakaoSearch from './pages/GameMate/KakaoSearch';
 import Chat from './pages/Chat/Chat';
 import MyPage from './pages/MyPage/MyPage';
+import UserPostsList from './pages/MyPage/UserPostsList';
 import FavoriteGameList from './pages/MyPage/FavoriteGameList';
 import Recommend from './pages/Recommend/Recommend';
 import ReceivedFriendRequests from './pages/Friend/ReceivedFriendRequests';
@@ -170,6 +171,14 @@ const App = () => {
                     element={
                         <MainLayout headerTitle="선호 게임 목록" showSearchIcon={false}>
                             <FavoriteGameList />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/posts/user/list"
+                    element={
+                        <MainLayout headerTitle="내가 쓴 글 목록" showSearchIcon={false}>
+                            <UserPostsList />
                         </MainLayout>
                     }
                 />
