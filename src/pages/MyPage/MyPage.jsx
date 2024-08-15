@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Avatar, Button, Chip, List, ListItem, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Divider } from '@mui/material';
+import {
+    Box, Typography,
+    Avatar, Button,
+    Chip, List,
+    ListItem, IconButton,
+    Snackbar, Modal,
+    Dialog, DialogTitle,
+    DialogContent, DialogActions,
+    TextField, Divider,
+    Alert
+} from '@mui/material';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import profilePlaceholder from '../../assets/profile_placeholder.png';
 import InfiniteScroll from '../GameMate/InfiniteScroll';
 import { useCookies } from 'react-cookie';
+import { Delete } from '@mui/icons-material';
 import axios from 'axios';
 import FavoriteGamesForMyPage from './FavoriteGamesForMyPage';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +36,10 @@ const MyPage = () => {
     const [posts, setPosts] = useState([]); // 내가 쓴 글 목록 상태 추가
     const [games, setGames] = useState([]); // 선호 게임 목록을 저장할 상태
     const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 사용
+    const [selectedFriend, setSelectedFriend] = useState(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
 
     const genresList = ['FPS', 'RPG', '전략', '액션', '시뮬레이션'];
     const timesList = ['AM 9:00 ~ AM 11:00', 'AM 11:00 ~ PM 2:00', 'PM 2:00 ~ PM 5:00', 'PM 5:00 ~ PM 8:00',
@@ -67,7 +82,7 @@ const MyPage = () => {
                 });
                 const friendsData = response.data.data;
                 setFriendCount(response.data.data.length); // 친구 수 계산
-                setFriends(friendsData.slice(0, 3)); // 친구 목록 중 3명만 보여주기
+                setFriends(friendsData); // 친구 목록 중 3명만 보여주기
             } catch (error) {
                 console.error('친구 수를 가져오는 데 실패했습니다:', error);
             }
@@ -251,6 +266,40 @@ const MyPage = () => {
         navigate(`/gamemate/posts/${id}`);
     };
 
+    const handleDeleteModalOpen = (friend) => {
+        setSelectedFriend(friend);
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleDeleteModalClose = () => {
+        setIsDeleteModalOpen(false);
+    };
+
+    const handleDeleteFriend = async () => {
+        if (!selectedFriend) return;
+
+        try {
+            await axios.delete(`/friend/${selectedFriend.id}`, {
+                headers: {
+                    Authorization: cookies.token,
+                },
+            });
+
+            setFriends(prevFriends => prevFriends.filter(friend => friend.id !== selectedFriend.id));
+            setIsDeleteModalOpen(false);
+            setSnackbarMessage('친구 삭제가 완료되었습니다.');
+            setIsSnackbarOpen(true);
+        } catch (error) {
+            console.error('친구를 삭제하는 데 실패했습니다:', error);
+            setSnackbarMessage('친구 삭제에 실패했습니다.');
+            setIsSnackbarOpen(true);
+        }
+    };
+
+    const handleSnackbarClose = () => {
+        setIsSnackbarOpen(false);
+    };
+
     // user 데이터가 로드된 후에만 usePageTime 훅을 호출
 
     if (!user) {
@@ -364,61 +413,88 @@ const MyPage = () => {
                     >
                     친구 목록
                 </Typography>
-                <Box
-                    sx={{
-                        display: 'column',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        paddingBottom: 2
-                    }}
-                >
-                    {friends.length > 0 ? (  // 친구가 있을 경우
-                        friends.map((friend, index) => (
-                        <Box key={index}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
-                                <Avatar
-                                    src={friend.userProfile || profilePlaceholder}  // 프로필 사진이 없을 경우 기본 이미지 사용
-                                    alt={friend.nickname}
-                                    sx={{ width: 50, height: 50, marginRight: 2 }}
-                                />
-                                <Typography variant="body1"
-                                    sx={{
-                                        fontFamily: 'Roboto, sans-serif',
-                                        fontWeight: 600,
-                                        fontSize: '12pt',
-                                        letterSpacing: '-0.5px',
-                                    }}
-                                >{friend.nickname}</Typography>
-                            </Box>
-                            <Divider sx={{ backgroundColor: 'rgba(128, 128, 128, 0.3)', width: '100%', mb: 2, marginTop: '10px' }} />
+                {friends.length > 0 ? (  // 친구가 있을 경우
+                    <List>
+                        <Box>
+                            {friends.slice(0, 3).map((friend, index) => (
+                                <ListItem>
+                                    <Box
+                                        key={index}
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            paddingRight: 2,
+                                            paddingLeft: 2,
+                                            paddingBottom: 2.5,
+                                            borderRadius: 1,
+                                            minHeight: 50,
+                                            width: "100%",
+                                            borderBottom: '1px solid #e0e0e0',
+                                            marginBottom: 1
+                                        }}
+                                    >
+                                        <Avatar
+                                            src={friend.userProfile || profilePlaceholder}  // 프로필 사진이 없을 경우 기본 이미지 사용
+                                            alt={friend.nickname}
+                                            sx={{ width: 50, height: 50, marginRight: 1 }}
+                                        />
+                                        <Typography variant="body1"
+                                            sx={{
+                                                fontFamily: 'Roboto, sans-serif',
+                                                fontWeight: 600,
+                                                fontSize: '12pt',
+                                                letterSpacing: '-0.5px',
+                                            }}
+                                        >
+                                            {friend.nickname}
+                                        </Typography>
+                                        <IconButton
+                                            color="secondary"
+                                            onClick={() => handleDeleteModalOpen(friend)}
+                                            sx={{
+                                                backgroundColor: '#f5f5f5',  // 버튼 배경 색상
+                                                '&:hover': {
+                                                    backgroundColor: '#e0e0e0',  // 호버 시 배경 색상
+                                                },
+                                                borderRadius: '30%',  // 둥근 버튼 모양
+                                                marginTop: 'auto',
+                                                marginLeft: 'auto',
+                                                height: '40px',
+                                                padding: '8px',  // 버튼 패딩
+                                                color: '#ff1744',  // 아이콘 색상
+                                            }}
+                                        >
+                                            <Delete />
+                                        </IconButton>
+                                    </Box>
+                                </ListItem>
+                            ))}
+                            {friends.length > 3 && (  // 친구가 있을 때만 버튼 표시
+                                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                    <Button onClick={() => navigate('/friends')} sx={{ color: 'rgba(10, 8, 138)' }}>
+                                        더보기
+                                    </Button>
+                                </div>
+                            )}
                         </Box>
-                        ))
-                    ) : (  // 친구가 없을 경우
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center', // 중앙 정렬
-                                marginTop: 2,
-                                borderRadius: 1,
-                                wordWrap: 'break-word',
-                                width: '100%',
-                            }}
-                        >
-                            <Typography variant="body1">
-                                친구가 없습니다.
-                            </Typography>
-                        </Box>
-                    )}
-
-                    {friends.length > 0 && (  // 친구가 있을 때만 버튼 표시
-                        <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <Button onClick={() => navigate('/friends')} sx={{ color: 'rgba(10, 8, 138)' }}>
-                                더보기
-                            </Button>
-                        </div>
-                    )}
-                </Box>
+                    </List>
+                ) : (  // 친구가 없을 경우
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center', // 중앙 정렬
+                            marginTop: 2,
+                            borderRadius: 1,
+                            wordWrap: 'break-word',
+                            width: '100%',
+                        }}
+                    >
+                        <Typography variant="body1">
+                            친구가 없습니다.
+                        </Typography>
+                    </Box>
+                )}
             </Box>
 
             {/* FavoriteGamesForMyPage 컴포넌트 사용 */}
@@ -635,6 +711,89 @@ const MyPage = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            {/* 삭제 확인 모달 */}
+            <Modal
+                open={isDeleteModalOpen}
+                onClose={handleDeleteModalClose}
+            >
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 300,
+                    bgcolor: 'background.paper',
+                    boxShadow: 24,
+                    p: 4,
+                    borderRadius: 1,
+                }}>
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            fontFamily: 'Roboto, sans-serif',
+                            fontWeight: 600,
+                            fontSize: '11pt',
+                            letterSpacing: '-0.5px',
+                            marginBottom: '20px',
+                            marginTop: '10px',
+                        }}
+                    >
+                        {selectedFriend?.nickname}님과의 친구 관계를 삭제하시겠습니까?
+                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleDeleteFriend}
+                            sx={{ backgroundColor: '#0A088A', color: 'white', '&:hover': { backgroundColor: '#5D5AE0' } }}
+                        >
+                            예
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleDeleteModalClose}
+                            sx={{
+                                backgroundColor: '#DB5024',
+                                color: '#fff',
+                                '&:hover': {
+                                    backgroundColor: '#FF6347',
+                                },
+                            }}
+                        >
+                            아니오
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
+
+            {/* 친구 삭제 완료 알림 */}
+            <Snackbar
+                open={isSnackbarOpen}
+                autoHideDuration={1000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                sx={{
+                    top: '50%',
+                    width: '80%',
+                    maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                }}
+            >
+                <Alert onClose={handleSnackbarClose} severity="success" sx={{
+                    width: '100%',
+                    backgroundColor: 'rgba(10, 8, 138, 0.8)', // 배경 색상
+                    color: '#ffffff', // 텍스트 색상
+                    fontSize: '11px',
+                    }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 };
