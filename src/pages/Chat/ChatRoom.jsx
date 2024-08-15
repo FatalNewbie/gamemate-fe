@@ -72,6 +72,10 @@ const ChatRoom = ({ roomId, title, leaderNickName, memberCnt, leaderProfile }) =
                                             ml: 2,
                                             fontWeight: 600,
                                             fontFamily: '"Sunflower", sans-serif',
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            maxWidth: '100%',
                                         }}
                                     >
                                         {title}
@@ -101,6 +105,10 @@ const ChatRoom = ({ roomId, title, leaderNickName, memberCnt, leaderProfile }) =
                                             mb: 1,
                                             fontWeight: 600,
                                             fontFamily: '"Gamja Flower", sans-serif',
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            maxWidth: '100%',
                                         }}
                                     >
                                         {leaderNickName}
