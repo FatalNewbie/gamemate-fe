@@ -30,7 +30,7 @@ const Join = () => {
         setIsRegistering(false); // 회원가입 상태를 false로 변경
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // 이메일 형식 검사
@@ -52,7 +52,38 @@ const Join = () => {
             return;
         }
 
-        navigate('/join-additional', { state: { username, password, nickname } });
+        try {
+            // 이메일 및 닉네임 중복 확인
+            const response = await axios.get('/check-availability', { params: { username, nickname } });
+            if (response.status === 200) {
+                // 이메일과 닉네임 모두 중복되지 않는 경우
+                navigate('/join-additional', { state: { username, password, nickname } });
+            } else {
+                // 서버에서 반환된 메시지 처리
+                const { emailError, nicknameError } = response.data;
+                if (emailError) {
+                    alert(emailError);
+                }
+                if (nicknameError) {
+                    alert(nicknameError);
+                }
+            }
+        } catch (error) {
+            // 네트워크 오류 등으로 인한 처리
+            if (error.response) {
+                const { emailError, nicknameError } = error.response.data;
+                if (emailError) {
+                    alert(emailError);
+                } else if (nicknameError) {
+                    alert(nicknameError);
+                } else {
+                    alert('중복 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+                }
+            } else {
+                alert('중복 확인 중 네트워크 오류가 발생했습니다.');
+            }
+            console.error('Check error:', error);
+        }
     };
 
     //     const handleGoogleLogin = () => {
