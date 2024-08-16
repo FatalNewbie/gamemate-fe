@@ -1,0 +1,368 @@
+.gamemate-post-container {
+    margin: auto;
+    padding-bottom: 50px;
+}
+
+.post-card {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column; /* 세로 방향으로 배치 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 설정 */
+}
+
+.game-title {
+    margin: 0 auto; /* 좌우 마진을 자동으로 설정하여 가운데 정렬 */
+    overflow: hidden;
+    word-break: break-word;
+    max-width: 80%;
+}
+
+.post-edit-box {
+    display: flex; /* flexbox 사용 */
+    justify-content: flex-end; /* 오른쪽으로 정렬 */
+    gap: 6px; /* 버튼 간의 간격 */
+    padding-right: 10px;
+    padding: 10px 0px;
+    margin-top: 10px;
+    border-top: 1px solid #e0e0e0; /* 얇은 실선 추가 */
+}
+
+.post-edit-button,
+.post-delete-button {
+    padding: 4px 10px; /* 버튼 패딩 */
+    border: none; /* 기본 테두리 제거 */
+    border-radius: 10%; /* 둥근 모서리 */
+    cursor: pointer; /* 커서 변경 */
+}
+
+.post-edit-button {
+    color: rgb(0, 0, 0); /* 글자 색상 */
+    font-weight: bold;
+    background-color: white;
+}
+
+.post-delete-button {
+    color: rgb(209, 28, 28); /* 글자 색상 */
+    font-weight: bold;
+    background-color: white;
+}
+
+.status-grid {
+    display: grid; /* Grid 사용 */
+    grid-template-columns: repeat(2, 1fr); /* 2열로 설정 */
+    gap: 5px; /* 아이템 간의 간격 */
+}
+
+.status-item {
+    padding-left: 5px;
+    padding-top: 5px;
+    display: flex;
+    align-items: center; /* 수직 가운데 정렬 */
+    font-size: 15px;
+}
+
+.status-label {
+    width: 50%;
+    margin-right: 5px; /* 레이블과 아이콘 사이의 간격 */
+}
+
+.status-icon {
+    background-color: #8f8ec9; /* 아이콘 배경색 */
+    color: white; /* 텍스트 색상 */
+    border-radius: 20px; /* 둥근 모서리 */
+    padding: 5px 10px; /* 아이콘 내부 여백 */
+    font-weight: bold; /* 두꺼운 텍스트 */
+    display: inline-block; /* 블록처럼 표시 */
+    font-size: 13px;
+}
+
+.profile-box {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.profile-line {
+    border: none; /* 기본 테두리 제거 */
+    border-top: 1px solid #e0e0e0; /* 얇은 실선 추가 */
+    width: 50%; /* 선의 길이 설정 */
+    margin: 0 auto; /* 중앙 정렬 */
+}
+
+.left-section {
+    display: flex;
+}
+
+.user-profile {
+    display: flex;
+    justify-content: space-between; /* 양쪽 끝으로 배치 */
+    align-items: center; /* 세로 정렬 */
+}
+
+.profile-image {
+    width: 40px; /* 이미지 너비 */
+    height: 40px; /* 이미지 높이 */
+    border-radius: 50%; /* 동그란 이미지 */
+    margin-right: 10px; /* 이미지와 텍스트 사이 여백 */
+}
+
+.writer-nickname {
+    font-weight: bold; /* 닉네임을 굵게 */
+    margin-right: 10px; /* 닉네임과 날짜 사이 여백 */
+    padding-left: 5px;
+    font-size: 15px;
+}
+
+.date-display {
+    color: rgb(108, 108, 108); /* 생성 날짜 색상 */
+    font-size: 12px;
+}
+
+.post-content {
+    line-height: 2; /* 줄간격 조정 (원하는 값으로 변경) */
+    color: #000000;
+    overflow: hidden;
+    word-break: break-word;
+    max-width: 100%;
+}
+
+.map-placeholder {
+    height: 200px;
+    background-color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    background-color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.comment-cnt {
+    font-size: 15px;
+    padding-top: 10px;
+    padding-left: 10px;
+}
+
+.comment-box {
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.comment-mid-box {
+    padding-top: 7px;
+    display: flex; /* Flexbox 사용 */
+    transition: background-color 0.3s ease; /* 서서히 변하는 시간과 효과 설정 */
+}
+
+.comment-mid-box:hover {
+    background-color: #f0f0f0;
+}
+
+.comment-header {
+    display: flex;
+}
+
+.comment-created-date {
+    padding-left: 15px;
+    display: flex;
+}
+
+.comment-endbox {
+    display: flex;
+    align-items: center; /* 세로 정렬 */
+    margin-left: auto; /* 왼쪽 여백을 자동으로 설정하여 오른쪽으로 이동 */
+}
+
+.recomment-button {
+    font-size: 12px;
+    font-weight: bold;
+    color: #6c6c6c;
+    cursor: pointer; /* 커서 변경 */
+    padding-left: 20px;
+    width: 30px;
+}
+
+.comment-nickname,
+.recomment-nickname {
+    padding-left: 5px;
+    font-size: 14px;
+    color: #2d2d2d;
+}
+
+.recomment-header {
+    display: flex;
+}
+
+.recomment-nickname {
+    padding-left: 5px;
+}
+
+.comment-content-box {
+    padding-left: 10px;
+}
+
+.comment-content {
+    padding-left: 15px;
+    width: 230px;
+}
+
+.comment-edit-box {
+    padding-top: 10px;
+    margin-right: 0px;
+    width: 70px;
+    text-align: end;
+}
+
+.recomment-input-header {
+    padding-left: 30px;
+}
+
+.recomment-box {
+    margin-left: 20px;
+    padding-left: 10px;
+}
+
+.recomment-mid-box {
+    display: flex;
+    justify-content: space-between; /* 자식 요소들을 양쪽으로 배치 */
+    align-items: center; /* 세로 정렬 */
+    transition: background-color 0.3s ease; /* 서서히 변하는 시간과 효과 설정 */
+}
+
+.recomment-mid-box:hover {
+    background-color: #f0f0f0;
+}
+
+.recomment-content {
+    padding-left: 15px;
+}
+
+.recomment-endbox {
+    padding-top: 7px;
+}
+
+.comment-input-header {
+    display: flex;
+    width: 350px;
+}
+
+.comment-input {
+    flex: 1; /* 남은 공간을 모두 차지 */
+    border: 10px solid #ccc; /* 테두리 */
+    border-radius: 30px; /* 모서리 둥글게 */
+    margin-right: 10px; /* 버튼과의 간격 */
+    padding: 8px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.comment-submit-button {
+    height: 30px;
+    width: 60px;
+    margin-top: 10px;
+    background-color: #8f8ec9;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.comment-submit-button:disabled {
+    background-color: #ccc; /* 비활성화 상태의 색상 */
+    color: #666; /* 비활성화 상태의 텍스트 색상 */
+}
+
+.recomment-submit-button {
+    height: 25px;
+    width: 40px;
+    margin-top: 10px;
+    background-color: #8f8ec9;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.recomment-submit-button:disabled {
+    background-color: #ccc; /* 비활성화 상태의 색상 */
+    color: #666; /* 비활성화 상태의 텍스트 색상 */
+}
+
+.apply-button {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #3d3da3;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    width: 60%;
+    height: 40px;
+    align-items: center;
+    font-weight: bold;
+    font-size: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* 그림자 효과 */
+}
+
+.apply-button.recruit-completed {
+    background-color: gray; /* 모집 완료일 때의 배경색 */
+    cursor: not-allowed; /* 마우스 커서를 비활성화 상태로 변경 */
+}
+
+.apply-button.recruit-completed:hover {
+    background-color: gray;
+}
+
+.apply-button-box {
+    display: flex; /* Flexbox 사용 */
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    height: 100%; /* 부모 요소의 높이에 맞추기 (필요에 따라 조정) */
+}
+
+.submit-button:hover,
+.apply-button:hover {
+    background-color: #3d3da3;
+}
+
+.comment-input-header {
+    position: absolute; /* 고정 위치 설정 */
+    bottom: 0; /* 화면 하단에 배치 */
+    z-index: 1000; /* 다른 요소들 위에 표시 */
+    bottom: 80px; /* 화면 하단에서의 간격 조정 */
+    left: 50%; /* 화면 중앙을 기준으로 설정 */
+    transform: translateX(-50%); /* 중앙 정렬을 위해 왼쪽으로 이동 */
+}
+
+.edit-button,
+.delete-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+    font-weight: bold;
+    color: #6c6c6c;
+    cursor: pointer; /* 커서 변경 */
+}
+
+.report-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+    font-weight: bold;
+    color: #6c6c6c;
+    cursor: pointer; /* 커서 변경 */
+}
