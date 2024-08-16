@@ -87,7 +87,7 @@ const ChatWindow = () => {
 
         // /ws 경로로 새로운 SockJS 소켓을 생성합니다.
         // SockJS는 웹소켓을 지원하지 않는 브라우저에서도 동작할 수 있도록 도와주는 라이브러리입니다.
-        var socket = new SockJS('http://localhost:8080/ws');
+        var socket = new SockJS(`${process.env.REACT_APP_API_URL}/ws`);
 
         // 생성된 SockJS 소켓을 사용하여 STOMP 클라이언트를 생성합니다.
         // STOMP는 메시징 프로토콜로, 웹소켓을 통해 메시지를 주고받을 수 있게 합니다.

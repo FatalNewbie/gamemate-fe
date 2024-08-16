@@ -18,7 +18,7 @@ import {
     CircularProgress,
     Snackbar,
     Alert,
-    Chip
+    Chip,
 } from '@mui/material';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 import profilePlaceholder from '../../assets/profile_placeholder.png';
@@ -41,11 +41,12 @@ const Home = () => {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [cookies] = useCookies(['token']);
 
-    
+    console.log('Backend API URL:', process.env.REACT_APP_API_URL);
+    console.log('Python API URL:', process.env.REACT_APP_PYTHON_API_URL);
 
     const convertToFeatureArray = (data, referenceList) => {
         const featureArray = new Array(referenceList.length).fill(0);
-        data.forEach(id => {
+        data.forEach((id) => {
             featureArray[id - 1] = 1;
         });
         return featureArray;
@@ -72,7 +73,7 @@ const Home = () => {
             );
         } catch (error) {
             console.error('Error fetching game news:', error);
-            setApiError(true); 
+            setApiError(true);
         } finally {
             setLoadingNews(false);
         }
@@ -97,7 +98,7 @@ const Home = () => {
             );
         } catch (error) {
             console.error('Error fetching popular games:', error);
-            setApiError(true); 
+            setApiError(true);
         } finally {
             setLoadingGames(false);
         }
@@ -108,8 +109,15 @@ const Home = () => {
             try {
                 const token = cookies.token;
                 const genresList = ['FPS', 'RPG', '전략', '액션', '시뮬레이션'];
-                const timesList = ['AM 9:00 ~ AM 11:00', 'AM 11:00 ~ PM 2:00', 'PM 2:00 ~ PM 5:00', 'PM 5:00 ~ PM 8:00',
-                      'PM 8:00 ~ PM 11:00', 'PM 11:00 ~ AM 3:00', 'AM 3:00 ~ AM 9:00'];
+                const timesList = [
+                    'AM 9:00 ~ AM 11:00',
+                    'AM 11:00 ~ PM 2:00',
+                    'PM 2:00 ~ PM 5:00',
+                    'PM 5:00 ~ PM 8:00',
+                    'PM 8:00 ~ PM 11:00',
+                    'PM 11:00 ~ AM 3:00',
+                    'AM 3:00 ~ AM 9:00',
+                ];
 
                 if (!token) {
                     throw new Error('No token found');
@@ -121,25 +129,19 @@ const Home = () => {
                     },
                 });
 
-
                 const user = response.data.data;
                 const userFeatures = {
                     preferred_genres: convertToFeatureArray(user.preferredGenres, genresList),
                     play_times: convertToFeatureArray(user.playTimes, timesList),
                 };
 
-                const response2 = await api2.post(
-                    '/recommendation',
-                    userFeatures,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
+                const response2 = await api2.post('/recommendation', userFeatures, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
 
                 setUsers(response2.data.similar_users);
-                
             } catch (error) {
                 console.error('Error fetching user info or recommendations:', error);
                 setUsers([]);
@@ -156,27 +158,31 @@ const Home = () => {
 
     const handleFriendRequest = async () => {
         try {
-          const token = cookies.token;
-          const response = await axios.post('/friend/', {
-            receiverId: selectedUser.id,
-          }, {
-            headers: {
-              Authorization: `${token}`,
-            },
-          });
-    
-          const updatedUsers = users.map(user =>
-            user.id === selectedUser.id ? { ...user, requested: true } : user
-          );
-    
-          setUsers(updatedUsers);
-          setOpen(false);
-          setSnackbarMessage(response.data.data.message);
-          setIsSnackbarOpen(true);
+            const token = cookies.token;
+            const response = await axios.post(
+                '/friend/',
+                {
+                    receiverId: selectedUser.id,
+                },
+                {
+                    headers: {
+                        Authorization: `${token}`,
+                    },
+                }
+            );
+
+            const updatedUsers = users.map((user) =>
+                user.id === selectedUser.id ? { ...user, requested: true } : user
+            );
+
+            setUsers(updatedUsers);
+            setOpen(false);
+            setSnackbarMessage(response.data.data.message);
+            setIsSnackbarOpen(true);
         } catch (error) {
-          console.error('Error sending friend request:', error);
+            console.error('Error sending friend request:', error);
         }
-      };
+    };
 
     const handlePrev = () => {
         setCurrentIndex((prevIndex) => (prevIndex === 0 ? users.length - 1 : prevIndex - 1));
@@ -300,7 +306,8 @@ const Home = () => {
                                             src={user.user_profile || profilePlaceholder} // S3 URL
                                             alt="User Profile"
                                             style={{
-                                                width: '60px', height: '60px',
+                                                width: '60px',
+                                                height: '60px',
                                                 transform: index === 1 ? 'scale(1.7)' : 'scale(0.9)',
                                                 opacity: index === 1 ? 1 : 0.6,
                                                 transition: 'transform 0.3s, opacity 0.3s',
@@ -310,7 +317,7 @@ const Home = () => {
                                             }}
                                             onError={(e) => {
                                                 e.target.onerror = null; // prevents looping
-                                                e.target.src = {profilePlaceholder}; // 대체 이미지 경로
+                                                e.target.src = { profilePlaceholder }; // 대체 이미지 경로
                                             }}
                                         />
                                         <Typography
@@ -546,7 +553,8 @@ const Home = () => {
                 aria-labelledby="user-info-modal"
                 aria-describedby="user-info-modal-description"
             >
-                <Box className="modal-box"
+                <Box
+                    className="modal-box"
                     sx={{
                         display: 'flex',
                         flexDirection: 'column',
@@ -569,11 +577,12 @@ const Home = () => {
                                 alt="Profile"
                                 className="modal-profile-pic"
                                 style={{
-                                    width: '80px', height: '80px',
+                                    width: '80px',
+                                    height: '80px',
                                 }}
                                 onError={(e) => {
                                     e.target.onerror = null; // prevents looping
-                                    e.target.src = {profilePlaceholder}; // 대체 이미지 경로
+                                    e.target.src = { profilePlaceholder }; // 대체 이미지 경로
                                 }}
                             />
 
@@ -688,18 +697,22 @@ const Home = () => {
                 }}
                 sx={{
                     top: '50%',
-                    width: '80%', 
+                    width: '80%',
                     maxWidth: '400px', // 최대 너비 설정 (모바일 화면 대응)
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                 }}
             >
-                <Alert onClose={handleSnackbarClose} severity="success" sx={{ 
-                    width: '100%',
-                    backgroundColor: 'rgba(10, 8, 138, 0.8)', // 배경 색상
-                    color: '#ffffff', // 텍스트 색상
-                    fontSize: '11px',
-                    }}>
+                <Alert
+                    onClose={handleSnackbarClose}
+                    severity="success"
+                    sx={{
+                        width: '100%',
+                        backgroundColor: 'rgba(10, 8, 138, 0.8)', // 배경 색상
+                        color: '#ffffff', // 텍스트 색상
+                        fontSize: '11px',
+                    }}
+                >
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
