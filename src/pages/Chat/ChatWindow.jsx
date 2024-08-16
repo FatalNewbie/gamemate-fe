@@ -584,7 +584,7 @@ const ChatWindow = () => {
                 >
                     <Box
                         display="flex"
-//                         justifyContent="center" // 수평 중앙 정렬
+                        justifyContent="center" // 수평 중앙 정렬
                         alignItems="center" // 수직 중앙 정렬
                         sx={{ height: '100%' }} // Box의 높이를 100%로 설정
                     >
