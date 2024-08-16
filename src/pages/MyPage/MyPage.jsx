@@ -1,5 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Avatar, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import {
+    Box,
+    Typography,
+    Avatar,
+    Button,
+    Chip,
+    IconButton,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    TextField,
+} from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -8,7 +20,7 @@ import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-axios.defaults.baseURL = 'http://localhost:8080'; // 백엔드 서버 주소
+axios.defaults.baseURL = `${process.env.REACT_APP_API_URL}`; // 백엔드 서버 주소
 
 const MyPage = () => {
     const [cookies] = useCookies(['token']);
@@ -27,8 +39,15 @@ const MyPage = () => {
     const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 사용
 
     const genresList = ['FPS', 'RPG', '전략', '액션', '시뮬레이션'];
-    const timesList = ['AM 9:00 ~ AM 11:00', 'AM 11:00 ~ PM 2:00', 'PM 2:00 ~ PM 5:00', 'PM 5:00 ~ PM 8:00',
-        'PM 8:00 ~ PM 11:00', 'PM 11:00 ~ AM 3:00', 'AM 3:00 ~ AM 9:00'];
+    const timesList = [
+        'AM 9:00 ~ AM 11:00',
+        'AM 11:00 ~ PM 2:00',
+        'PM 2:00 ~ PM 5:00',
+        'PM 5:00 ~ PM 8:00',
+        'PM 8:00 ~ PM 11:00',
+        'PM 11:00 ~ AM 3:00',
+        'AM 3:00 ~ AM 9:00',
+    ];
 
     useEffect(() => {
         // 쿠키에 토큰이 없으면 로그인 페이지로 이동
@@ -48,7 +67,7 @@ const MyPage = () => {
                     setUser(response.data); // 사용자 정보를 상태에 저장
                     setEditedUser({
                         nickname: response.data.nickname,
-                        password: '' // 비밀번호 초기화
+                        password: '', // 비밀번호 초기화
                     });
                 }
             } catch (error) {
@@ -79,7 +98,6 @@ const MyPage = () => {
                         Authorization: cookies.token,
                     },
                 });
-
             } catch (error) {
                 console.error('친구 요청 목록을 가져오는 데 실패했습니다:', error);
             }
@@ -89,8 +107,15 @@ const MyPage = () => {
             try {
                 const token = cookies.token;
                 const genresList = ['FPS', 'RPG', '전략', '액션', '시뮬레이션'];
-                const timesList = ['AM 9:00 ~ AM 11:00', 'AM 11:00 ~ PM 2:00', 'PM 2:00 ~ PM 5:00', 'PM 5:00 ~ PM 8:00',
-                      'PM 8:00 ~ PM 11:00', 'PM 11:00 ~ AM 3:00', 'AM 3:00 ~ AM 9:00'];
+                const timesList = [
+                    'AM 9:00 ~ AM 11:00',
+                    'AM 11:00 ~ PM 2:00',
+                    'PM 2:00 ~ PM 5:00',
+                    'PM 5:00 ~ PM 8:00',
+                    'PM 8:00 ~ PM 11:00',
+                    'PM 11:00 ~ AM 3:00',
+                    'AM 3:00 ~ AM 9:00',
+                ];
 
                 if (!token) {
                     throw new Error('No token found');
@@ -104,10 +129,10 @@ const MyPage = () => {
 
                 if (response.status === 200) {
                     const userFeatures = response.data.data;
-                    const preferredGenres = userFeatures.preferredGenres.map(id => genresList[id - 1]);
-                    const playTimes = userFeatures.playTimes.map(id => timesList[id - 1]);
+                    const preferredGenres = userFeatures.preferredGenres.map((id) => genresList[id - 1]);
+                    const playTimes = userFeatures.playTimes.map((id) => timesList[id - 1]);
 
-                    setUser(prevUser => ({
+                    setUser((prevUser) => ({
                         ...prevUser,
                         preferredGenres,
                         playTimes,
@@ -124,10 +149,11 @@ const MyPage = () => {
                     headers: {
                         Authorization: cookies.token,
                     },
-                    params: { status: 'active', // 또는 필요한 상태 값
-                              page: 0, // 첫 페이지
-                              size: 10 // 페이지 크기
-                    }
+                    params: {
+                        status: 'active', // 또는 필요한 상태 값
+                        page: 0, // 첫 페이지
+                        size: 10, // 페이지 크기
+                    },
                 });
                 if (response.status === 200) {
                     setPosts(response.data.content); // 데이터 저장 (content는 CustomPage의 데이터)
@@ -144,7 +170,7 @@ const MyPage = () => {
                     headers: {
                         Authorization: cookies.token,
                     },
-                    params: { page: 0, size: 10 } // 페이지네이션 설정
+                    params: { page: 0, size: 10 }, // 페이지네이션 설정
                 });
                 if (response.status === 200) {
                     setGames(response.data.content); // 게임 목록 저장
@@ -181,7 +207,7 @@ const MyPage = () => {
     const handleGenreChange = (index) => {
         const newGenres = [...preferredGenres];
         if (newGenres.includes(index + 1)) {
-            setPreferredGenres(newGenres.filter(g => g !== index + 1));
+            setPreferredGenres(newGenres.filter((g) => g !== index + 1));
         } else {
             newGenres.push(index + 1);
             setPreferredGenres(newGenres);
@@ -191,7 +217,7 @@ const MyPage = () => {
     const handleTimeChange = (index) => {
         const newTimes = [...playTimes];
         if (newTimes.includes(index + 1)) {
-            setPlayTimes(newTimes.filter(t => t !== index + 1));
+            setPlayTimes(newTimes.filter((t) => t !== index + 1));
         } else {
             newTimes.push(index + 1);
             setPlayTimes(newTimes);
@@ -210,16 +236,20 @@ const MyPage = () => {
         }
 
         try {
-            const response = await axios.put('/update', {
-                ...editedUser,
-                password: editedUser.password, // 비밀번호 포함
-                preferredGenres,
-                playTimes
-            }, {
-                headers: {
-                    Authorization: cookies.token,
+            const response = await axios.put(
+                '/update',
+                {
+                    ...editedUser,
+                    password: editedUser.password, // 비밀번호 포함
+                    preferredGenres,
+                    playTimes,
                 },
-            });
+                {
+                    headers: {
+                        Authorization: cookies.token,
+                    },
+                }
+            );
 
             if (response.status === 200) {
                 setUser(response.data); // 상태 업데이트
@@ -267,19 +297,18 @@ const MyPage = () => {
                             letterSpacing: '-0.10px',
                         }}
                     >
-                    {user.nickname}
+                        {user.nickname}
                     </Typography>
                     {/* 선호 장르 및 플레이 시간대 태그 표시 */}
                     <Box sx={{ marginTop: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                        <Box sx={{display: 'flex', gap: 1, flexWrap: 'wrap'}}>
+                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                             {user.preferredGenres?.map((genre, index) => (
-                                <Chip key={index}
-                                label={genre}
-                                size="small"
-                                sx = {{fontSize: '8px',
-                                    backgroundColor: 'rgba(10, 8, 138, 0.8)',
-                                    color: 'white'
-                                }}/>
+                                <Chip
+                                    key={index}
+                                    label={genre}
+                                    size="small"
+                                    sx={{ fontSize: '8px', backgroundColor: 'rgba(10, 8, 138, 0.8)', color: 'white' }}
+                                />
                             ))}
                         </Box>
                     </Box>
@@ -308,11 +337,15 @@ const MyPage = () => {
                 <Box sx={{ display: 'flex', justifyContent: 'space-around', marginTop: 2 }}>
                     <IconButton onClick={() => navigate('/received-friendrequests')}>
                         <PersonAddIcon />
-                        <Typography variant="body2" sx={{ marginLeft: 1 }}>받은 친구 요청</Typography>
+                        <Typography variant="body2" sx={{ marginLeft: 1 }}>
+                            받은 친구 요청
+                        </Typography>
                     </IconButton>
                     <IconButton onClick={() => navigate('/sent-friendrequests')}>
                         <PersonAddIcon />
-                        <Typography variant="body2" sx={{ marginLeft: 1 }}>보낸 친구 요청</Typography>
+                        <Typography variant="body2" sx={{ marginLeft: 1 }}>
+                            보낸 친구 요청
+                        </Typography>
                     </IconButton>
                 </Box>
             </Box>
@@ -333,41 +366,47 @@ const MyPage = () => {
                 }}
             >
                 <Typography
-                        variant="h6"
-                        sx={{
-                            fontFamily: 'Roboto, sans-serif',
-                            fontWeight: 700,
-                            fontSize: '14pt',
-                            letterSpacing: '-0.5px',
-                            marginBottom: '10px',
-                        }}
-                    >
+                    variant="h6"
+                    sx={{
+                        fontFamily: 'Roboto, sans-serif',
+                        fontWeight: 700,
+                        fontSize: '14pt',
+                        letterSpacing: '-0.5px',
+                        marginBottom: '10px',
+                    }}
+                >
                     친구 목록
                 </Typography>
-                <Box sx={{ display: 'column', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 2 }}>
-                    {friends.length > 0 ? (  // 친구가 있을 경우
+                <Box
+                    sx={{ display: 'column', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 2 }}
+                >
+                    {friends.length > 0 ? ( // 친구가 있을 경우
                         friends.map((friend, index) => (
-                        <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
-                            <Avatar
-                                src={friend.userProfile || profilePlaceholder}  // 프로필 사진이 없을 경우 기본 이미지 사용
-                                alt={friend.nickname}
-                                sx={{ width: 50, height: 50, marginRight: 2 }}
-                            />
-                            <Typography variant="body1"
-                                sx={{
-                                    fontFamily: 'Roboto, sans-serif',
-                                    fontWeight: 600,
-                                    fontSize: '12pt',
-                                    letterSpacing: '-0.5px',
-                                }}
-                            >{friend.nickname}</Typography>
-                        </Box>
+                            <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
+                                <Avatar
+                                    src={friend.userProfile || profilePlaceholder} // 프로필 사진이 없을 경우 기본 이미지 사용
+                                    alt={friend.nickname}
+                                    sx={{ width: 50, height: 50, marginRight: 2 }}
+                                />
+                                <Typography
+                                    variant="body1"
+                                    sx={{
+                                        fontFamily: 'Roboto, sans-serif',
+                                        fontWeight: 600,
+                                        fontSize: '12pt',
+                                        letterSpacing: '-0.5px',
+                                    }}
+                                >
+                                    {friend.nickname}
+                                </Typography>
+                            </Box>
                         ))
-                    ) : (  // 친구가 없을 경우
+                    ) : (
+                        // 친구가 없을 경우
                         <Typography variant="body1">친구가 없습니다.</Typography>
                     )}
 
-                    {friends.length > 0 && (  // 친구가 있을 때만 버튼 표시
+                    {friends.length > 0 && ( // 친구가 있을 때만 버튼 표시
                         <Button onClick={() => navigate('/friends')} sx={{ color: 'rgba(10, 8, 138)' }}>
                             더보기
                         </Button>
@@ -376,55 +415,56 @@ const MyPage = () => {
             </Box>
 
             {/* 선호 게임 목록 */}
-{/*             <Box */}
-{/*                 sx={{ */}
-{/*                     bgcolor: '#fff', */}
-{/*                     paddingTop: 2, */}
-{/*                     paddingRight: 2, */}
-{/*                     paddingBottom: 0, */}
-{/*                     paddingLeft: 2, */}
-{/*                     borderRadius: 1, */}
-{/*                     minHeight: '100px', */}
-{/*                     marginBottom: 2, */}
-{/*                     boxShadow: 3, */}
-{/*                 }} */}
-{/*             > */}
-{/*                 <Typography */}
-{/*                     variant="h6" */}
-{/*                     sx={{ */}
-{/*                         fontFamily: 'Roboto, sans-serif', */}
-{/*                         fontWeight: 700, */}
-{/*                         fontSize: '14pt', */}
-{/*                         letterSpacing: '-0.5px', */}
-{/*                         marginBottom: '10px', */}
-{/*                     }} */}
-{/*                     gutterBottom */}
-{/*                 > */}
-{/*                 선호 게임 목록 */}
-{/*                 </Typography> */}
+            {/*             <Box */}
+            {/*                 sx={{ */}
+            {/*                     bgcolor: '#fff', */}
+            {/*                     paddingTop: 2, */}
+            {/*                     paddingRight: 2, */}
+            {/*                     paddingBottom: 0, */}
+            {/*                     paddingLeft: 2, */}
+            {/*                     borderRadius: 1, */}
+            {/*                     minHeight: '100px', */}
+            {/*                     marginBottom: 2, */}
+            {/*                     boxShadow: 3, */}
+            {/*                 }} */}
+            {/*             > */}
+            {/*                 <Typography */}
+            {/*                     variant="h6" */}
+            {/*                     sx={{ */}
+            {/*                         fontFamily: 'Roboto, sans-serif', */}
+            {/*                         fontWeight: 700, */}
+            {/*                         fontSize: '14pt', */}
+            {/*                         letterSpacing: '-0.5px', */}
+            {/*                         marginBottom: '10px', */}
+            {/*                     }} */}
+            {/*                     gutterBottom */}
+            {/*                 > */}
+            {/*                 선호 게임 목록 */}
+            {/*                 </Typography> */}
 
-{/*                  */}{/* 선호 게임 목록 공간 */}
-{/*                 {games.length > 0 ? ( */}
-{/*                     games.map((game, index) => ( */}
-{/*                         <Box */}
-{/*                             key={index} */}
-{/*                             sx={{ */}
-{/*                                 display: 'flex', */}
-{/*                                 alignItems: 'center', */}
-{/*                                 marginBottom: 2, */}
-{/*                                 boxShadow: 1, */}
-{/*                                 padding: 1, */}
-{/*                                 borderRadius: 1, */}
-{/*                             }} */}
-{/*                         > */}
-{/*                             <Avatar src={game.thumbnailUrl} alt={game.title} sx={{ marginRight: 2 }} /> */}
-{/*                             <Typography variant="body1">{game.title}</Typography> */}
-{/*                         </Box> */}
-{/*                     )) */}
-{/*                 ) : ( */}
-{/*                     <Typography>선호 게임이 없습니다.</Typography> */}
-{/*                 )} */}
-{/*             </Box> */}
+            {/*                  */}
+            {/* 선호 게임 목록 공간 */}
+            {/*                 {games.length > 0 ? ( */}
+            {/*                     games.map((game, index) => ( */}
+            {/*                         <Box */}
+            {/*                             key={index} */}
+            {/*                             sx={{ */}
+            {/*                                 display: 'flex', */}
+            {/*                                 alignItems: 'center', */}
+            {/*                                 marginBottom: 2, */}
+            {/*                                 boxShadow: 1, */}
+            {/*                                 padding: 1, */}
+            {/*                                 borderRadius: 1, */}
+            {/*                             }} */}
+            {/*                         > */}
+            {/*                             <Avatar src={game.thumbnailUrl} alt={game.title} sx={{ marginRight: 2 }} /> */}
+            {/*                             <Typography variant="body1">{game.title}</Typography> */}
+            {/*                         </Box> */}
+            {/*                     )) */}
+            {/*                 ) : ( */}
+            {/*                     <Typography>선호 게임이 없습니다.</Typography> */}
+            {/*                 )} */}
+            {/*             </Box> */}
             {/* 내가 쓴 글 목록 */}
             <Box
                 sx={{
@@ -450,16 +490,18 @@ const MyPage = () => {
                     }}
                     gutterBottom
                 >
-                내가 쓴 글 목록
+                    내가 쓴 글 목록
                 </Typography>
 
                 {/* 내가 쓴 글 목록 공간 */}
                 {posts.length > 0 ? (
                     <Box>
-                        {posts.map(post => (
+                        {posts.map((post) => (
                             <Box key={post.id} sx={{ marginBottom: 1 }}>
                                 <Typography variant="body1">{post.title}</Typography>
-                                <Typography variant="body2" color="textSecondary">{post.content}</Typography>
+                                <Typography variant="body2" color="textSecondary">
+                                    {post.content}
+                                </Typography>
                             </Box>
                         ))}
                     </Box>
@@ -512,7 +554,10 @@ const MyPage = () => {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                     <Box sx={{ marginTop: 3 }}>
-                        <Typography variant="h6" sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 600, fontSize: '13pt' }}>
+                        <Typography
+                            variant="h6"
+                            sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 600, fontSize: '13pt' }}
+                        >
                             👾 선호 장르
                         </Typography>
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
@@ -538,7 +583,10 @@ const MyPage = () => {
                         </Box>
                     </Box>
                     <Box sx={{ marginTop: 3 }}>
-                        <Typography variant="h6" sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 600, fontSize: '13pt' }}>
+                        <Typography
+                            variant="h6"
+                            sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 600, fontSize: '13pt' }}
+                        >
                             🎮 플레이 시간대
                         </Typography>
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
