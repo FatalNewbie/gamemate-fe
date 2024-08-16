@@ -424,7 +424,7 @@ const GameMatePost = () => {
                                 style={{ width: '20px', height: '20px', cursor: 'pointer' }}
                                 onError={(e) => {
                                     e.target.onerror = null; // prevents looping
-                                    e.target.src = 'profilePlaceholder'; // 대체 이미지 경로
+                                    e.target.src = 'path/to/default/image.png'; // 대체 이미지 경로
                                 }}
                             />
                             <span className="writer-nickname">{post.nickname}</span>
@@ -531,7 +531,7 @@ const GameMatePost = () => {
                                 <div>
                                     <div className="comment-header">
                                         <Avatar
-                                            src={comment.userProfile} // S3 URL
+                                            src={comment.userProfile || profilePlaceholder} // S3 URL
                                             alt="User Profile"
                                             style={{ width: '20px', height: '20px', cursor: 'pointer' }}
                                             onError={(e) => {
@@ -624,7 +624,7 @@ const GameMatePost = () => {
                                                     )}
                                                 <div className="recomment-header">
                                                     <Avatar
-                                                        src={recomment.userProfile} // S3 URL
+                                                        src={recomment.userProfile || profilePlaceholder} // S3 URL
                                                         alt="User Profile"
                                                         style={{ width: '20px', height: '20px', cursor: 'pointer' }}
                                                         onError={(e) => {
