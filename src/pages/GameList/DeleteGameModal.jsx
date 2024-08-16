@@ -9,7 +9,7 @@ const DeleteGameModal = ({ open, onClose, gameId, onGameDeleted }) => {
 
     const handleDeleteGame = () => {
         axios
-            .delete(`http://localhost:8080/games/my-games/${gameId}`, {
+            .delete(`${process.env.REACT_APP_API_URL}/games/my-games/${gameId}`, {
                 headers: {
                     Authorization: `${cookies.token}`,
                 },

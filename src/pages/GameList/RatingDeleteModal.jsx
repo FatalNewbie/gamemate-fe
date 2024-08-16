@@ -9,7 +9,7 @@ const RatingDeleteModal = ({ open, onClose, gameId, onDelete }) => {
 
     const handleConfirm = () => {
         axios
-            .delete(`http://localhost:8080/games/${gameId}/ratings`, {
+            .delete(`${process.env.REACT_APP_API_URL}/games/${gameId}/ratings`, {
                 headers: {
                     Authorization: `${cookies.token}`,
                 },

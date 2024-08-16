@@ -57,7 +57,7 @@ const RatingUpdateModal = ({ open, onClose, game, currentRating, onUpdate }) => 
         };
 
         axios
-            .put(`http://localhost:8080/games/${game.id}/ratings`, ratingData, {
+            .put(`${process.env.REACT_APP_API_URL}/games/${game.id}/ratings`, ratingData, {
                 headers: {
                     Authorization: `${cookies.token}`, // Use token from cookies
                     'Content-Type': 'application/json',

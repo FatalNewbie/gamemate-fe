@@ -10,7 +10,7 @@ const AddGameModal = ({ open, onClose, gameId, onGameAdded }) => {
     const handleAddGame = () => {
         axios
             .post(
-                `http://localhost:8080/games/my-games/${gameId}`,
+                `${process.env.REACT_APP_API_URL}/games/my-games/${gameId}`,
                 {},
                 {
                     headers: {

@@ -25,7 +25,7 @@ const GameDetails = () => {
     useEffect(() => {
         const fetchGameDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/games/${id}`, {
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/games/${id}`, {
                     headers: {
                         Authorization: `${cookies.token}`,
                     },
@@ -47,7 +47,7 @@ const GameDetails = () => {
     useEffect(() => {
         const fetchComments = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/games/${id}/comments`, {
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/games/${id}/comments`, {
                     params: { page: commentPage - 1, size: 10, sortBy: 'createdDate', sortDir: 'desc' },
                 });
                 const fetchedComments = response.data.data.content || [];

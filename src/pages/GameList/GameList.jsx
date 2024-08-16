@@ -32,7 +32,7 @@ const GameList = () => {
     const fetchGames = async (page) => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:8080/games/search', {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/games/search`, {
                 params: { page, size, filter },
             });
 

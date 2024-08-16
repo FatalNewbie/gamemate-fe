@@ -78,7 +78,7 @@ const GameCommentsBox = ({
     const handleDeleteConfirm = () => {
         const commentId = commentToDelete.id;
         axios
-            .delete(`http://localhost:8080/games/${game.id}/comments/${commentId}`, {
+            .delete(`${process.env.REACT_APP_API_URL}/games/${game.id}/comments/${commentId}`, {
                 headers: {
                     Authorization: `${cookies.token}`,
                 },

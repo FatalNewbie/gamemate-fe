@@ -43,7 +43,7 @@ const CommentModal = ({ open, onClose, game, onConfirm }) => {
         };
 
         axios
-            .post(`http://localhost:8080/games/${game.id}/comments`, commentData, {
+            .post(`${process.env.REACT_APP_API_URL}/games/${game.id}/comments`, commentData, {
                 headers: {
                     Authorization: `${cookies.token}`,
                     'Content-Type': 'application/json',

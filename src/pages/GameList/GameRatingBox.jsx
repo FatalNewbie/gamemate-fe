@@ -22,7 +22,7 @@ const GameRatingBox = ({ averageRating, totalRaters, userRating, setUserRating, 
     useEffect(() => {
         const fetchUserRating = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/games/${gameId}/ratings`, {
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/games/${gameId}/ratings`, {
                     headers: {
                         Authorization: cookies.token,
                     },

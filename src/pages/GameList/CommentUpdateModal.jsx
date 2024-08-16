@@ -49,7 +49,7 @@ const CommentUpdateModal = ({ open, onClose, game, commentId, existingComment, o
         };
 
         axios
-            .put(`http://localhost:8080/games/${game.id}/comments/${commentId}`, commentData, {
+            .put(`${process.env.REACT_APP_API_URL}/games/${game.id}/comments/${commentId}`, commentData, {
                 headers: {
                     Authorization: `${cookies.token}`,
                     'Content-Type': 'application/json',
