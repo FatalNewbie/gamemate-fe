@@ -2,29 +2,51 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Box, TextField, IconButton, Chip, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const SearchBar = ({ onClose }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [recentSearches, setRecentSearches] = useState([]);
-    const searchInputRef = useRef(null); // 검색창에 포커스를 맞추기 위한 useRef
+    const searchInputRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const storedSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
         setRecentSearches(storedSearches);
 
-        // 컴포넌트가 마운트되면 검색창에 자동으로 포커스를 맞춥니다.
         if (searchInputRef.current) {
             searchInputRef.current.focus();
         }
     }, []);
 
-    const handleSearch = () => {
-        if (searchQuery.trim() !== '') {
-            const updatedSearches = [searchQuery, ...recentSearches.filter((item) => item !== searchQuery)].slice(0, 5);
-            setRecentSearches(updatedSearches);
-            localStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
-            setSearchQuery('');
+    const executeSearch = async (query) => {
+        if (query.trim() !== '') {
+            try {
+                const response = await axios.get('/games', {
+                    params: { title: query },
+                });
+
+                const searchResults = response.data.data.content;
+                navigate('/search-results', { state: { searchResults } });
+
+                const updatedSearches = [query, ...recentSearches.filter((item) => item !== query)].slice(0, 5);
+                setRecentSearches(updatedSearches);
+                localStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
+                setSearchQuery('');
+                onClose(); // 모달을 닫기
+            } catch (error) {
+                console.error('검색 중 오류 발생:', error);
+            }
         }
+    };
+
+    const handleSearch = () => {
+        executeSearch(searchQuery);
+    };
+
+    const handleChipClick = (query) => {
+        executeSearch(query);
     };
 
     const handleKeyDown = (e) => {
@@ -62,7 +84,7 @@ const SearchBar = ({ onClose }) => {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        inputRef={searchInputRef} // 검색창에 포커스를 맞추기 위한 ref 연결
+                        inputRef={searchInputRef}
                         InputProps={{
                             endAdornment: (
                                 <IconButton size="small" onClick={handleSearch}>
@@ -74,13 +96,13 @@ const SearchBar = ({ onClose }) => {
                                 height: '36px',
                                 fontSize: '0.875rem',
                                 '& .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: 'rgba(0, 0, 0, 0.23)', // 기본 테두리 색상
+                                    borderColor: 'rgba(0, 0, 0, 0.23)',
                                 },
                                 '&:hover .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: '#0A088A', // 마우스 오버 시 테두리 색상
+                                    borderColor: '#0A088A',
                                 },
                                 '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: '#0A088A', // 포커스 시 테두리 색상
+                                    borderColor: '#0A088A',
                                 },
                             },
                         }}
@@ -94,9 +116,9 @@ const SearchBar = ({ onClose }) => {
                         🔥 추천검색
                     </Typography>
                     <Box display="flex" flexWrap="wrap" gap={1} mt={1} mb={2}>
-                        <Chip label="리그오브레전드" />
-                        <Chip label="배틀그라운드" />
-                        <Chip label="데이브 더 다이버" />
+                        <Chip label="리그오브레전드" onClick={() => handleChipClick('리그오브레전드')} />
+                        <Chip label="배틀그라운드" onClick={() => handleChipClick('배틀그라운드')} />
+                        <Chip label="데이브 더 다이버" onClick={() => handleChipClick('데이브 더 다이버')} />
                     </Box>
                     <Typography variant="subtitle2" gutterBottom sx={{ marginTop: 3 }}>
                         🔍 최근검색
@@ -112,7 +134,12 @@ const SearchBar = ({ onClose }) => {
                             </Typography>
                         ) : (
                             recentSearches.map((search, index) => (
-                                <Chip key={index} label={search} onDelete={handleDelete(search)} />
+                                <Chip
+                                    key={index}
+                                    label={search}
+                                    onClick={() => handleChipClick(search)}
+                                    onDelete={handleDelete(search)}
+                                />
                             ))
                         )}
                     </Box>

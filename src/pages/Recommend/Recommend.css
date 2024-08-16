@@ -1,0 +1,34 @@
+.recommend-container {
+    padding: 16px;
+  }
+  
+  .user-card {
+    padding: 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    background-color: #fff;
+  }
+  
+  .profile-pic {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-right: 16px;
+    object-fit: contain;
+  }
+
+  
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  
+  
+  
+  .icon-button {
+    padding: 4px;
+  }
+  
