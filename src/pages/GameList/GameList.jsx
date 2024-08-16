@@ -161,7 +161,7 @@ const GameList = () => {
                     flexWrap: 'wrap',
                     gap: 1,
                     justifyContent: 'center',
-                    marginBottom: 2,
+                    marginBottom: 3,
                 }}
             >
                 <Button
@@ -169,12 +169,12 @@ const GameList = () => {
                     sx={{
                         backgroundColor: selectedPlatform === 'All' ? '#3F3DBD' : '#B4B3F6',
                         color: '#fff',
-                        fontSize: '0.65rem',
+                        fontSize: '0.65rem', // 폰트 크기 줄이기
                         fontWeight: 'bold',
-                        padding: '4px 6px',
+                        padding: '2px 4px', // 패딩 줄이기
                         borderRadius: '18px',
-                        minWidth: '60px',
-                        height: '24px',
+                        minWidth: '50px', // 최소 너비 줄이기
+                        height: '22px', // 높이 줄이기
                     }}
                 >
                     ALL
@@ -184,12 +184,12 @@ const GameList = () => {
                     sx={{
                         backgroundColor: selectedPlatform === '아케이드 게임' ? '#3F3DBD' : '#B4B3F6',
                         color: '#fff',
-                        fontSize: '0.65rem',
+                        fontSize: '0.65rem', // 폰트 크기 줄이기
                         fontWeight: 'bold',
-                        padding: '4px 12px',
+                        padding: '2px 4px', // 패딩 줄이기
                         borderRadius: '18px',
-                        minWidth: '60px',
-                        height: '24px',
+                        minWidth: '60px', // 최소 너비 줄이기
+                        height: '22px', // 높이 줄이기
                     }}
                 >
                     아케이드
@@ -199,12 +199,12 @@ const GameList = () => {
                     sx={{
                         backgroundColor: selectedPlatform === 'PC/온라인 게임' ? '#3F3DBD' : '#B4B3F6',
                         color: '#fff',
-                        fontSize: '0.65rem',
+                        fontSize: '0.65rem', // 폰트 크기 줄이기
                         fontWeight: 'bold',
-                        padding: '4px 12px',
+                        padding: '2px 4px', // 패딩 줄이기
                         borderRadius: '18px',
-                        minWidth: '60px',
-                        height: '24px',
+                        minWidth: '70px', // 최소 너비 줄이기
+                        height: '22px', // 높이 줄이기
                     }}
                 >
                     PC/온라인
@@ -214,12 +214,12 @@ const GameList = () => {
                     sx={{
                         backgroundColor: selectedPlatform === '비디오 게임' ? '#3F3DBD' : '#B4B3F6',
                         color: '#fff',
-                        fontSize: '0.65rem',
+                        fontSize: '0.65rem', // 폰트 크기 줄이기
                         fontWeight: 'bold',
-                        padding: '4px 12px',
+                        padding: '2px 4px', // 패딩 줄이기
                         borderRadius: '18px',
-                        minWidth: '60px',
-                        height: '24px',
+                        minWidth: '60px', // 최소 너비 줄이기
+                        height: '22px', // 높이 줄이기
                     }}
                 >
                     비디오
@@ -229,12 +229,12 @@ const GameList = () => {
                     sx={{
                         backgroundColor: selectedPlatform === '모바일 게임' ? '#3F3DBD' : '#B4B3F6',
                         color: '#fff',
-                        fontSize: '0.65rem',
+                        fontSize: '0.65rem', // 폰트 크기 줄이기
                         fontWeight: 'bold',
-                        padding: '4px 12px',
+                        padding: '2px 4px', // 패딩 줄이기
                         borderRadius: '18px',
-                        minWidth: '60px',
-                        height: '24px',
+                        minWidth: '60px', // 최소 너비 줄이기
+                        height: '22px', // 높이 줄이기
                     }}
                 >
                     모바일
