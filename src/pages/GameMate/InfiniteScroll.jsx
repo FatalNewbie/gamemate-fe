@@ -77,15 +77,19 @@ const InfiniteScroll = ({ status, apiUrl }) => {
 
     return (
         <div>
-            {posts.map((post, index) => (
-                <div
-                    ref={posts.length === index + 1 ? lastGameElementRef : null}
-                    key={index}
-                    onClick={() => handlePostClick(post.id)}
-                >
-                    <PostListCard {...post} />
-                </div>
-            ))}
+            {posts.length === 0 ? (
+                <p>아직 글이 없습니다.</p>
+            ) : (
+                posts.map((post, index) => (
+                    <div
+                        ref={posts.length === index + 1 ? lastGameElementRef : null}
+                        key={index}
+                        onClick={() => handlePostClick(post.id)}
+                    >
+                        <PostListCard {...post} />
+                    </div>
+                ))
+            )}
             <div id="loading">{loading && <p>Loading...</p>}</div>
         </div>
     );

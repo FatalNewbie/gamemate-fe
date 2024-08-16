@@ -109,6 +109,7 @@ const GameMateNew = () => {
         if (step === 4 && postData.status === 'ON') {
             return postData.mateContent.trim().length < 10;
         }
+
         // 다른 단계에 대한 체크를 추가할 수 있습니다.
         return false; // 다른 단계에서는 비활성화 조건이 없다고 가정
     };
@@ -148,6 +149,10 @@ const GameMateNew = () => {
 
     //데이터를 postData에 담아 전송
     const handleSubmit = async () => {
+        if (postData.mateContent.trim().length < 10) {
+            alert('10자 이상으로 작성해 주세요.');
+            return; // 길이가 10글자 미만일 경우 제출을 중단
+        }
         try {
             const response = await api.post(`/posts`, postData, {
                 headers: {
@@ -305,11 +310,11 @@ const GameMateNew = () => {
                         </div>
                     )}
 
-                    {(step === 5 && postData.status === 'OFF') && (
+                    {step === 5 && postData.status === 'OFF' && (
                         <div className="slide-in">
                             <h2>자세한 설명을 작성해주세요</h2>
                             <textarea
-                                placeholder="게임메이트에게 설명할 내용을 10자 이상으로    자유롭게 작성해주세요! ex) 방탈출만 끝나고 바로 헤어지실 분들로 구해요"
+                                placeholder="게임메이트에게 설명할 내용을 10자 이상으로 자유롭게 작성해주세요! ex) 방탈출만 끝나고 바로 헤어지실 분들로 구해요"
                                 className="description-area"
                                 value={postData.mateContent || ''}
                                 onChange={(e) => setField('mateContent', e.target.value)}
@@ -321,7 +326,7 @@ const GameMateNew = () => {
                         <div className="slide-in">
                             <h2>자세한 설명을 작성해주세요</h2>
                             <textarea
-                                placeholder="게임메이트에게 설명할 내용을 10자 이상으로    자유롭게 작성해주세요! ex) 저희는 디스코드 사용이 필수입니다!"
+                                placeholder="게임메이트에게 설명할 내용을 10자 이상으로 자유롭게 작성해주세요! ex) 저희는 디스코드 사용이 필수입니다!"
                                 className="description-area"
                                 value={postData.mateContent || ''}
                                 onChange={(e) => setField('mateContent', e.target.value)}

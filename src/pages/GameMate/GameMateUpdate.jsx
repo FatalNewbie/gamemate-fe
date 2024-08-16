@@ -52,6 +52,10 @@ const GameMatePost = () => {
 
     //데이터를 updatedData 담아 전송
     const handleUpdate = async () => {
+        if (updatedPostData.mateContent.trim().length < 10) {
+            alert('10자 이상으로 작성해 주세요.');
+            return; // 길이가 10글자 미만일 경우 제출을 중단
+        }
         const response = await api.put(`/posts/${id}`, updatedPostData, {
             headers: {
                 Authorization: cookies.token,
