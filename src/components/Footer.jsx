@@ -4,28 +4,23 @@ import { Home, SportsEsports, Group, QuestionAnswer, Person } from '@mui/icons-m
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../App.css';
 
-const Footer = ({ activePage, setActivePage }) => {
-    const navigate = useNavigate();
+const Footer = ({ setActivePage, activePage }) => {
     const location = useLocation();
-
-    // useEffect를 사용하여 컴포넌트가 처음 렌더링될 때 activePage를 설정
-    useEffect(() => {
-        if (location.pathname === '/') {
-            setActivePage('/home');
-            navigate('/home'); // 기본적으로 /home으로 리다이렉트
-        } else {
-            setActivePage(location.pathname); // 현재 경로에 따라 activePage 설정
-        }
-    }, [location.pathname, setActivePage, navigate]);
+//     const [value, setValue] = React.useState('home');
+    const navigate = useNavigate();
 
     const handleChange = (event, newValue) => {
-        setActivePage(newValue); // 전역 상태 업데이트
+        setActivePage(newValue);
         navigate(newValue);
     };
 
+    useEffect(() => {
+        setActivePage(location.pathname);
+    }, [location.pathname, setActivePage]);
+
     return (
         <BottomNavigation
-            value={activePage} // 전역 상태로부터 활성화된 페이지를 설정
+            value={activePage}
             onChange={handleChange}
             sx={{
                 height: '70px',
@@ -40,6 +35,7 @@ const Footer = ({ activePage, setActivePage }) => {
                 },
                 '& .MuiBottomNavigationAction-root': {
                     color: '#21272A',
+                    flex: 1,
                 },
                 paddingLeft: '10px',
                 paddingRight: '10px',
@@ -53,6 +49,7 @@ const Footer = ({ activePage, setActivePage }) => {
                 showLabel={true}
                 disableRipple
                 sx={{
+                    padding: '0px',
                     '& .MuiBottomNavigationAction-label': {
                         fontFamily: 'Roboto, sans-serif',
                         fontSize: '0.6rem',
@@ -63,9 +60,6 @@ const Footer = ({ activePage, setActivePage }) => {
                     },
                     '&:hover': {
                         backgroundColor: 'transparent',
-                    },
-                    '&.Mui-selected .MuiSvgIcon-root': {
-                        fontSize: '1.8rem', // 선택된 상태에서도 동일한 크기로 유지
                     },
                     '&:focus': {
                         backgroundColor: 'transparent',
@@ -79,6 +73,7 @@ const Footer = ({ activePage, setActivePage }) => {
                 showLabel={true}
                 disableRipple
                 sx={{
+                    padding: '0px',
                     '& .MuiBottomNavigationAction-label': {
                         fontFamily: 'Roboto, sans-serif',
                         fontSize: '0.6rem',
@@ -89,9 +84,6 @@ const Footer = ({ activePage, setActivePage }) => {
                     },
                     '&:hover': {
                         backgroundColor: 'transparent',
-                    },
-                    '&.Mui-selected .MuiSvgIcon-root': {
-                        fontSize: '1.8rem', // 선택된 상태에서도 동일한 크기로 유지
                     },
                     '&:focus': {
                         backgroundColor: 'transparent',
@@ -105,6 +97,7 @@ const Footer = ({ activePage, setActivePage }) => {
                 showLabel={true}
                 disableRipple
                 sx={{
+                    padding: '0px',
                     '& .MuiBottomNavigationAction-label': {
                         fontFamily: 'Roboto, sans-serif',
                         fontSize: '0.6rem',
@@ -112,9 +105,6 @@ const Footer = ({ activePage, setActivePage }) => {
                     '& .MuiSvgIcon-root': {
                         fontSize: '1.8rem',
                         color: activePage === '/gamemate' ? '#0A088A' : '#21272A',
-                    },
-                    '&.Mui-selected .MuiSvgIcon-root': {
-                        fontSize: '1.8rem', // 선택된 상태에서도 동일한 크기로 유지
                     },
                     '&:hover': {
                         backgroundColor: 'transparent',
@@ -131,12 +121,13 @@ const Footer = ({ activePage, setActivePage }) => {
                 showLabel={true}
                 disableRipple
                 sx={{
+                    padding: '0px',
                     '& .MuiBottomNavigationAction-label': {
                         fontFamily: 'Roboto, sans-serif',
                         fontSize: '0.6rem',
                     },
                     '& .MuiSvgIcon-root': {
-                        fontSize: '1.5rem',
+                        fontSize: '1.8rem',
                         color: activePage === '/chat' ? '#0A088A' : '#21272A',
                     },
                     '&:hover': {
@@ -154,6 +145,7 @@ const Footer = ({ activePage, setActivePage }) => {
                 showLabel={true}
                 disableRipple
                 sx={{
+                    padding: '0px',
                     '& .MuiBottomNavigationAction-label': {
                         fontFamily: 'Roboto, sans-serif',
                         fontSize: '0.6rem',
@@ -161,9 +153,6 @@ const Footer = ({ activePage, setActivePage }) => {
                     '& .MuiSvgIcon-root': {
                         fontSize: '1.8rem',
                         color: activePage === '/mypage' ? '#0A088A' : '#21272A',
-                    },
-                    '&.Mui-selected .MuiSvgIcon-root': {
-                        fontSize: '1.8rem', // 선택된 상태에서도 동일한 크기로 유지
                     },
                     '&:hover': {
                         backgroundColor: 'transparent',
