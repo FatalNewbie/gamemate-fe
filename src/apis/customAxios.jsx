@@ -1,7 +1,7 @@
 import axios, { HttpStatusCode, isAxiosError } from 'axios';
 
 // 1) axios default 설정
-axios.defaults.baseURL = 'http://localhost:8080/api';
+axios.defaults.baseURL = 'http://ec2-3-82-142-19.compute-1.amazonaws.com/api';
 
 //데이터의 형식 지정
 axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -11,7 +11,7 @@ axios.defaults.timeout = 5000; //백엔트 서버에 요청하고 응답을 기�
 
 // 2) axios instance
 export const api = axios.create();
-export const api2 = axios.create({ baseURL: 'http://localhost:8000/api' });
+export const api2 = axios.create({ baseURL: 'http://localhost:8000' });
 
 // 3) interceptor
 // Client ------[Interceptor]------> Server

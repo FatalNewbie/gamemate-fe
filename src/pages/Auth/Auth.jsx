@@ -111,7 +111,7 @@ const Join = () => {
 
         try {
             const response = await axios.post(
-                '/login',
+                '/api/login',
                 {
                     username,
                     password,
