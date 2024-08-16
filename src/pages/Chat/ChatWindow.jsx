@@ -562,7 +562,16 @@ const ChatWindow = () => {
                         alignItems="center" // 수직 중앙 정렬
                         sx={{ height: '100%', pl: 1, pb: 1.5 }} // Box의 높이를 100%로 설정
                     >
-                        <Typography sx={{ fontSize: 23, fontWeight: 600, fontFamily: '"Sunflower", sans-serif' }}>
+                        <Typography sx={{
+                                fontSize: 23,
+                                fontWeight: 600,
+                                fontFamily: '"Sunflower", sans-serif',
+                                whiteSpace: 'nowrap', // 수정: camelCase로 변경
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis', // 수정: camelCase로 변경
+                                maxWidth: '100%', // 수정: camelCase로 변경
+                            }}
+                        >
                             {title}
                         </Typography>
                     </Box>
@@ -575,7 +584,7 @@ const ChatWindow = () => {
                 >
                     <Box
                         display="flex"
-                        justifyContent="center" // 수평 중앙 정렬
+//                         justifyContent="center" // 수평 중앙 정렬
                         alignItems="center" // 수직 중앙 정렬
                         sx={{ height: '100%' }} // Box의 높이를 100%로 설정
                     >
@@ -595,6 +604,8 @@ const ChatWindow = () => {
                         borderRight: '1px solid #ccc', // 오른쪽 테두리
                         borderBottom: '1px solid #ccc', // 아래쪽 테두리
                         padding: '10px',
+                        wordBreak: 'break-word', // 단어 줄 바꿈
+                        maxWidth: '100%', // 최대 너비
                     }}
                     ref={chatContainerRef}
                 >
