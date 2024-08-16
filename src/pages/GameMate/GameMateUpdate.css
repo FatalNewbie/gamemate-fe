@@ -45,3 +45,11 @@
     font-size: 14px; /* 폰트 크기 설정 */
     color: #101010; /* 텍스트 색상 설정 */
 }
+
+.region-select-box {
+    width: 100%;
+    padding: 2px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}

@@ -115,7 +115,11 @@ const GameMatePost = () => {
                         {/* 조건부 렌더링으로 지역 선택 UI 추가 */}
                         {post.status === 'OFF' && (
                             <div>
-                                <select value={updatedPostData.mateRegionSi} onChange={handleRegionChange}>
+                                <select
+                                    className="region-select-box"
+                                    value={updatedPostData.mateRegionSi}
+                                    onChange={handleRegionChange}
+                                >
                                     <option value="">시를 선택하세요</option>
                                     {regions.map((region) => (
                                         <option key={region.name} value={region.name}>
@@ -125,6 +129,7 @@ const GameMatePost = () => {
                                 </select>
 
                                 <select
+                                    className="region-select-box"
                                     value={updatedPostData.mateRegionGu}
                                     onChange={handleSubAreaChange}
                                     disabled={!post.mateRegionSi}

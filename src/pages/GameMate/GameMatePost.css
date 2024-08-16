@@ -65,7 +65,7 @@
 
 .status-label {
     width: 50%;
-    margin-right: 5px; /* 레이블과 아이콘 사이의 간격 */
+    /* 레이블과 아이콘 사이의 간격 */
 }
 
 .status-icon {
