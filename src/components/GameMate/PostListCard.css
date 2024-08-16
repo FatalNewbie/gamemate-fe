@@ -20,7 +20,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 100;
+    max-width: 80%;
 }
 
 .location {
@@ -60,7 +60,7 @@
 }
 
 .time-ago {
-    padding-right: 200px;
+    padding-right: 50%;
     font-size: 10px;
     color: #272727;
 }

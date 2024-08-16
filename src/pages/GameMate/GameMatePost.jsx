@@ -12,6 +12,7 @@ import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import { Avatar, Snackbar, Alert, useStepContext } from '@mui/material';
+import profilePlaceholder from '../../assets/profile_placeholder.png';
 
 const { kakao } = window;
 
@@ -418,12 +419,12 @@ const GameMatePost = () => {
                     <div className="user-profile">
                         <div className="left-section">
                             <Avatar
-                                src={post.userProfile} // S3 URL
+                                src={post.userProfile || profilePlaceholder} // S3 URL
                                 alt="User Profile"
                                 style={{ width: '20px', height: '20px', cursor: 'pointer' }}
                                 onError={(e) => {
                                     e.target.onerror = null; // prevents looping
-                                    e.target.src = 'path/to/default/image.png'; // 대체 이미지 경로
+                                    e.target.src = 'profilePlaceholder'; // 대체 이미지 경로
                                 }}
                             />
                             <span className="writer-nickname">{post.nickname}</span>
