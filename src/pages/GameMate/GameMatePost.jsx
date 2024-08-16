@@ -566,24 +566,24 @@ const GameMatePost = () => {
                                 </div>
 
                                 <div className="comment-edit-box">
-                                    {comment.deletedDate ? null : username === comment.username ? (
-                                        <>
-                                            <button
-                                                className="edit-button"
-                                                onClick={() => handleEditCommentClick(comment)}
-                                            >
-                                                수정
-                                            </button>
-                                            <button
-                                                className="delete-button"
-                                                onClick={() => handleDeleteComment(comment.id)}
-                                            >
-                                                삭제
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <button className="report-button">신고</button>
-                                    )}
+                                    {comment.deletedDate
+                                        ? null
+                                        : username === comment.username && (
+                                              <>
+                                                  <button
+                                                      className="edit-button"
+                                                      onClick={() => handleEditCommentClick(comment)}
+                                                  >
+                                                      수정
+                                                  </button>
+                                                  <button
+                                                      className="delete-button"
+                                                      onClick={() => handleDeleteComment(comment.id)}
+                                                  >
+                                                      삭제
+                                                  </button>
+                                              </>
+                                          )}
                                 </div>
                             </div>
                             {replyToCommentId === comment.id && (
@@ -649,7 +649,7 @@ const GameMatePost = () => {
                                                 </div>
                                             </div>
                                             <div className="recomment-edit-box">
-                                                {username === recomment.username ? (
+                                                {username === recomment.username && (
                                                     <>
                                                         <button
                                                             className="edit-button"
@@ -664,8 +664,6 @@ const GameMatePost = () => {
                                                             삭제
                                                         </button>
                                                     </>
-                                                ) : (
-                                                    <button className="report-button">신고</button>
                                                 )}
                                             </div>
                                         </div>

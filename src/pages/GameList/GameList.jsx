@@ -239,7 +239,7 @@ const GameList = () => {
                 >
                     모바일
                 </Button>
-                <Select
+                {/* <Select
                     value={sortOrder}
                     onChange={handleSortChange}
                     sx={{
@@ -266,7 +266,7 @@ const GameList = () => {
                     <MenuItem value="댓글순" sx={{ fontSize: '0.75rem' }}>
                         댓글순
                     </MenuItem>
-                </Select>
+                </Select> */}
             </Box>
 
             <Box
