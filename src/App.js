@@ -45,181 +45,265 @@ const App = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Navigate to={isLoggedIn ? "/home" : "/auth"} replace />} />
+                <Route path="/" element={<Navigate to={isLoggedIn ? '/home' : '/auth'} replace />} />
                 <Route
+                    path="/auth"
+                    element={
+                        isLoggedIn ? (
+                            <Navigate to="/home" replace />
+                        ) : (
+                            <MainLayout headerTitle="게임메이트" showHeader={false} showFooter={false}>
+                                <Auth />
+                            </MainLayout>
+                        )
+                    }
+                />
+                {/* <Routey
                     path="/auth"
                     element={
                         <MainLayout headerTitle="게임메이트" showHeader={false} showFooter={false}>
                             <Auth />
                         </MainLayout>
                     }
-                />
+                /> */}
                 <Route
                     path="/join-additional"
                     element={
-                        <MainLayout headerTitle="게임메이트" showHeader={false} showFooter={false}>
-                            <JoinAdditional />
-                        </MainLayout>
+                        isLoggedIn ? (
+                            <Navigate to="/home" replace />
+                        ) : (
+                            <MainLayout headerTitle="게임메이트" showHeader={false} showFooter={false}>
+                                <JoinAdditional />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/home"
                     element={
-                        <MainLayout headerTitle="게임메이트">
-                            <Home />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="게임메이트">
+                                <Home />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/recommend"
                     element={
-                        <MainLayout headerTitle="추천 유저">
-                            <Recommend />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="추천 유저">
+                                <Recommend />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/gamelist"
                     element={
-                        <MainLayout headerTitle="게임리스트">
-                            <GameList />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="게임리스트">
+                                <GameList />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/search-results"
                     element={
-                        <MainLayout headerTitle="검색 결과">
-                            <SearchResults />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="검색 결과">
+                                <SearchResults />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/game/:id" // Define the dynamic route for GameDetails
                     element={
-                        <MainLayout headerTitle="게임상세">
-                            <GameDetails />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="게임상세">
+                                <GameDetails />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/gamemate"
                     element={
-                        <MainLayout headerTitle="게임메이트">
-                            <GameMate />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="게임메이트">
+                                <GameMate />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/gamemate/posts/:id"
                     element={
-                        <MainLayout headerTitle="게임메이트">
-                            <GameMatePost />
-                        </MainLayout>
-                    }
-                />
-                <Route
-                    path="/gamemate/posts/:id/write"
-                    element={
-                        <MainLayout headerTitle="게임메이트">
-                            <GamteMateUpdate />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="게임메이트">
+                                <GameMatePost />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/gamemate/posts/new"
                     element={
-                        <MainLayout headerTitle="모집하기">
-                            <GameMateNew />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="모집하기">
+                                <GameMateNew />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
-                    path="/gamemate/test"
+                    path="/gamemate/posts/:id/write"
                     element={
-                        <MainLayout headerTitle="카카오 검색 테스트">
-                            <KakaoSearch />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="게임메이트">
+                                <GamteMateUpdate />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/chat"
                     element={
-                        <MainLayout headerTitle="채팅" showSearchIcon={false}>
-                            <Chat />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="채팅" showSearchIcon={false}>
+                                <Chat />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/chattest"
                     element={
-                        <MainLayout headerTitle="채팅테스트" showSearchIcon={false}>
-                            <ChatRoomTest />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="채팅테스트" showSearchIcon={false}>
+                                <ChatRoomTest />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/mypage"
                     element={
-                        <MainLayout headerTitle="마이페이지" showSearchIcon={false}>
-                            <MyPage />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="마이페이지" showSearchIcon={false}>
+                                <MyPage />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/favoritegamelist"
                     element={
-                        <MainLayout headerTitle="선호 게임 목록" showSearchIcon={false}>
-                            <FavoriteGameList />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="선호 게임 목록" showSearchIcon={false}>
+                                <FavoriteGameList />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/posts/user/list"
                     element={
-                        <MainLayout headerTitle="내가 쓴 글 목록" showSearchIcon={false}>
-                            <UserPostsList />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="내가 쓴 글 목록" showSearchIcon={false}>
+                                <UserPostsList />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/edit-profile"
                     element={
-                        <MainLayout headerTitle="프로필 이미지 수정" showSearchIcon={false}>
-                            <ProfileImageEdit />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="프로필 이미지 수정" showSearchIcon={false}>
+                                <ProfileImageEdit />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/friends"
                     element={
-                        <MainLayout headerTitle="친구 목록" showSearchIcon={false}>
-                            <FriendsList />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="친구 목록" showSearchIcon={false}>
+                                <FriendsList />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/received-friendrequests"
                     element={
-                        <MainLayout headerTitle="받은 친구 요청" showSearchIcon={false}>
-                            <ReceivedFriendRequests />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="받은 친구 요청" showSearchIcon={false}>
+                                <ReceivedFriendRequests />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/sent-friendrequests"
                     element={
-                        <MainLayout headerTitle="보낸 친구 요청" showSearchIcon={false}>
-                            <SentFriendRequests />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="보낸 친구 요청" showSearchIcon={false}>
+                                <SentFriendRequests />
+                            </MainLayout>
+                        )
                     }
                 />
                 <Route
                     path="/ChatWindow"
                     element={
-                        <MainLayout headerTitle="채팅창" showSearchIcon={false}>
-                            <ChatWindow />
-                        </MainLayout>
+                        !isLoggedIn ? (
+                            <Navigate to="/auth" replace />
+                        ) : (
+                            <MainLayout headerTitle="채팅창" showSearchIcon={false}>
+                                <ChatWindow />
+                            </MainLayout>
+                        )
                     }
                 />
             </Routes>
