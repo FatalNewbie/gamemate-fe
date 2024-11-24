@@ -1,0 +1,44 @@
+name: frontend CI/CD Pipeline
+
+on:
+    push:
+        branches:
+            - develop
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Build Docker image
+              run: |
+                  docker build \
+                  --build-arg REACT_APP_API_URL=http://${{secrets.GAMEMATE_APP_URL}}:8080 \
+                  --build-arg REACT_APP_PYTHON_API_URL=http://${{secrets.GAMEMATE_APP_URL}}:8000 \
+                  --build-arg REACT_APP_KAKAOMAP_API_KEY=${{secrets.KAKAOMAP_API_KEY}} \
+                  -t gamemate-fe-ik .
+
+            - name: Log in to AWS ECR Public
+              run: |
+                  aws ecr-public get-login-password --region ${{secrets.AWS_REGION}} \
+                  | docker login --username AWS --password-stdin ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr-public.${{secrets.AWS_REGION}}.amazonaws.com
+
+            - name: Push Docker image to ECR Public
+              run: |
+                  docker tag gamemate-fe-ik:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr-public.${{secrets.AWS_REGION}}.amazonaws.com/gamemate-fe-ik:latest
+                  docker push ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr-public.${{secrets.AWS_REGION}}.amazonaws.com/gamemate-fe-ik:latest
+
+            - name: Deploy to EC2
+              uses: appleboy/ssh-action@v0.1.1
+              with:
+                  host: ${{ secrets.GAMEMATE_APP_URL }}
+                  username: ubuntu
+                  key: ${{ secrets.EC2_SSH_KEY }}
+                  script: |
+                      sudo docker pull ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr-public.${{secrets.AWS_REGION}}.amazonaws.com/gamemate-fe-ik:latest
+                      sudo docker stop gamemate-fe-ik || true
+                      sudo docker rm gamemate-fe-ik || true
+                      sudo docker run -d --name gamemate-fe-ik --network my_network -p 80:80 ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr-public.${{secrets.AWS_REGION}}.amazonaws.com/gamemate-fe-ik:latest
