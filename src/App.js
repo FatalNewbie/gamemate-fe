@@ -52,7 +52,7 @@ const App = () => {
                         isLoggedIn ? (
                             <Navigate to="/home" replace />
                         ) : (
-                            <MainLayout headerTitle="게임메이트" showHeader={false} showFooter={false}>
+                            <MainLayout headerTitle="ci/cd테스트" showHeader={false} showFooter={false}>
                                 <Auth />
                             </MainLayout>
                         )
