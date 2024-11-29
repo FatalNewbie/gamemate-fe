@@ -61,7 +61,7 @@ const App = () => {
                 {/* <Routey
                     path="/auth"
                     element={
-                        <MainLayout headerTitle="게임메이트" showHeader={false} showFooter={false}>
+                        <MainLayout headerTitle="ci/cd테스트" showHeader={false} showFooter={false}>
                             <Auth />
                         </MainLayout>
                     }
@@ -72,7 +72,7 @@ const App = () => {
                         isLoggedIn ? (
                             <Navigate to="/home" replace />
                         ) : (
-                            <MainLayout headerTitle="게임메이트" showHeader={false} showFooter={false}>
+                            <MainLayout headerTitle="ci/cd테스트" showHeader={false} showFooter={false}>
                                 <JoinAdditional />
                             </MainLayout>
                         )
@@ -84,7 +84,7 @@ const App = () => {
                         !isLoggedIn ? (
                             <Navigate to="/auth" replace />
                         ) : (
-                            <MainLayout headerTitle="게임메이트">
+                            <MainLayout headerTitle="ci/cd테스트">
                                 <Home />
                             </MainLayout>
                         )
@@ -144,7 +144,7 @@ const App = () => {
                         !isLoggedIn ? (
                             <Navigate to="/auth" replace />
                         ) : (
-                            <MainLayout headerTitle="게임메이트">
+                            <MainLayout headerTitle="ci/cd테스트">
                                 <GameMate />
                             </MainLayout>
                         )
@@ -156,7 +156,7 @@ const App = () => {
                         !isLoggedIn ? (
                             <Navigate to="/auth" replace />
                         ) : (
-                            <MainLayout headerTitle="게임메이트">
+                            <MainLayout headerTitle="ci/cd테스트">
                                 <GameMatePost />
                             </MainLayout>
                         )
@@ -180,7 +180,7 @@ const App = () => {
                         !isLoggedIn ? (
                             <Navigate to="/auth" replace />
                         ) : (
-                            <MainLayout headerTitle="게임메이트">
+                            <MainLayout headerTitle="ci/cd테스트">
                                 <GamteMateUpdate />
                             </MainLayout>
                         )
