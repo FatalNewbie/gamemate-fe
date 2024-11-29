@@ -52,3 +52,4 @@ jobs:
                       sudo docker stop gamemate-fe-ik || true
                       sudo docker rm gamemate-fe-ik || true
                       sudo docker run -d --name gamemate-fe-ik --network my_network -p 80:80 public.ecr.aws/u8s0u4u6/gamemate-ik/fe:latest
+                  debug: true
