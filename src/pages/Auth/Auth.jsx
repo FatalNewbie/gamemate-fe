@@ -209,7 +209,7 @@ const Join = () => {
                         letterSpacing: '-0.5px',
                     }}
                 >
-                    게임메이트
+                    ci/cd성공적
                 </Typography>
             </Box>
             {/*             <Box mt={2}> */}
