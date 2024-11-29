@@ -9,6 +9,8 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
+        env:
+            ACTIONS_STEP_DEBUG: true # 디버그 모드 활성화
 
         steps:
             - name: Checkout code
