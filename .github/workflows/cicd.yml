@@ -36,8 +36,8 @@ jobs:
 
             - name: Push Docker image to ECR Public
               run: |
-                  docker tag gamemate-fe-ik:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr-public.${{secrets.AWS_REGION}}.amazonaws.com/gamemate-fe-ik:latest
-                  docker push ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr-public.${{secrets.AWS_REGION}}.amazonaws.com/gamemate-fe-ik:latest
+                  docker tag gamemate-fe-ik:latest public.ecr.aws/u8s0u4u6/gamemate-ecr:latest
+                  docker push public.ecr.aws/u8s0u4u6/gamemate-ecr:latest
 
             - name: Deploy to EC2
               uses: appleboy/ssh-action@v0.1.1
